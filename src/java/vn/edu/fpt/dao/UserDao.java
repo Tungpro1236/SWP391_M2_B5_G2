@@ -3,11 +3,11 @@ package vn.edu.fpt.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.User;
+import vn.fpt.edu.model.UserModel;
 
 public class UserDAO extends DBContext {
     
-    public User login(String email, String password) {
+    public UserModel login(String email, String password) {
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(query);
@@ -16,7 +16,7 @@ public class UserDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
-                return new User(
+                return new UserModel(
                     rs.getInt("id"),
                     rs.getString("first_name"),
                     rs.getString("middle_name"),
@@ -35,7 +35,7 @@ public class UserDAO extends DBContext {
         return null;
     }
     
-    public boolean register(User user) {
+    public boolean register(UserModel user) {
         String query = "INSERT INTO users (first_name, middle_name, last_name, email, gender_id, password, role_id, avatar_url) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
