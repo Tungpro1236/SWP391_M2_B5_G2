@@ -17,10 +17,7 @@ import vn.edu.fpt.dao.CourseDAO;
 import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
 
-/**
- *
- * @author ASUS
- */
+
 @WebServlet(name="CourseController", urlPatterns={"/CourseController"})
 public class CourseController extends HttpServlet {
    
