@@ -148,7 +148,7 @@ public class CourseDAO extends DBContext {
      */
     public List<Category> getAllCategories() {
         List<Category> list = new ArrayList<>();
-        String query = "SELECT TOP (1000) [id], [semester] "
+        String query = "SELECT [id], [semester] "
                 + "FROM [Onlinelearning].[dbo].[category]";
         
         try (PreparedStatement ps = connection.prepareStatement(query);
