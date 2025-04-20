@@ -8,6 +8,7 @@ package vn.edu.fpt.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import vn.edu.fpt.model.Salary;
  *
  * @author regio
  */
+@WebServlet(name="CourseController", urlPatterns={"/CourseController"})
 public class ViewTeacherSalary extends HttpServlet {
    
     /** 
