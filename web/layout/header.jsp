@@ -50,7 +50,7 @@
                                 <span class="nav-link">Welcome, <b><c:out value="${sessionScope.user.lastName}"/></b></span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="logout.jsp">Logout</a>
+                                <a class="nav-link" href="user?action=logout">Logout</a>
                             </li>
                         </c:when>
                         <c:otherwise>
