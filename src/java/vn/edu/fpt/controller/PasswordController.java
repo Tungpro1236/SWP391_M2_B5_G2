@@ -49,9 +49,19 @@ public class PasswordController extends HttpServlet {
         }
 
         String newPassword = request.getParameter("newPassword");
+        String currentPassword = request.getParameter("currentPassword");
+        if(!user.getPassword().equals(currentPassword)){
+            request.setAttribute("error", "Current password is incorrect");
+            request.getRequestDispatcher("change-password.jsp").forward(request, response);
+            return;
+        }
 
         UserDAO userDao = new UserDAO();
+        
+        
         if (userDao.resetPassword(user.getEmail(), newPassword)) {
+            user.setPassword(newPassword);
+            session.setAttribute("user", user);
             request.setAttribute("success", "Password changed successfully!");
         } else {
             request.setAttribute("error", "Failed to change password. Please try again!");
