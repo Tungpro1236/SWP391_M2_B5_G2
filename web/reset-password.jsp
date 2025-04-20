@@ -72,6 +72,26 @@
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
+            if (!/[A-Z]/.test(newPassword)) {
+                alert('Password must contain at least one uppercase letter');
+                return false;
+            }
+
+            if (!/[a-z]/.test(newPassword)) {
+                alert('Password must contain at least one lowercase letter');
+                return false;
+            }
+
+            if (!/[0-9]/.test(newPassword)) {
+                alert('Password must contain at least one number');
+                return false;
+            }
+
+            if (!/[!@#$%^&*]/.test(newPassword)) {
+                alert('Password must contain at least one special character (!@#$%^&*)');
+                return false;
+            }
+            
             if (newPassword !== confirmPassword) {
                 alert('Passwords do not match');
                 return false;
