@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package vn.edu.fpt.controller;
 
 import java.io.IOException;
@@ -17,33 +16,34 @@ import vn.edu.fpt.dao.CourseDAO;
 import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
 
-
-@WebServlet(name="CourseController", urlPatterns={"/CourseController"})
+@WebServlet(name = "CourseController", urlPatterns = {"/CourseController"})
 public class CourseController extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CourseController</title>");  
+            out.println("<title>Servlet CourseController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CourseController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet CourseController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     private static final int PAGE_SIZE = 6; // Số lượng khóa học trên mỗi trang
 
@@ -52,19 +52,19 @@ public class CourseController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-        
+
         CourseDAO courseDAO = new CourseDAO();
-        
+
         // Lấy tất cả các danh mục
         List<Category> categoryList = courseDAO.getAllCategories();
         request.setAttribute("categoryList", categoryList);
-        
+
         // Xử lý lọc theo danh mục và phân trang
         String categoryIdParam = request.getParameter("categoryId");
         String pageParam = request.getParameter("page");
         int categoryId = 0;
         int page = 1;
-        
+
         try {
             if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
                 categoryId = Integer.parseInt(categoryIdParam);
@@ -76,17 +76,18 @@ public class CourseController extends HttpServlet {
             // Xử lý nếu categoryId hoặc page không phải là số
             page = 1;
         }
-        
+
         List<Course> courseList;
         int totalCourses;
-        
+
         if (categoryId > 0) {
             courseList = courseDAO.getCoursesByCategory(categoryId, page);
             totalCourses = courseDAO.getTotalCoursesByCategory(categoryId);
-            
+
             // Tìm tên danh mục đã chọn
             for (Category c : categoryList) {
                 if (c.getId() == categoryId) {
+                    page = 1;
                     request.setAttribute("selectedCategory", c);
                     break;
                 }
@@ -95,9 +96,9 @@ public class CourseController extends HttpServlet {
             courseList = courseDAO.getAllCourses(page);
             totalCourses = courseDAO.getTotalCourses();
         }
-        
+
         int totalPages = (int) Math.ceil((double) totalCourses / PAGE_SIZE);
-        
+
         request.setAttribute("courseList", courseList);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("currentPage", page);
@@ -105,8 +106,9 @@ public class CourseController extends HttpServlet {
         request.getRequestDispatcher("ListCourse.jsp").forward(request, response);
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -114,12 +116,13 @@ public class CourseController extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
