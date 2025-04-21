@@ -71,4 +71,74 @@ public class UserDAO extends DBContext {
         }
         return false;
     }
+    
+    public boolean changePassword(String email, String currentPassword, String newPassword) {
+        try {
+            // Verify current password first
+            String verifyQuery = "SELECT id FROM users WHERE email = ? AND password = ?";
+            PreparedStatement verifyPs = connection.prepareStatement(verifyQuery);
+            verifyPs.setString(1, email);
+            verifyPs.setString(2, currentPassword);
+            ResultSet rs = verifyPs.executeQuery();
+            
+            if (!rs.next()) {
+                return false; // Current password is incorrect
+            }
+            
+            // Update to new password
+            String updateQuery = "UPDATE users SET password = ? WHERE email = ?";
+            PreparedStatement updatePs = connection.prepareStatement(updateQuery);
+            updatePs.setString(1, newPassword);
+            updatePs.setString(2, email);
+            
+            return updatePs.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in changePassword: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean resetPassword(String email, String newPassword) {
+        try {
+            String query = "UPDATE users SET password = ? WHERE email = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in resetPassword: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean updatePassword(String email, String newPassword) {
+        try {
+            String query = "UPDATE users SET password = ? WHERE email = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in updatePassword: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean updateProfile(UserModel user) {
+        try {
+            String query = "UPDATE users SET first_name=?, last_name=?, gender_id=?, avatar_url=? WHERE id=?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setInt(3, user.getGenderId());
+            ps.setString(4, user.getAvatarUrl());
+            ps.setInt(5, user.getId());
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error in updateProfile: " + e.getMessage());
+            return false;
+        }
+    }
 }
