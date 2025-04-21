@@ -13,7 +13,10 @@ import java.util.*;
  * @author regio
  */
 public class SalaryDAO extends DBContext {
-
+     /**
+     * Lấy danh sách các lương giáo theo trang
+     * @return Danh sách các list lương giáo viên
+     */
     public List<Salary> getAllSalaries(String keyword) {
         List<Salary> list = new ArrayList<>();
         String sql = "SELECT ts.id, ts.teacher_id, u.first_name +"
@@ -40,7 +43,10 @@ public class SalaryDAO extends DBContext {
         }
         return list;
     }
-
+     /**
+     * Lấy thông tin giáo viên và só tiền lương theo id 
+     * 
+     */
     public Salary getSalaryByTeacherId(int id) {
         String sql = "SELECT ts.id, ts.teacher_id, u.first_name + ' ' + u.last_name AS teacher_name, " +
                      "ts.month, ts.year, ts.paid, ts.total_amount " +
