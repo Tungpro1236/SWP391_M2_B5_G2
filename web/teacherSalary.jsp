@@ -49,34 +49,7 @@
     </head>
     <body>
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="ViewTeacherSalary">
-                    <!-- Placeholder for logo -->
-                    <img src="https://via.placeholder.com/40" alt="Logo" class="me-2"> Online Learning
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Trang chủ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Khóa học</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Giới thiệu</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Liên hệ</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <%@ include file="/layout/header.jsp" %>
 
         <div class="container mt-5">
             <h1 class="mb-4 text-primary fw-bold">Teacher Salaries</h1>
@@ -158,7 +131,7 @@
                 </table>
             </div>
         </div>
-
+         <%@ include file="/layout/footer.jsp" %>           
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
