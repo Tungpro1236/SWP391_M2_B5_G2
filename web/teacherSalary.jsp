@@ -69,14 +69,14 @@
                         <div class="col-auto">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" name="keyword" value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : "" %>" class="form-control" placeholder="Search by name">
+                                <input type="text" name="keyword" value="${keyword}" class="form-control" placeholder="Search by name">
                             </div>
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">Search</button>
                         </div>
                         <div class="col-auto">
-                            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                            <button type="reset" class="btn btn-outline-secondary" onclick="window.location.href='ViewTeacherSalary'">Reset</button>
                         </div>
                     </form>
                 </div>
@@ -106,7 +106,7 @@
                         <% for (Salary s : salaryList) { %>
                         <tr class="table-row">
                             <td><span class="badge bg-info text-dark"><%= s.getTeacherId() != 0 ? s.getTeacherId() : "N/A" %></span></td>
-                            <td Brandt: text/html><%= s.getTeacherName() != null ? s.getTeacherName() : "" %></td>
+                            <td><%= s.getTeacherName() != null ? s.getTeacherName() : "" %></td>
                             <td>
                                 <% if (s.getPaid() == 1) { %>
                                 <span class="badge bg-success">Paid</span>
@@ -130,8 +130,52 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination Controls -->
+            <% if (request.getAttribute("totalPages") != null && (int)request.getAttribute("totalPages") > 0) { %>
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous Button -->
+                        <li class="page-item <%= (int)request.getAttribute("currentPage") == 1 ? "disabled" : "" %>">
+                            <a class="page-link" href="ViewTeacherSalary?page=<%= (int)request.getAttribute("currentPage") - 1 %>&keyword=${keyword}" aria-label="Previous">
+                                <span aria-hidden="true">« Previous</span>
+                            </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <%
+                            int currentPage = (int) request.getAttribute("currentPage");
+                            int totalPages = (int) request.getAttribute("totalPages");
+                            int startPage = Math.max(1, currentPage - 2);
+                            int endPage = Math.min(totalPages, currentPage + 2);
+
+                            // Adjust startPage and endPage to always show 5 page numbers if possible
+                            if (endPage - startPage < 4) {
+                                if (startPage == 1) {
+                                    endPage = Math.min(totalPages, startPage + 4);
+                                } else if (endPage == totalPages) {
+                                    startPage = Math.max(1, endPage - 4);
+                                }
+                            }
+
+                            for (int i = startPage; i <= endPage; i++) {
+                        %>
+                            <li class="page-item <%= currentPage == i ? "active" : "" %>">
+                                <a class="page-link" href="ViewTeacherSalary?page=<%= i %>&keyword=${keyword}"><%= i %></a>
+                            </li>
+                        <% } %>
+
+                        <!-- Next Button -->
+                        <li class="page-item <%= (int)request.getAttribute("currentPage") == (int)request.getAttribute("totalPages") ? "disabled" : "" %>">
+                            <a class="page-link" href="ViewTeacherSalary?page=<%= (int)request.getAttribute("currentPage") + 1 %>&keyword=${keyword}" aria-label="Next">
+                                <span aria-hidden="true">Next »</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            <% } %>
         </div>
-         <%@ include file="/layout/footer.jsp" %>           
+        <%@ include file="/layout/footer.jsp" %>                     
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
