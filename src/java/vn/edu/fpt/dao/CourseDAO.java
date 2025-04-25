@@ -167,6 +167,37 @@ public class CourseDAO extends DBContext {
         
         return list;
     }
+    public Course getCourseById(int id) {
+    String query = "SELECT [id], [teacher_id], [title], [thumbnail_url], [description], "
+                 + "[category_id], [status], [created_at], [price] "
+                 + "FROM [Onlinelearning].[dbo].[courses] "
+                 + "WHERE [id] = ?";
+
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
+        ps.setInt(1, id);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return new Course(
+                        rs.getInt("id"),
+                        rs.getInt("teacher_id"),
+                        rs.getString("title"),
+                        rs.getString("thumbnail_url"),
+                        rs.getString("description"),
+                        rs.getInt("category_id"),
+                        rs.getString("status"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("price")
+                );
+            }
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    return null;
+}
+
     
 
 //    public static void main(String[] args) {
