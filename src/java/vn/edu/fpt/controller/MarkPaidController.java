@@ -12,17 +12,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import vn.edu.fpt.dao.SalaryDAO;
-import vn.edu.fpt.model.Salary;
-
+import vn.edu.fpt.dao.PayrollDAO;
+import java.sql.SQLException;
 /**
  *
  * @author regio
  */
-@WebServlet(name="ViewTeacherSalary", urlPatterns={"/viewTeacherSalary"})
-public class ViewTeacherSalary extends HttpServlet {
-   private static final int DEFAULT_PAGE_SIZE = 5; // Số lượng bản ghi trên mỗi trang
+@WebServlet(name="MarkPaidController", urlPatterns={"/markPaid"})
+public class MarkPaidController extends HttpServlet {
+   private PayrollDAO payrollDAO;
+
+    @Override
+    public void init() {
+        payrollDAO = new PayrollDAO();
+    }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -38,10 +41,10 @@ public class ViewTeacherSalary extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewTeacherSalary</title>");  
+            out.println("<title>Servlet MarkPaidController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewTeacherSalary at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet MarkPaidController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,40 +61,7 @@ public class ViewTeacherSalary extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       String keyword = request.getParameter("keyword");
-        if (keyword == null) keyword = "";
-
-        // Retrieve pagination parameters
-        int page = 1; // Default to page 1
-        int pageSize = DEFAULT_PAGE_SIZE;
-        try {
-            String pageStr = request.getParameter("page");
-            if (pageStr != null && !pageStr.trim().isEmpty()) {
-                page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1; // Ensure page is at least 1
-            }
-        } catch (NumberFormatException e) {
-            // Log error if needed
-        }
-
-        SalaryDAO dao = new SalaryDAO();
-        // Fetch total records for pagination
-        int totalRecords = dao.getTotalRecords(keyword);
-        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-
-        // Adjust page number if it exceeds total pages
-        if (page > totalPages && totalPages > 0) {
-            page = totalPages;
-        }
-
-        // Fetch paginated salary list
-        List<Salary> list = dao.getAllSalaries(keyword, page, pageSize);
-        request.setAttribute("salaryList", list);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("teacherSalary.jsp").forward(request, response);
+        processRequest(request, response);
     } 
 
     /** 
@@ -104,7 +74,16 @@ public class ViewTeacherSalary extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            int salaryId = Integer.parseInt(request.getParameter("salaryId"));
+            // Replace with actual admin ID from session in production
+            Integer adminId = null; // Example: 1 for admin user
+            payrollDAO.markSalaryPaid(salaryId, adminId);
+            response.sendRedirect("payRoll");
+        } catch (SQLException | NumberFormatException e) {
+            request.setAttribute("error", "Error marking salary as paid: " + e.getMessage());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }
     }
 
     /** 
