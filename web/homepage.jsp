@@ -7,6 +7,7 @@
         <title>Online Learning Platform</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
         <style>
             /* Sub header styles */
             .sub-header {
@@ -210,6 +211,16 @@
                 margin-right: 10px;
                 font-size: 16px;
             }
+
+            .swiper {
+                padding: 20px 0;
+            }
+            .swiper-button-next, .swiper-button-prev {
+                color: #0d6efd;
+            }
+            .swiper-pagination-bullet-active {
+                background: #0d6efd;
+            }
         </style>
         <!-- Add this right before the closing </body> tag -->
         <script>
@@ -364,7 +375,7 @@
                                         <div class="clearfix">
                                             <div class="user-image float-start">
                                                 <img src="${user.avatarUrl != null ? user.avatarUrl : 'assets/images/default-avatar.png'}" 
-                     alt="Profile" class="profile-pic">
+                                                     alt="Profile" class="profile-pic">
                                             </div>
                                             <div class="user-details">
                                                 <div class="user-name">
@@ -384,7 +395,7 @@
                                 <li class="user-dropdown-menu-item"><a href="${pageContext.request.contextPath}/messages"><i class="far fa-envelope"></i>Tin nhắn của tôi</a></li>
                                 <li class="user-dropdown-menu-item"><a href="${pageContext.request.contextPath}/purchase-history"><i class="fas fa-shopping-cart"></i>Lịch sử mua hàng</a></li>
                                 <li class="user-dropdown-menu-item"><a href="${pageContext.request.contextPath}/profile"><i class="fas fa-user"></i>Hồ sơ người dùng</a></li>
-                                <li class="dropdown-user-logout user-dropdown-menu-item radius-bottom-10"><a href="${pageContext.request.contextPath}/logout" class="radius-bottom-10 py-3"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                                <li class="dropdown-user-logout user-dropdown-menu-item radius-bottom-10"><a href="${pageContext.request.contextPath}/login?action=logout" class="radius-bottom-10 py-3"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                             </ul>
                         </div>
                     </div>
@@ -411,109 +422,146 @@
         <section class="py-5">
             <div class="container">
                 <h2 class="mb-4">Latest Courses</h2>
-                <div class="row">
-                    <c:forEach items="${latestCourses}" var="course">
-                        <div class="col-md-3 mb-4">
-                            <div class="card">
-                                <img src="${course.thumbnailUrl}" class="card-img-top" alt="${course.title}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${course.title}</h5>
-                                    <p class="card-text">${course.description}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="price">$${course.price}</span>
-                                    </div>
-                                    <!-- Inside the course card -->
-                                    <div class="w-100 d-flex text-dark border-top py-1">
-                                        <div class="">
-                                            <i class="fas fa-book text-14px"></i>
-                                            <span class="text-muted text-12px">${course.lessonCount} Bài học</span>
+                <div class="swiper latestCoursesSwiper">
+                    <div class="swiper-wrapper">
+                        <c:forEach items="${latestCourses}" var="course">
+                            <div class="swiper-slide">
+                                <div class="card h-100">
+                                    <img src="${course.thumbnailUrl}" class="card-img-top" alt="${course.title}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${course.title}</h5>
+                                        <p class="card-text">${course.description}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price">$${course.price}</span>
                                         </div>
-                                        <div class="ms-auto">
-                                            <i class="fas fa-user-graduate text-14px"></i>
-                                            <span class="text-muted text-12px">${course.enrollmentCount} Học viên</span>
+                                        <div class="w-100 d-flex text-dark border-top py-1">
+                                            <div class="">
+                                                <i class="fas fa-book text-14px"></i>
+                                                <span class="text-muted text-12px">${course.lessonCount} Bài học</span>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <i class="fas fa-user-graduate text-14px"></i>
+                                                <span class="text-muted text-12px">${course.enrollmentCount} Học viên</span>
+                                            </div>
                                         </div>
-                                        <button class="btn btn-primary btn-sm add-to-cart" data-course-id="${course.id}">
-                                            <i class="fas fa-cart-plus"></i> Add to Cart
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </div>
-        </section>
-
-        <!-- Hot Courses Section -->
-        <section class="py-5 bg-light">
-            <div class="container">
-                <h2 class="mb-4">Most Popular Courses</h2>
-                <div class="row">
-                    <c:forEach items="${hotCourses}" var="course">
-                        <div class="col-md-3 mb-4">
-                            <div class="card">
-                                <img src="${course.thumbnailUrl}" class="card-img-top" alt="${course.title}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${course.title}</h5>
-                                    <p class="card-text">${course.description}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="price">$${course.price}</span>
-                                    </div>
-                                    <!-- Inside the course card -->
-                                    <div class="w-100 d-flex text-dark border-top py-1">
-                                        <div class="">
-                                            <i class="fas fa-book text-14px"></i>
-                                            <span class="text-muted text-12px">${course.lessonCount} Bài học</span>
-                                        </div>
-                                        <div class="ms-auto">
-                                            <i class="fas fa-user-graduate text-14px"></i>
-                                            <span class="text-muted text-12px">${course.enrollmentCount} Học viên</span>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-primary btn-sm add-to-cart" data-course-id="${course.id}">
-                                        <i class="fas fa-cart-plus"></i> Add to Cart
-                                    </button>    
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </div>
-        </section>
-
-        <!-- After Hot Courses Section -->
-        <section class="py-5">
-            <div class="container">
-                <h2 class="mb-4">Latest Blogs</h2>
-                <div class="row">
-                    <c:forEach items="${latestBlogs}" var="blog">
-                        <div class="col-md-4 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">${blog.title}</h5>
-                                    <p class="card-text">${blog.content}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">Posted on ${blog.createdAt}</small>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </c:forEach>
+                        </c:forEach>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Footer -->
-        <footer class="bg-dark text-light py-4">
-            <div class="container">
-                <!-- Add footer content -->
-            </div>
-        </footer>
+            <!-- Hot Courses Section -->
+            <section class="py-5 bg-light">
+                <div class="container">
+                    <h2 class="mb-4">Most Popular Courses</h2>
+                    <div class="swiper hotCoursesSwiper">
+                        <div class="swiper-wrapper">
+                            <c:forEach items="${hotCourses}" var="course">
+                                <div class="swiper-slide">
+                                    <div class="card h-100">
+                                        <!-- Same card content as Latest Courses -->
+                                        <img src="${course.thumbnailUrl}" class="card-img-top" alt="${course.title}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${course.title}</h5>
+                                            <p class="card-text">${course.description}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="price">$${course.price}</span>
+                                            </div>
+                                            <div class="w-100 d-flex text-dark border-top py-1">
+                                                <div class="">
+                                                    <i class="fas fa-book text-14px"></i>
+                                                    <span class="text-muted text-12px">${course.lessonCount} Bài học</span>
+                                                </div>
+                                                <div class="ms-auto">
+                                                    <i class="fas fa-user-graduate text-14px"></i>
+                                                    <span class="text-muted text-12px">${course.enrollmentCount} Học viên</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </section>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    </body>
-</html>
+            <!-- Latest Blogs Section -->
+            <section class="py-5">
+                <div class="container">
+                    <h2 class="mb-4">Latest Blogs</h2>
+                    <div class="swiper blogsSwiper">
+                        <div class="swiper-wrapper">
+                            <c:forEach items="${latestBlogs}" var="blog">
+                                <div class="swiper-slide">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${blog.title}</h5>
+                                            <p class="card-text">${blog.content}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Posted on ${blog.createdAt}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="bg-dark text-light py-4">
+                <div class="container">
+                    <!-- Add footer content -->
+                </div>
+            </footer>
+
+            <!-- Add before closing body tag -->
+            <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+            <script>
+                const swiperConfig = {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        640: {
+                            slidesPerView: 2,
+                        },
+                        768: {
+                            slidesPerView: 3,
+                        },
+                        1024: {
+                            slidesPerView: 5,
+                        },
+                    }
+                };
+
+                new Swiper('.latestCoursesSwiper', swiperConfig);
+                new Swiper('.hotCoursesSwiper', swiperConfig);
+                new Swiper('.blogsSwiper', swiperConfig);
+            </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        </body>
+    </html>
 
 
 
