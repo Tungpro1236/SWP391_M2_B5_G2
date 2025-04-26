@@ -30,7 +30,7 @@ public class UserModel {
     // Constructor with fields
     public UserModel(int id, String firstName, String middleName, String lastName, 
             String email, int genderId, String password, int roleId, 
-            String avatarUrl, Timestamp createdAt) {
+            String avatarUrl, Timestamp createdAt , boolean status) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -41,6 +41,7 @@ public class UserModel {
         this.roleId = roleId;
         this.avatarUrl = avatarUrl;
         this.createdAt = createdAt;
+        this.status = status;
     }
     
     // Getters and Setters

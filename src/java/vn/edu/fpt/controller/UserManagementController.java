@@ -22,7 +22,7 @@ public class UserManagementController extends HttpServlet {
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
         if(user == null || user.getRoleId() != Role.ADMIN.getRoleId()){
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("../login");
             return;
         }
         
