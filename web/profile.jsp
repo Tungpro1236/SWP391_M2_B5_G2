@@ -60,6 +60,7 @@
                     <a class="nav-link" href="#">Course and Exercise</a>
                     <a class="nav-link" href="#">Wishlist</a>
                     <a class="nav-link" href="#">Order History</a>
+                    <a class="nav-link" href="home">Home Page</a>
                     <a class="nav-link text-danger" href="login?action=logout">Logout</a>
                 </nav>
             </div>

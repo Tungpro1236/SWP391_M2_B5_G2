@@ -363,7 +363,8 @@
                                     <a href="javascript:;" class="radius-top-10">
                                         <div class="clearfix">
                                             <div class="user-image float-start">
-                                                <img src="assets/placeholder.png" alt="">
+                                                <img src="${user.avatarUrl != null ? user.avatarUrl : 'assets/images/default-avatar.png'}" 
+                     alt="Profile" class="profile-pic">
                                             </div>
                                             <div class="user-details">
                                                 <div class="user-name">
