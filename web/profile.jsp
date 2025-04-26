@@ -59,6 +59,7 @@
     <body class="bg-light">
         <div class="container-fluid">
             <div class="row">
+                <jsp:include page="layout/header.jsp" />
                 <div class="col-md-3 sidebar">
                     <img src="${user.avatarUrl != null ? user.avatarUrl : 'assets/images/default-avatar.png'}" 
                          alt="Profile" class="profile-pic">
@@ -70,8 +71,6 @@
                         <a class="nav-link" href="#">Course and Exercise</a>
                         <a class="nav-link" href="#">Wishlist</a>
                         <a class="nav-link" href="#">Order History</a>
-                        <a class="nav-link" href="home">Home Page</a>
-                        <a class="nav-link text-danger" href="login?action=logout">Logout</a>
                     </nav>
                 </div>
                 <div class="col-md-9 content">
@@ -146,6 +145,7 @@
                 </div>
             </div>
         </div>
+        <jsp:include page="layout/footer.jsp" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
         <script>
