@@ -21,6 +21,7 @@ public class UserModel {
     private int roleId;
     private String avatarUrl;
     private Timestamp createdAt;
+    private boolean status;
     
     // Default constructor
     public UserModel() {
@@ -122,4 +123,13 @@ public class UserModel {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
 }
