@@ -21,6 +21,8 @@ public class Course {
     private String status;
     private Date createdAt;
     private int price;
+    private int enrollmentCount;
+    private int lessonCount;
 
     public Course() {
     }
@@ -108,6 +110,24 @@ public class Course {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    public int getEnrollmentCount() {
+        return enrollmentCount;
+    }
+
+    public void setEnrollmentCount(int enrollmentCount) {
+        this.enrollmentCount = enrollmentCount;
+    }
+
+    public int getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(int lessonCount) {
+        this.lessonCount = lessonCount;
+    }
+    
+    
 
     @Override
     public String toString() {

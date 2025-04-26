@@ -1,9 +1,9 @@
 package vn.edu.fpt.enums;
 
 public enum Role {
-    LEARNER(1),
+    LEARNER(3),
     INSTRUCTOR(2),
-    ADMIN(3);
+    ADMIN(1);
     
     private final int roleId;
     
