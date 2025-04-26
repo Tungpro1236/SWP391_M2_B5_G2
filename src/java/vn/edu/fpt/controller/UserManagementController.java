@@ -6,8 +6,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.dao.UserDAO;
 import java.util.List;
+import vn.edu.fpt.enums.Role;
 import vn.fpt.edu.model.UserModel;
 
 @WebServlet(name = "UserManagementController", urlPatterns = {"/admin/users"})
@@ -17,6 +19,13 @@ public class UserManagementController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        UserModel user = (UserModel) session.getAttribute("user");
+        if(user == null || user.getRoleId() != Role.ADMIN.getRoleId()){
+            response.sendRedirect("../login");
+            return;
+        }
+        
         UserDAO userDAO = new UserDAO();
         
         // Get parameters

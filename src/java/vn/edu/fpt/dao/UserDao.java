@@ -28,7 +28,8 @@ public class UserDAO extends DBContext {
                         rs.getString("password"),
                         rs.getInt("role_id"),
                         rs.getString("avatar_url"),
-                        rs.getTimestamp("created_at")
+                        rs.getTimestamp("created_at"),
+                        rs.getBoolean("status")
                 );
             }
         } catch (SQLException e) {
@@ -194,7 +195,8 @@ public class UserDAO extends DBContext {
                         rs.getString("password"),
                         rs.getInt("role_id"),
                         rs.getString("avatar_url"),
-                        rs.getTimestamp("created_at")
+                        rs.getTimestamp("created_at"),
+                        rs.getBoolean("status")
                 );
                 user.setStatus(rs.getBoolean("status"));
                 users.add(user);
