@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -49,10 +49,13 @@ public class LoginController extends HttpServlet {
         UserDAO userDao = new UserDAO();
         UserModel user = userDao.login(email, password);
 
-        if (user != null) {
+        if (user != null && user.isStatus()) {
             session = request.getSession();
             session.setAttribute("user", user);
             response.sendRedirect("profile");
+        } else if (!user.isStatus()) {
+            request.setAttribute("error", "Account is inactive");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Invalid email or password");
             request.getRequestDispatcher("login.jsp").forward(request, response);

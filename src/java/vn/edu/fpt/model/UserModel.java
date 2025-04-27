@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package vn.fpt.edu.model;
+package vn.edu.fpt.model;
 
 import java.sql.Timestamp;
 
@@ -21,6 +21,7 @@ public class UserModel {
     private int roleId;
     private String avatarUrl;
     private Timestamp createdAt;
+    private boolean status;
     
     // Default constructor
     public UserModel() {
@@ -29,7 +30,7 @@ public class UserModel {
     // Constructor with fields
     public UserModel(int id, String firstName, String middleName, String lastName, 
             String email, int genderId, String password, int roleId, 
-            String avatarUrl, Timestamp createdAt) {
+            String avatarUrl, Timestamp createdAt , boolean status) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -40,6 +41,7 @@ public class UserModel {
         this.roleId = roleId;
         this.avatarUrl = avatarUrl;
         this.createdAt = createdAt;
+        this.status = status;
     }
     
     // Getters and Setters
@@ -122,4 +124,13 @@ public class UserModel {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
 }
