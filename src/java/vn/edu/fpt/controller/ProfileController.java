@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.dao.UserDAO;
+import vn.edu.fpt.enums.Role;
 import vn.fpt.edu.model.UserModel;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/profile"})
@@ -15,21 +16,17 @@ public class ProfileController extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
+        HttpSession session = request.getSession();
+        UserModel user = (UserModel) session.getAttribute("user");
+        
+        if (user == null || user.getRoleId() != Role.LEARNER.getRoleId()) {
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         
         response.setContentType("text/html;charset=UTF-8");
         String action = request.getParameter("action");
         
-        UserModel user = (UserModel) session.getAttribute("user");
-        
-        if (user == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
         
         if (action == null || action.equals("view")) {
             request.getRequestDispatcher("profile.jsp").forward(request, response);
