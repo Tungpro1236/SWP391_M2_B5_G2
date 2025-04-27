@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.enums.Role;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "UserController", urlPatterns = {"/user"})
 public class UserController extends HttpServlet {
@@ -29,35 +29,11 @@ public class UserController extends HttpServlet {
         }
         
         switch (action) {
-            case "login":
-                login(request, response);
-                break;
             case "register":
                 register(request, response);
                 break;
-            case "logout":
-                logout(request, response);
-                break;
             default:
                 response.sendRedirect("login.jsp");
-        }
-    }
-    
-    private void login(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        
-        UserDAO userDao = new UserDAO();
-        UserModel user = userDao.login(email, password);
-        
-        if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            response.getWriter().print("Login successfully");
-        } else {
-            request.setAttribute("error", "Invalid email or password");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
     
@@ -88,13 +64,6 @@ public class UserController extends HttpServlet {
             request.setAttribute("error", "Registration failed");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
-    }
-    
-    private void logout(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        session.invalidate();
-        response.sendRedirect("login.jsp");
     }
 
     @Override

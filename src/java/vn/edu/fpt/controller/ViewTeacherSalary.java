@@ -22,7 +22,7 @@ import vn.edu.fpt.model.Salary;
  */
 @WebServlet(name="ViewTeacherSalary", urlPatterns={"/ViewTeacherSalary"})
 public class ViewTeacherSalary extends HttpServlet {
-   
+   private static final int DEFAULT_PAGE_SIZE = 5; // Số lượng bản ghi trên mỗi trang
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -60,10 +60,37 @@ public class ViewTeacherSalary extends HttpServlet {
     throws ServletException, IOException {
        String keyword = request.getParameter("keyword");
         if (keyword == null) keyword = "";
+
+        // Retrieve pagination parameters
+        int page = 1; // Default to page 1
+        int pageSize = DEFAULT_PAGE_SIZE;
+        try {
+            String pageStr = request.getParameter("page");
+            if (pageStr != null && !pageStr.trim().isEmpty()) {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1; // Ensure page is at least 1
+            }
+        } catch (NumberFormatException e) {
+            // Log error if needed
+        }
+
         SalaryDAO dao = new SalaryDAO();
-        List<Salary> list = dao.getAllSalaries(keyword);
+        // Fetch total records for pagination
+        int totalRecords = dao.getTotalRecords(keyword);
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+        // Adjust page number if it exceeds total pages
+        if (page > totalPages && totalPages > 0) {
+            page = totalPages;
+        }
+
+        // Fetch paginated salary list
+        List<Salary> list = dao.getAllSalaries(keyword, page, pageSize);
         request.setAttribute("salaryList", list);
         request.setAttribute("keyword", keyword);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("pageSize", pageSize);
         request.getRequestDispatcher("teacherSalary.jsp").forward(request, response);
     } 
 

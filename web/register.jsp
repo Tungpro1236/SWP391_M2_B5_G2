@@ -54,10 +54,6 @@
                         <input type="text" name="firstName" class="form-control" required>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Middle Name</label>
-                        <input type="text" name="middleName" class="form-control">
-                    </div>
-                    <div class="col-md-4 mb-3">
                         <label class="form-label">Last Name</label>
                         <input type="text" name="lastName" class="form-control" required>
                     </div>
@@ -85,11 +81,6 @@
                 <div class="mb-3">
                     <label class="form-label">Confirm Password</label>
                     <input type="password" id="confirmPassword" class="form-control" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Avatar URL</label>
-                    <input type="url" name="avatarUrl" class="form-control">
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-register">Create Account</button>

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import vn.edu.fpt.model.Blog;
 import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
 
@@ -198,6 +199,91 @@ public class CourseDAO extends DBContext {
     return null;
 }
 
+    
+    public List<Course> getLatestCourses() {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT TOP 10 c.*, " +
+                    "(SELECT COUNT(*) FROM course_enrollments ce WHERE ce.course_id = c.id) as enrollment_count, " +
+                    "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count " +
+                    "FROM courses c " +
+                    "WHERE c.status = 'active' " +
+                    "ORDER BY c.created_at DESC";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setId(rs.getInt("id"));
+                course.setTitle(rs.getString("title"));
+                course.setThumbnailUrl(rs.getString("thumbnail_url"));
+                course.setDescription(rs.getString("description"));
+                course.setPrice(rs.getInt("price"));
+                course.setCreatedAt(rs.getDate("created_at"));
+                course.setEnrollmentCount(rs.getInt("enrollment_count"));
+                course.setLessonCount(rs.getInt("lesson_count"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    
+    public List<Course> getHotCourses() {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT TOP 10 c.id, c.teacher_id, c.title, c.thumbnail_url, " +
+                "c.category_id, c.status, c.created_at, c.price, " +
+                "COUNT(ce.id) as enrollment_count, " +
+                "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count " +
+                "FROM courses c " +
+                "LEFT JOIN course_enrollments ce ON c.id = ce.course_id " +
+                "WHERE c.status = 'active' " +
+                "GROUP BY c.id, c.teacher_id, c.title, c.thumbnail_url, " +
+                " c.category_id, c.status, c.created_at, c.price " +
+                "ORDER BY COUNT(ce.id) DESC";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setId(rs.getInt("id"));
+                course.setTitle(rs.getString("title"));
+                course.setThumbnailUrl(rs.getString("thumbnail_url"));
+                course.setPrice(rs.getInt("price"));
+                course.setCreatedAt(rs.getDate("created_at"));
+                course.setEnrollmentCount(rs.getInt("enrollment_count"));
+                course.setLessonCount(rs.getInt("lesson_count"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    
+    public List<Blog> getLatestBlogs() {
+        List<Blog> blogs = new ArrayList<>();
+        String sql = "SELECT TOP 10 b.* FROM blogs b ORDER BY b.created_at DESC";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Blog blog = new Blog();
+                blog.setId(rs.getInt("id"));
+                blog.setTitle(rs.getString("title"));
+                blog.setContent(rs.getString("content"));
+                blog.setAuthorId(rs.getInt("author_id"));
+                blog.setCreatedAt(rs.getDate("created_at"));
+                blogs.add(blog);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return blogs;
+    }
     
 
 //    public static void main(String[] args) {

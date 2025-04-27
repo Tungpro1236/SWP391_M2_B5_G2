@@ -45,7 +45,7 @@
                 </div>
             </c:if>
             
-            <form action="<c:url value='/user'/>" method="post">
+            <form action="<c:url value='/login'/>" method="post">
                 <input type="hidden" name="action" value="login">
                 
                 <div class="mb-3">
@@ -62,6 +62,9 @@
             </form>
             
             <div class="signup-link">
+                <div class="text-center mb-3">
+                    <a href="<c:url value='/forgot-password.jsp'/>">Forgot Password?</a>
+                </div>
                 Don't have an account? <a href="<c:url value='/register.jsp'/>">Sign up</a>
             </div>
         </div>
