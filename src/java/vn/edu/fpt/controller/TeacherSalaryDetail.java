@@ -19,7 +19,7 @@ import vn.edu.fpt.model.Salary;
  *
  * @author regio
  */
-@WebServlet(name="TeacherSalaryDetail", urlPatterns={"/TeacherSalaryDetail"})
+@WebServlet(name="TeacherSalaryDetail", urlPatterns={"/teacherSalaryDetail"})
 public class TeacherSalaryDetail extends HttpServlet {
    
     /** 

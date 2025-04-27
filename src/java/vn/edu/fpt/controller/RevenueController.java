@@ -13,16 +13,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import vn.edu.fpt.dao.SalaryDAO;
-import vn.edu.fpt.model.Salary;
+import vn.edu.fpt.dao.RevenueDAO;
+import vn.edu.fpt.model.Revenue;
 
 /**
  *
  * @author regio
  */
-@WebServlet(name="ViewTeacherSalary", urlPatterns={"/viewTeacherSalary"})
-public class ViewTeacherSalary extends HttpServlet {
-   private static final int DEFAULT_PAGE_SIZE = 5; // Số lượng bản ghi trên mỗi trang
+@WebServlet(name="RevenueController", urlPatterns={"/revenue"})
+public class RevenueController extends HttpServlet {
+   private RevenueDAO revenueDAO;
+
+    @Override
+    public void init() throws ServletException {
+        revenueDAO = new RevenueDAO();
+    }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -38,10 +43,10 @@ public class ViewTeacherSalary extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewTeacherSalary</title>");  
+            out.println("<title>Servlet RevenueController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewTeacherSalary at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet RevenueController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,40 +63,9 @@ public class ViewTeacherSalary extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       String keyword = request.getParameter("keyword");
-        if (keyword == null) keyword = "";
-
-        // Retrieve pagination parameters
-        int page = 1; // Default to page 1
-        int pageSize = DEFAULT_PAGE_SIZE;
-        try {
-            String pageStr = request.getParameter("page");
-            if (pageStr != null && !pageStr.trim().isEmpty()) {
-                page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1; // Ensure page is at least 1
-            }
-        } catch (NumberFormatException e) {
-            // Log error if needed
-        }
-
-        SalaryDAO dao = new SalaryDAO();
-        // Fetch total records for pagination
-        int totalRecords = dao.getTotalRecords(keyword);
-        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-
-        // Adjust page number if it exceeds total pages
-        if (page > totalPages && totalPages > 0) {
-            page = totalPages;
-        }
-
-        // Fetch paginated salary list
-        List<Salary> list = dao.getAllSalaries(keyword, page, pageSize);
-        request.setAttribute("salaryList", list);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("teacherSalary.jsp").forward(request, response);
+        List<Revenue> revenues = revenueDAO.getAllRevenues();
+        request.setAttribute("revenues", revenues);
+        request.getRequestDispatcher("/revenue.jsp").forward(request, response);
     } 
 
     /** 
@@ -104,7 +78,26 @@ public class ViewTeacherSalary extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+       String action = request.getParameter("action");
+        if ("generate".equals(action)) {
+            String monthStr = request.getParameter("month");
+            String yearStr = request.getParameter("year");
+
+            try {
+                int month = Integer.parseInt(monthStr);
+                int year = Integer.parseInt(yearStr);
+                revenueDAO.generateRevenue(month, year);
+                request.setAttribute("success", "Revenue generated successfully for " + month + "/" + year);
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "Invalid month or year format.");
+            } catch (IllegalArgumentException e) {
+                request.setAttribute("error", e.getMessage());
+            } catch (Exception e) {
+                request.setAttribute("error", "Failed to generate revenue: " + e.getMessage());
+            }
+        }
+
+        doGet(request, response);
     }
 
     /** 
