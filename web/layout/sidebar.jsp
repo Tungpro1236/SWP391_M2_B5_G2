@@ -29,8 +29,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="courses" class="nav-link ${pageContext.request.requestURI.contains('courses') ? 'active' : ''}">
-                <i class="bi bi-book me-2"></i> Courses
+            <a href="viewTeacherCourses" class="nav-link ${pageContext.request.requestURI.contains('courses') ? 'active' : ''}">
+                <i class="bi bi-book me-2"></i> Teacher's Courses list
             </a>
         </li>
         <li class="nav-item">

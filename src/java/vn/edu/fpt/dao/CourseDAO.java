@@ -16,18 +16,18 @@ import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
 
 public class CourseDAO extends DBContext {
-    
+
     private static final int PAGE_SIZE = 6; // Số lượng khóa học trên mỗi trang
 
     /**
      * Lấy tổng số lượng khóa học
+     *
      * @return Tổng số lượng khóa học
      */
     public int getTotalCourses() {
         String query = "SELECT COUNT(*) FROM [Onlinelearning].[dbo].[courses] WHERE [status] = 'active'";
-        try (PreparedStatement ps = connection.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-            
+        try (PreparedStatement ps = connection.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -36,9 +36,10 @@ public class CourseDAO extends DBContext {
         }
         return 0;
     }
-    
+
     /**
      * Lấy danh sách các khóa học theo trang
+     *
      * @param page Trang hiện tại
      * @return Danh sách các khóa học
      */
@@ -50,11 +51,11 @@ public class CourseDAO extends DBContext {
                 + "WHERE [status] = 'active' "
                 + "ORDER BY [id] "
                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, (page - 1) * PAGE_SIZE);
             ps.setInt(2, PAGE_SIZE);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Course course = new Course(
@@ -74,19 +75,20 @@ public class CourseDAO extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return list;
     }
-    
+
     /**
      * Lấy tổng số lượng khóa học theo danh mục
+     *
      * @param categoryId ID của danh mục
      * @return Tổng số lượng khóa học theo danh mục
      */
     public int getTotalCoursesByCategory(int categoryId) {
         String query = "SELECT COUNT(*) FROM [Onlinelearning].[dbo].[courses] "
                 + "WHERE [category_id] = ? AND [status] = 'active'";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, categoryId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -99,9 +101,10 @@ public class CourseDAO extends DBContext {
         }
         return 0;
     }
-    
+
     /**
      * Lấy danh sách các khóa học theo danh mục và trang
+     *
      * @param categoryId ID của danh mục
      * @param page Trang hiện tại
      * @return Danh sách các khóa học thuộc danh mục
@@ -114,12 +117,12 @@ public class CourseDAO extends DBContext {
                 + "WHERE [category_id] = ? AND [status] = 'active' "
                 + "ORDER BY [id] "
                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, categoryId);
             ps.setInt(2, (page - 1) * PAGE_SIZE);
             ps.setInt(3, PAGE_SIZE);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Course course = new Course(
@@ -139,22 +142,22 @@ public class CourseDAO extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return list;
     }
-    
+
     /**
      * Lấy tất cả các danh mục
+     *
      * @return Danh sách các danh mục
      */
     public List<Category> getAllCategories() {
         List<Category> list = new ArrayList<>();
         String query = "SELECT [id], [semester] "
                 + "FROM [Onlinelearning].[dbo].[category]";
-        
-        try (PreparedStatement ps = connection.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-            
+
+        try (PreparedStatement ps = connection.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 Category category = new Category(
                         rs.getInt("id"),
@@ -165,52 +168,52 @@ public class CourseDAO extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return list;
     }
+
     public Course getCourseById(int id) {
-    String query = "SELECT [id], [teacher_id], [title], [thumbnail_url], [description], "
-                 + "[category_id], [status], [created_at], [price] "
-                 + "FROM [Onlinelearning].[dbo].[courses] "
-                 + "WHERE [id] = ?";
+        String query = "SELECT [id], [teacher_id], [title], [thumbnail_url], [description], "
+                + "[category_id], [status], [created_at], [price] "
+                + "FROM [Onlinelearning].[dbo].[courses] "
+                + "WHERE [id] = ?";
 
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
-        ps.setInt(1, id);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
 
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new Course(
-                        rs.getInt("id"),
-                        rs.getInt("teacher_id"),
-                        rs.getString("title"),
-                        rs.getString("thumbnail_url"),
-                        rs.getString("description"),
-                        rs.getInt("category_id"),
-                        rs.getString("status"),
-                        rs.getTimestamp("created_at"),
-                        rs.getInt("price")
-                );
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Course(
+                            rs.getInt("id"),
+                            rs.getInt("teacher_id"),
+                            rs.getString("title"),
+                            rs.getString("thumbnail_url"),
+                            rs.getString("description"),
+                            rs.getInt("category_id"),
+                            rs.getString("status"),
+                            rs.getTimestamp("created_at"),
+                            rs.getInt("price")
+                    );
+                }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        return null;
     }
 
-    return null;
-}
-
-    
     public List<Course> getLatestCourses() {
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT TOP 10 c.*, " +
-                    "(SELECT COUNT(*) FROM course_enrollments ce WHERE ce.course_id = c.id) as enrollment_count, " +
-                    "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count " +
-                    "FROM courses c " +
-                    "WHERE c.status = 'active' " +
-                    "ORDER BY c.created_at DESC";
-        
+        String sql = "SELECT TOP 10 c.*, "
+                + "(SELECT COUNT(*) FROM course_enrollments ce WHERE ce.course_id = c.id) as enrollment_count, "
+                + "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count "
+                + "FROM courses c "
+                + "WHERE c.status = 'active' "
+                + "ORDER BY c.created_at DESC";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
@@ -229,22 +232,22 @@ public class CourseDAO extends DBContext {
         }
         return courses;
     }
-    
+
     public List<Course> getHotCourses() {
         List<Course> courses = new ArrayList<>();
-        String sql = "SELECT TOP 10 c.id, c.teacher_id, c.title, c.thumbnail_url, " +
-                "c.category_id, c.status, c.created_at, c.price, " +
-                "COUNT(ce.id) as enrollment_count, " +
-                "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count " +
-                "FROM courses c " +
-                "LEFT JOIN course_enrollments ce ON c.id = ce.course_id " +
-                "WHERE c.status = 'active' " +
-                "GROUP BY c.id, c.teacher_id, c.title, c.thumbnail_url, " +
-                " c.category_id, c.status, c.created_at, c.price " +
-                "ORDER BY COUNT(ce.id) DESC";
-        
+        String sql = "SELECT TOP 10 c.id, c.teacher_id, c.title, c.thumbnail_url, "
+                + "c.category_id, c.status, c.created_at, c.price, "
+                + "COUNT(ce.id) as enrollment_count, "
+                + "(SELECT COUNT(*) FROM Lesson l WHERE l.CourseID = c.id) as lesson_count "
+                + "FROM courses c "
+                + "LEFT JOIN course_enrollments ce ON c.id = ce.course_id "
+                + "WHERE c.status = 'active' "
+                + "GROUP BY c.id, c.teacher_id, c.title, c.thumbnail_url, "
+                + " c.category_id, c.status, c.created_at, c.price "
+                + "ORDER BY COUNT(ce.id) DESC";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Course course = new Course();
@@ -262,13 +265,13 @@ public class CourseDAO extends DBContext {
         }
         return courses;
     }
-    
+
     public List<Blog> getLatestBlogs() {
         List<Blog> blogs = new ArrayList<>();
         String sql = "SELECT TOP 10 b.* FROM blogs b ORDER BY b.created_at DESC";
-        
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Blog blog = new Blog();
@@ -284,7 +287,64 @@ public class CourseDAO extends DBContext {
         }
         return blogs;
     }
-    
+
+    // Lấy danh sách khóa học theo teacher_id với tìm kiếm và phân trang
+    public List<Course> getCoursesByTeacher(int teacherId, String search, int offset, int recordsPerPage) throws SQLException {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT id, title, description, created_at, status FROM courses "
+                + "WHERE teacher_id = ? AND title LIKE ? "
+                + "ORDER BY id "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, teacherId);
+            stmt.setString(2, "%" + (search != null ? search : "") + "%");
+            stmt.setInt(3, offset);
+            stmt.setInt(4, recordsPerPage);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setId(rs.getInt("id"));
+                    course.setTitle(rs.getString("title"));
+                    course.setDescription(rs.getString("description"));
+                    course.setCreatedAt(rs.getDate("created_at"));
+                    course.setStatus(rs.getString("status"));
+                    courses.add(course);
+                }
+            }
+        }
+        return courses;
+    }
+
+    // Đếm tổng số khóa học theo teacher_id và tìm kiếm
+    public int getCourseCountByTeacher(int teacherId, String search) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM courses WHERE teacher_id = ? AND title LIKE ?";
+        try (
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, teacherId);
+            stmt.setString(2, "%" + (search != null ? search : "") + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    // Thêm phương thức thay đổi trạng thái khóa học
+    public boolean changeCourseStatus(int courseId, String status) {
+        String sql = "UPDATE courses SET status = ? WHERE id = ?";
+        try (
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setInt(2, courseId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
 
 //    public static void main(String[] args) {
 //        CourseDAO dao = new CourseDAO();
