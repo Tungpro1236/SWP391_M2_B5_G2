@@ -13,16 +13,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import vn.edu.fpt.dao.SalaryDAO;
-import vn.edu.fpt.model.Salary;
+import vn.edu.fpt.dao.StatisticsDAO;
+import vn.edu.fpt.model.Statistics;
+import vn.edu.fpt.model.TopTeacher;
 
 /**
  *
  * @author regio
  */
-@WebServlet(name="ViewTeacherSalary", urlPatterns={"/viewTeacherSalary"})
-public class ViewTeacherSalary extends HttpServlet {
-   private static final int DEFAULT_PAGE_SIZE = 5; // Số lượng bản ghi trên mỗi trang
+@WebServlet(name="StatisticsController", urlPatterns={"/statistics"})
+public class StatisticsController extends HttpServlet {
+   private StatisticsDAO statisticsDAO;
+
+    @Override
+    public void init() {
+        statisticsDAO = new StatisticsDAO();
+    }
+
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -38,10 +45,10 @@ public class ViewTeacherSalary extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewTeacherSalary</title>");  
+            out.println("<title>Servlet StatisticsController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewTeacherSalary at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet StatisticsController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,40 +65,29 @@ public class ViewTeacherSalary extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       String keyword = request.getParameter("keyword");
-        if (keyword == null) keyword = "";
-
-        // Retrieve pagination parameters
-        int page = 1; // Default to page 1
-        int pageSize = DEFAULT_PAGE_SIZE;
-        try {
-            String pageStr = request.getParameter("page");
-            if (pageStr != null && !pageStr.trim().isEmpty()) {
-                page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1; // Ensure page is at least 1
+       try {
+            // Default to current year
+            int year = java.time.Year.now().getValue();
+            String yearParam = request.getParameter("year");
+            if (yearParam != null && !yearParam.isEmpty()) {
+                year = Integer.parseInt(yearParam);
             }
-        } catch (NumberFormatException e) {
-            // Log error if needed
+
+            // Fetch statistics data
+            List<Statistics> statisticsList = statisticsDAO.getStatistics(year);
+            List<TopTeacher> topTeachers = statisticsDAO.getTopTeachers(year);
+
+            // Set attributes
+            request.setAttribute("statisticsList", statisticsList);
+            request.setAttribute("topTeachers", topTeachers);
+            request.setAttribute("selectedYear", year);
+
+            // Forward to JSP
+            request.getRequestDispatcher("/statistics.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("error", "Error fetching statistics data: " + e.getMessage());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
-
-        SalaryDAO dao = new SalaryDAO();
-        // Fetch total records for pagination
-        int totalRecords = dao.getTotalRecords(keyword);
-        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-
-        // Adjust page number if it exceeds total pages
-        if (page > totalPages && totalPages > 0) {
-            page = totalPages;
-        }
-
-        // Fetch paginated salary list
-        List<Salary> list = dao.getAllSalaries(keyword, page, pageSize);
-        request.setAttribute("salaryList", list);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("teacherSalary.jsp").forward(request, response);
     } 
 
     /** 

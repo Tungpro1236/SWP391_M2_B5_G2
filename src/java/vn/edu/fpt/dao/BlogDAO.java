@@ -72,6 +72,7 @@ public class BlogDAO {
         return blogs;
     }
     
+    
     // Lấy blog theo ID
     public Blog getBlogById(int id) throws SQLException {
         String query = "SELECT id, title, content, author_id, created_at, thumbnail_url, published_at " +
@@ -140,5 +141,61 @@ public class BlogDAO {
         }
     }
     return blogs;
+}
+
+public List<Blog> getBlogsByPage(int page, int pageSize) throws SQLException {
+    List<Blog> blogs = new ArrayList<>();
+    String query = "SELECT id, title, content, author_id, created_at, thumbnail_url, published_at "
+                 + "FROM blogs WHERE published_at IS NOT NULL "
+                 + "ORDER BY published_at DESC "
+                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+        pstmt.setInt(1, (page - 1) * pageSize);
+        pstmt.setInt(2, pageSize);
+        
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Blog blog = new Blog(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("content"),
+                rs.getInt("author_id"),
+                rs.getDate("created_at"),
+                rs.getString("thumbnail_url"),
+                rs.getDate("published_at")
+            );
+            blogs.add(blog);
+        }
+    }
+    return blogs;
+}
+
+// Đếm tổng số blog đã publish
+public int getTotalPublishedBlogs() throws SQLException {
+    String query = "SELECT COUNT(*) FROM blogs WHERE published_at IS NOT NULL";
+    
+    try (Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    }
+    return 0;
+}
+public boolean addBlog(Blog blog) throws SQLException {
+    String query = "INSERT INTO blogs (title, content, author_id, created_at, thumbnail_url, short_description) " +
+                   "VALUES (?, ?, ?, GETDATE(), ?, ?)";
+    
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+        pstmt.setString(1, blog.getTitle());
+        pstmt.setString(2, blog.getContent());
+        pstmt.setInt(3, blog.getAuthorId());
+        pstmt.setString(4, blog.getThumbnailUrl());
+        pstmt.setString(5, blog.getShortDescription());
+        
+        int rowsAffected = pstmt.executeUpdate();
+        return rowsAffected > 0;
+    }
 }
 }

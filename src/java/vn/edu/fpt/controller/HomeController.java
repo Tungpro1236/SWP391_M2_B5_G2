@@ -17,10 +17,10 @@ public class HomeController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
+//        if (session == null || session.getAttribute("user") == null) {
+//            response.sendRedirect("login.jsp");
+//            return;
+//        }
         
         CourseDAO courseDAO = new CourseDAO();
         
