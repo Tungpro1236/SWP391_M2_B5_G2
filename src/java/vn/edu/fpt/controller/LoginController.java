@@ -51,9 +51,31 @@ public class LoginController extends HttpServlet {
 
         if (user != null && user.isStatus()) {
             session = request.getSession();
+            // After successful login, where you set the user in session
             session.setAttribute("user", user);
-            response.sendRedirect("profile");
-        } else if (!user.isStatus()) {
+            
+            // Add role-based redirect logic
+            String redirectPath = "";
+            switch (user.getRoleId()) {
+                case 1: // Admin
+                    redirectPath = "/dashBoard";
+                    break;
+                case 2: // Teacher
+                    if (user.getAvatarUrl() == null || user.getAvatarUrl().isEmpty()) {
+                        redirectPath = "/teacher/profile";
+                    } else {
+                        redirectPath = "/home";
+                    }
+                    break;
+                case 3: // Student
+                    redirectPath = "/home";
+                    break;
+                default:
+                    redirectPath = "/home";
+            }
+            
+            response.sendRedirect(request.getContextPath() + redirectPath);
+        } else if (user != null && !user.isStatus()) {
             request.setAttribute("error", "Account is inactive");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
