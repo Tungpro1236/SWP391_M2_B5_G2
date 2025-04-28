@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import vn.edu.fpt.dao.LessonDAO;
 import vn.edu.fpt.model.Lesson;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "LessonController", urlPatterns = {"/LessonController"})
 public class LessonController extends HttpServlet {

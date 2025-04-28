@@ -12,7 +12,7 @@ import vn.edu.fpt.dao.TeacherRequestDAO;
 import vn.edu.fpt.dao.UserDAO;
 import vn.edu.fpt.enums.Role;
 import vn.edu.fpt.model.TeacherRequest;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "TeacherController", urlPatterns = {"/teacher/*"})
 public class TeacherController extends HttpServlet {

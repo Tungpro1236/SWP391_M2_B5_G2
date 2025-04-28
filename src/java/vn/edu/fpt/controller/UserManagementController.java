@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.dao.UserDAO;
 import java.util.List;
 import vn.edu.fpt.enums.Role;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "UserManagementController", urlPatterns = {"/admin/users"})
 public class UserManagementController extends HttpServlet {

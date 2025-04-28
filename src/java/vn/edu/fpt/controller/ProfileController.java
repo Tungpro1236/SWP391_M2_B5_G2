@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.dao.UserDAO;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 import vn.edu.fpt.enums.Role;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/profile"})
