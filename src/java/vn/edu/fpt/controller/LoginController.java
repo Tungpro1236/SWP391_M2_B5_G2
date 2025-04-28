@@ -53,7 +53,7 @@ public class LoginController extends HttpServlet {
             session = request.getSession();
             // After successful login, where you set the user in session
             session.setAttribute("user", user);
-            
+
             // Add role-based redirect logic
             String redirectPath = "";
             switch (user.getRoleId()) {
@@ -61,11 +61,7 @@ public class LoginController extends HttpServlet {
                     redirectPath = "/dashBoard";
                     break;
                 case 2: // Teacher
-                    if (user.getAvatarUrl() == null || user.getAvatarUrl().isEmpty()) {
-                        redirectPath = "/teacher/profile";
-                    } else {
-                        redirectPath = "/home";
-                    }
+                    redirectPath = "/TeacherDashboard";
                     break;
                 case 3: // Student
                     redirectPath = "/home";
@@ -73,7 +69,7 @@ public class LoginController extends HttpServlet {
                 default:
                     redirectPath = "/home";
             }
-            
+
             response.sendRedirect(request.getContextPath() + redirectPath);
         } else if (user != null && !user.isStatus()) {
             request.setAttribute("error", "Account is inactive");
