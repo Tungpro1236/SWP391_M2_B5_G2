@@ -58,7 +58,7 @@ public class LoginController extends HttpServlet {
             String redirectPath = "";
             switch (user.getRoleId()) {
                 case 1: // Admin
-                    redirectPath = "/admin/users";
+                    redirectPath = "/dashBoard";
                     break;
                 case 2: // Teacher
                     if (user.getAvatarUrl() == null || user.getAvatarUrl().isEmpty()) {
