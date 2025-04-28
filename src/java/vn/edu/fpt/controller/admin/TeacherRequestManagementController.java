@@ -13,7 +13,7 @@ import java.util.Map;
 import vn.edu.fpt.dao.TeacherRequestDAO;
 import vn.edu.fpt.enums.Role;
 import vn.edu.fpt.model.TeacherRequest;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "TeacherRequestManagementController", urlPatterns = {"/admin/teacher-requests/*"})
 public class TeacherRequestManagementController extends HttpServlet {
