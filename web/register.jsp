@@ -74,6 +74,15 @@
                 </div>
                 
                 <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="roleId" class="form-select" required>
+                        <option value="" disabled selected>Select your role</option>
+                        <option value="2">Teacher</option>
+                        <option value="3">Student</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
                     <label class="form-label">Password</label>
                     <input type="password" name="password" id="password" class="form-control" required>
                 </div>
