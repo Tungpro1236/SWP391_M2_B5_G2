@@ -40,11 +40,21 @@
                 <i class="bi bi-people me-2"></i> User Management
             </a>
             <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="admin/users"><i class="bi bi-people me-2"></i> Users list</a></li>
+                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="users"><i class="bi bi-people me-2"></i> Users list</a></li>
             </ul>
             <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="admin/teacher-requests"><i class="bi bi-people me-2"></i> Request Teacher</a></li>
+                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="teacher-requests"><i class="bi bi-people me-2"></i> Request Teacher</a></li>
             </ul>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" 
+               href="#" id="payManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-people me-2"></i> Payment Management
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="payManagementDropdown">
+                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="refund"><i class="bi bi-people me-2"></i> Refund Request</a></li>
+            </ul>
+            
         </li>
         <li class="nav-item">
             <a href="reports" class="nav-link ${pageContext.request.requestURI.contains('reports') ? 'active' : ''}">
