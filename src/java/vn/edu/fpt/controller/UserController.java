@@ -13,21 +13,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.enums.Role;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "UserController", urlPatterns = {"/user"})
 public class UserController extends HttpServlet {
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String action = request.getParameter("action");
-        
+
         if (action == null) {
             response.sendRedirect("login.jsp");
             return;
         }
-        
+
         switch (action) {
             case "register":
                 register(request, response);
@@ -36,18 +36,21 @@ public class UserController extends HttpServlet {
                 response.sendRedirect("login.jsp");
         }
     }
-    
+
     private void register(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
         UserDAO userDao = new UserDAO();
-        
+
         if (userDao.checkEmailExists(email)) {
             request.setAttribute("error", "Email already exists");
             request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }
+        // In your doPost method
+        String roleId = request.getParameter("roleId");
         
+
         UserModel user = new UserModel();
         user.setFirstName(request.getParameter("firstName"));
         user.setMiddleName(request.getParameter("middleName"));
@@ -55,9 +58,10 @@ public class UserController extends HttpServlet {
         user.setEmail(email);
         user.setGenderId(Integer.parseInt(request.getParameter("genderId")));
         user.setPassword(request.getParameter("password"));
-        user.setRoleId(Role.LEARNER.getRoleId()); // Set default role to LEARNER
+        // When creating new user
+        user.setRoleId(Integer.parseInt(roleId));
         user.setAvatarUrl(request.getParameter("avatarUrl"));
-        
+
         if (userDao.register(user)) {
             response.sendRedirect("login.jsp");
         } else {

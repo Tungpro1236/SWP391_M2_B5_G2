@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 
 @WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -49,10 +49,35 @@ public class LoginController extends HttpServlet {
         UserDAO userDao = new UserDAO();
         UserModel user = userDao.login(email, password);
 
-        if (user != null) {
+        if (user != null && user.isStatus()) {
             session = request.getSession();
+            // After successful login, where you set the user in session
             session.setAttribute("user", user);
-            response.sendRedirect("profile");
+            
+            // Add role-based redirect logic
+            String redirectPath = "";
+            switch (user.getRoleId()) {
+                case 1: // Admin
+                    redirectPath = "/dashBoard";
+                    break;
+                case 2: // Teacher
+                    if (user.getAvatarUrl() == null || user.getAvatarUrl().isEmpty()) {
+                        redirectPath = "/teacher/profile";
+                    } else {
+                        redirectPath = "/home";
+                    }
+                    break;
+                case 3: // Student
+                    redirectPath = "/home";
+                    break;
+                default:
+                    redirectPath = "/home";
+            }
+            
+            response.sendRedirect(request.getContextPath() + redirectPath);
+        } else if (user != null && !user.isStatus()) {
+            request.setAttribute("error", "Account is inactive");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Invalid email or password");
             request.getRequestDispatcher("login.jsp").forward(request, response);

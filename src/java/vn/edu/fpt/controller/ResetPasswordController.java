@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.fpt.edu.model.UserModel;
+import vn.edu.fpt.model.UserModel;
 import vn.edu.fpt.utils.SendMailHelper;
 import java.util.Random;
 
