@@ -14,13 +14,12 @@ import java.util.List;
 public class PayrollDAO extends DBContext {
     public List<Payroll> getAllPayrolls() throws SQLException {
         List<Payroll> payrolls = new ArrayList<>();
-        String sql = "SELECT SalaryID, TeacherID, TeacherName, GrossAmount,"
-                + " CommissionRate, CommissionAmount, SalaryAmount, SalaryMonth, "
-                + "SalaryYear, PaymentStatus, TransactionCount, TotalCourseRevenue, "
-                + "Status FROM [dbo].[TeacherPayrollView]";
+        String sql = "SELECT SalaryID, TeacherID, TeacherName, GrossAmount," +
+                     " CommissionRate, CommissionAmount, SalaryAmount, SalaryMonth, " +
+                     "SalaryYear, PaymentStatus, TransactionCount, TotalCourseRevenue, " +
+                     "Status FROM [dbo].[TeacherPayrollView]";
 
-        try (
-             Statement stmt = connection.createStatement();
+        try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Payroll payroll = new Payroll();
@@ -46,8 +45,7 @@ public class PayrollDAO extends DBContext {
     public void generatePayroll(int month, int year, Integer adminId) throws SQLException {
         String sql = "{call [dbo].[GenerateTeacherPayroll](?, ?, ?)}";
 
-        try (
-             CallableStatement stmt = connection.prepareCall(sql)) {
+        try (CallableStatement stmt = connection.prepareCall(sql)) {
             stmt.setInt(1, month);
             stmt.setInt(2, year);
             if (adminId != null) {
@@ -59,12 +57,22 @@ public class PayrollDAO extends DBContext {
         }
     }
     
-    // Mark salary as paid
+    public boolean isSalaryPaid(int salaryId) throws SQLException {
+        String sql = "SELECT paid FROM teacher_salary WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, salaryId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("paid");
+            }
+            return false;
+        }
+    }
+    
     public void markSalaryPaid(int salaryId, Integer adminId) throws SQLException {
         String sql = "{call [dbo].[MarkTeacherSalaryPaid](?, ?)}";
 
-        try (
-             CallableStatement stmt = connection.prepareCall(sql)) {
+        try (CallableStatement stmt = connection.prepareCall(sql)) {
             stmt.setInt(1, salaryId);
             if (adminId != null) {
                 stmt.setInt(2, adminId);
@@ -72,6 +80,71 @@ public class PayrollDAO extends DBContext {
                 stmt.setNull(2, Types.INTEGER);
             }
             stmt.execute();
+        }
+    }
+    
+    public boolean updateCommission(int salaryId, double commissionRate, int adminId) throws SQLException {
+        // Kiểm tra gross_amount không NULL và bản ghi tồn tại
+        String checkSql = "SELECT gross_amount FROM [dbo].[teacher_salary] WHERE id = ? AND status = 'Pending'";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, salaryId);
+            ResultSet rs = checkStmt.executeQuery();
+            if (!rs.next() || rs.getObject("gross_amount") == null) {
+                System.out.println("PayrollDAO: Không tìm thấy bản ghi hoặc gross_amount là NULL cho lương ID " + salaryId);
+                return false;
+            }
+        }
+
+        // Loại bỏ last_modified_date vì không tồn tại trong schema
+        String sql = "UPDATE [dbo].[teacher_salary] " +
+                     "SET commission_rate = ?, " +
+                     "    commission_amount = gross_amount * ?, " +
+                     "    total_amount = gross_amount - (gross_amount * ?), " +
+                     "    last_modified_by = ? " +
+                     "WHERE id = ? AND status = 'Pending'";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setDouble(1, commissionRate);
+            stmt.setDouble(2, commissionRate);
+            stmt.setDouble(3, commissionRate);
+            stmt.setInt(4, adminId);
+            stmt.setInt(5, salaryId);
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("PayrollDAO: Cập nhật commission cho lương ID " + salaryId + ", commissionRate=" + commissionRate + ", rowsAffected=" + rowsAffected);
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            String errorMessage = e.getMessage() != null ? e.getMessage() : "Không có thông tin lỗi SQL";
+            System.err.println("PayrollDAO: Lỗi cập nhật commission cho lương ID " + salaryId + ": " + errorMessage + ", SQLState=" + e.getSQLState() + ", ErrorCode=" + e.getErrorCode());
+            throw e;
+        }
+    }
+    
+    public Payroll getPayrollById(int salaryId) throws SQLException {
+        String sql = "SELECT id, teacher_id, teacher_name, gross_amount, commission_rate, " +
+                     "commission_amount, total_amount, month, year, " +
+                     "paid, transaction_count, total_course_revenue, status " +
+                     "FROM teacher_salary WHERE id = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, salaryId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Payroll payroll = new Payroll();
+                payroll.setSalaryId(rs.getInt("id"));
+                payroll.setTeacherId(rs.getInt("teacher_id"));
+                payroll.setTeacherName(rs.getString("teacher_name"));
+                payroll.setGrossAmount(rs.getDouble("gross_amount"));
+                payroll.setCommissionRate(rs.getDouble("commission_rate"));
+                payroll.setCommissionAmount(rs.getDouble("commission_amount"));
+                payroll.setSalaryAmount(rs.getDouble("total_amount"));
+                payroll.setSalaryMonth(rs.getInt("month"));
+                payroll.setSalaryYear(rs.getInt("year"));
+                payroll.setPaymentStatus(rs.getBoolean("paid") ? "Paid" : "Unpaid");
+                payroll.setTransactionCount(rs.getInt("transaction_count"));
+                payroll.setTotalCourseRevenue(rs.getDouble("total_course_revenue"));
+                payroll.setStatus(rs.getString("status"));
+                return payroll;
+            }
+            return null;
         }
     }
 }
