@@ -22,6 +22,7 @@ import vn.edu.fpt.dao.UserDAO;
 import vn.edu.fpt.model.Course;
 import vn.edu.fpt.model.Feedback;
 import vn.edu.fpt.model.Lesson;
+import vn.edu.fpt.model.UserModel;
 import vn.fpt.edu.model.UserModel;
 
 /**
