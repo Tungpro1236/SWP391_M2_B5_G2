@@ -12,34 +12,50 @@ import java.util.List;
  * @author regio
  */
 public class PayrollDAO extends DBContext {
-    public List<Payroll> getAllPayrolls() throws SQLException {
+    public List<Payroll> getAllPayrolls(int page, int pageSize) throws SQLException {
         List<Payroll> payrolls = new ArrayList<>();
         String sql = "SELECT SalaryID, TeacherID, TeacherName, GrossAmount," +
                      " CommissionRate, CommissionAmount, SalaryAmount, SalaryMonth, " +
                      "SalaryYear, PaymentStatus, TransactionCount, TotalCourseRevenue, " +
-                     "Status FROM [dbo].[TeacherPayrollView]";
+                     "Status FROM [dbo].[TeacherPayrollView] " +
+                     "ORDER BY SalaryID " +
+                     "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Payroll payroll = new Payroll();
-                payroll.setSalaryId(rs.getInt("SalaryID"));
-                payroll.setTeacherId(rs.getInt("TeacherID"));
-                payroll.setTeacherName(rs.getString("TeacherName"));
-                payroll.setGrossAmount(rs.getDouble("GrossAmount"));
-                payroll.setCommissionRate(rs.getDouble("CommissionRate"));
-                payroll.setCommissionAmount(rs.getDouble("CommissionAmount"));
-                payroll.setSalaryAmount(rs.getDouble("SalaryAmount"));
-                payroll.setSalaryMonth(rs.getInt("SalaryMonth"));
-                payroll.setSalaryYear(rs.getInt("SalaryYear"));
-                payroll.setPaymentStatus(rs.getString("PaymentStatus"));
-                payroll.setTransactionCount(rs.getInt("TransactionCount"));
-                payroll.setTotalCourseRevenue(rs.getDouble("TotalCourseRevenue"));
-                payroll.setStatus(rs.getString("Status"));
-                payrolls.add(payroll);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, (page - 1) * pageSize);
+            stmt.setInt(2, pageSize);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Payroll payroll = new Payroll();
+                    payroll.setSalaryId(rs.getInt("SalaryID"));
+                    payroll.setTeacherId(rs.getInt("TeacherID"));
+                    payroll.setTeacherName(rs.getString("TeacherName"));
+                    payroll.setGrossAmount(rs.getDouble("GrossAmount"));
+                    payroll.setCommissionRate(rs.getDouble("CommissionRate"));
+                    payroll.setCommissionAmount(rs.getDouble("CommissionAmount"));
+                    payroll.setSalaryAmount(rs.getDouble("SalaryAmount"));
+                    payroll.setSalaryMonth(rs.getInt("SalaryMonth"));
+                    payroll.setSalaryYear(rs.getInt("SalaryYear"));
+                    payroll.setPaymentStatus(rs.getString("PaymentStatus"));
+                    payroll.setTransactionCount(rs.getInt("TransactionCount"));
+                    payroll.setTotalCourseRevenue(rs.getDouble("TotalCourseRevenue"));
+                    payroll.setStatus(rs.getString("Status"));
+                    payrolls.add(payroll);
+                }
             }
         }
         return payrolls;
+    }
+    
+    public int getPayrollCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM [dbo].[TeacherPayrollView]";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        }
     }
     
     public void generatePayroll(int month, int year, Integer adminId) throws SQLException {

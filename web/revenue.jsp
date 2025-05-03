@@ -9,7 +9,7 @@
 <html>
     <head>
         <title>Revenue Management</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
         <style>
             body {
                 background-color: #f8f9fa;
@@ -50,11 +50,16 @@
             .table th {
                 background-color: #f1f3f5;
                 font-weight: 500;
-                text-align: center;
+                text-align: left !important; /* Left-align headers like the course table */
+                padding: 8px 10px !important; /* Match padding to the course table */
             }
-            .table td {
+            .table-striped tbody td {
                 vertical-align: middle;
-                text-align: center;
+                text-align: left !important; /* Keep data cells left-aligned */
+                padding: 8px 10px !important; /* Match padding to the course table */
+                min-width: 120px; /* Ensure consistent column width */
+                max-width: 200px; /* Prevent excessive stretching */
+                box-sizing: border-box; /* Include padding in width */
             }
             .table tbody tr:hover {
                 background-color: #f8f9fa;
@@ -65,6 +70,21 @@
             }
             .alert {
                 margin-bottom: 20px;
+            }
+            .pagination {
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
+            .page-link {
+                color: #007bff;
+            }
+            .page-link:hover {
+                color: #0056b3;
+                background-color: #e9ecef;
             }
         </style>
     </head>
@@ -89,21 +109,39 @@
                     </div>
                 </c:if>
 
-                <!-- Form to Generate Revenue -->
+                <!-- Form for Filtering and Generating Revenue -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        Generate Revenue
+                        Filter and Generate Revenue
                     </div>
                     <div class="card-body">
+                        <!-- Filter Form -->
+                        <form action="revenue" method="get" class="mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="filterMonth" class="form-label">Filter Month (1-12, optional)</label>
+                                    <input type="number" class="form-control" id="filterMonth" name="filterMonth" min="1" max="12" placeholder="e.g., 10" value="${filterMonth}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="filterYear" class="form-label">Filter Year (optional)</label>
+                                    <input type="number" class="form-control" id="filterYear" name="filterYear" min="2000" max="2025" placeholder="e.g., 2024" value="${filterYear}">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Filter Records</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Generate Revenue Form -->
                         <form action="revenue" method="post">
                             <input type="hidden" name="action" value="generate">
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <label for="month" class="form-label">Month (1-12)</label>
+                                    <label for="month" class="form-label">Generate Month (1-12)</label>
                                     <input type="number" class="form-control" id="month" name="month" min="1" max="12" placeholder="e.g., 10" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="year" class="form-label">Year</label>
+                                    <label for="year" class="form-label">Generate Year</label>
                                     <input type="number" class="form-control" id="year" name="year" min="2000" max="2025" placeholder="e.g., 2024" required>
                                 </div>
                                 <div class="col-md-4 d-flex align-items-end">
@@ -143,9 +181,35 @@
                                             <td>${revenue.generatedAt}</td>
                                         </tr>
                                     </c:forEach>
+                                    <c:if test="${empty revenues}">
+                                        <tr>
+                                            <td colspan="6" class="text-center">No revenue records found for the specified filters.</td>
+                                        </tr>
+                                    </c:if>
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination Controls -->
+                        <nav aria-label="Revenue pagination">
+                            <ul class="pagination">
+                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                    <a class="page-link" href="revenue?page=${currentPage - 1}&filterMonth=${filterMonth}&filterYear=${filterYear}" aria-label="Previous">
+                                        <span aria-hidden="true">« Previous</span>
+                                    </a>
+                                </li>
+                                <c:forEach begin="1" end="${totalPages}" var="i">
+                                    <li class="page-item ${currentPage == i ? 'active' : ''}">
+                                        <a class="page-link" href="revenue?page=${i}&filterMonth=${filterMonth}&filterYear=${filterYear}">${i}</a>
+                                    </li>
+                                </c:forEach>
+                                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                    <a class="page-link" href="revenue?page=${currentPage + 1}&filterMonth=${filterMonth}&filterYear=${filterYear}" aria-label="Next">
+                                        <span aria-hidden="true">Next »</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

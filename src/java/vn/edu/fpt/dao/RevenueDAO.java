@@ -18,36 +18,106 @@ import java.util.List;
 public class RevenueDAO extends DBContext {
 
     /**
-     * Retrieves all revenue records.
+     * Retrieves revenue records with pagination and optional month/year filtering.
+     * @param page the current page number (1-based)
+     * @param pageSize the number of records per page
+     * @param month optional month filter (1-12, null for no filter)
+     * @param year optional year filter (e.g., 2024, null for no filter)
      * @return a List of Revenue objects
      */
-    public List<Revenue> getAllRevenues() {
+    public List<Revenue> getAllRevenues(int page, int pageSize, Integer month, Integer year) {
         List<Revenue> revenues = new ArrayList<>();
-        String sql = "SELECT r.id, r.total_amount, r.commission_id, r.commission_rate, " +
-                     "CAST(CAST(r.commission_amount AS DECIMAL(15,3)) AS VARCHAR(20)) AS commission_amount, " +
-                     "r.month, r.year, r.generated_at " +
-                     "FROM revenue r " +
-                     "ORDER BY r.year DESC, r.month DESC";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Revenue revenue = new Revenue();
-                revenue.setId(rs.getInt("id"));
-                revenue.setTotalAmount(rs.getBigDecimal("total_amount"));
-                revenue.setCommissionId(rs.getInt("commission_id"));
-                revenue.setCommissionRate(rs.getBigDecimal("commission_rate"));
-                // Parse the string commission_amount to BigDecimal, removing trailing zeros
-                String commissionAmountStr = rs.getString("commission_amount");
-                revenue.setCommissionAmount(new BigDecimal(commissionAmountStr));
-                revenue.setMonth(rs.getInt("month"));
-                revenue.setYear(rs.getInt("year"));
-                revenue.setGeneratedAt(rs.getTimestamp("generated_at"));
-                revenues.add(revenue);
+        StringBuilder sql = new StringBuilder(
+            "SELECT r.id, r.total_amount, r.commission_id, r.commission_rate, " +
+            "CAST(CAST(r.commission_amount AS DECIMAL(15,3)) AS VARCHAR(20)) AS commission_amount, " +
+            "r.month, r.year, r.generated_at " +
+            "FROM revenue r "
+        );
+        List<Object> params = new ArrayList<>();
+        if (month != null || year != null) {
+            sql.append("WHERE ");
+            if (month != null) {
+                sql.append("r.month = ? ");
+                params.add(month);
+            }
+            if (month != null && year != null) {
+                sql.append("AND ");
+            }
+            if (year != null) {
+                sql.append("r.year = ? ");
+                params.add(year);
+            }
+        }
+        sql.append("ORDER BY r.year DESC, r.month DESC " +
+                   "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            ps.setInt(params.size() + 1, (page - 1) * pageSize);
+            ps.setInt(params.size() + 2, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Revenue revenue = new Revenue();
+                    revenue.setId(rs.getInt("id"));
+                    revenue.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    revenue.setCommissionId(rs.getInt("commission_id"));
+                    revenue.setCommissionRate(rs.getBigDecimal("commission_rate"));
+                    // Parse the string commission_amount to BigDecimal, removing trailing zeros
+                    String commissionAmountStr = rs.getString("commission_amount");
+                    revenue.setCommissionAmount(new BigDecimal(commissionAmountStr));
+                    revenue.setMonth(rs.getInt("month"));
+                    revenue.setYear(rs.getInt("year"));
+                    revenue.setGeneratedAt(rs.getTimestamp("generated_at"));
+                    revenues.add(revenue);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to retrieve revenue records: " + e.getMessage(), e);
         }
         return revenues;
+    }
+
+    /**
+     * Counts the total number of revenue records with optional month/year filtering.
+     * @param month optional month filter (1-12, null for no filter)
+     * @param year optional year filter (e.g., 2024, null for no filter)
+     * @return the total number of revenue records
+     */
+    public int getRevenueCount(Integer month, Integer year) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM revenue");
+        List<Object> params = new ArrayList<>();
+        if (month != null || year != null) {
+            sql.append(" WHERE ");
+            if (month != null) {
+                sql.append("month = ? ");
+                params.add(month);
+            }
+            if (month != null && year != null) {
+                sql.append("AND ");
+            }
+            if (year != null) {
+                sql.append("year = ? ");
+                params.add(year);
+            }
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to count revenue records: " + e.getMessage(), e);
+        }
     }
 
     /**
