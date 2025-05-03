@@ -1,94 +1,63 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Danh s√°ch y√™u th√≠ch</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <style>
-            .course-card {
-                transition: transform 0.3s;
-                border: none;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                border-radius: 0.5rem;
-            }
-            .course-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            }
-            .empty-wishlist-icon {
-                font-size: 5rem;
-                color: #6c757d;
-                margin-bottom: 1rem;
-            }
-        </style>
-    </head>
-    <body>
-        <%@ include file="/layout/header.jsp" %>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Danh s·ch yÍu thÌch</h1>
 
-        <div class="container py-5">
-            <h1 class="text-center mb-5">Danh s√°ch y√™u th√≠ch</h1>
-
-            <c:choose>
-                <c:when test="${not empty wishlistItems}">
-                    <div class="wishlist-items">
-                        <div class="card p-4">
-                            <c:forEach items="${wishlistItems}" var="item">
-                                <div class="card mb-3 course-card">
-                                    <div class="row g-0">
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title">${item.title}</h5>
-                                                <p class="card-text text-success fw-bold">$${item.price}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                            <!-- N√∫t X√≥a kh·ªèi Wishlist -->
-                                            <form action="CartServlet" method="post" class="me-2">
-                                                <input type="hidden" name="action" value="removeFromWishlist"/>
-                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="bi bi-trash"></i> X√≥a
-                                                </button>
-                                            </form>
-
-                                            <!-- N√∫t Th√™m v√†o Gi·ªè h√†ng -->
-                                            <form action="CartServlet" method="post" class="me-2">
-                                                <input type="hidden" name="action" value="addFromWishlist"/>
-                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                <button type="submit" class="btn btn-success">
-                                                    <i class="bi bi-cart-plus"></i> Th√™m v√†o Gi·ªè h√†ng
-                                                </button>
-                                            </form>
-                                        </div>
+    <c:choose>
+        <c:when test="${not empty wishlistItems}">
+            <div class="wishlist-items">
+                <div class="card p-4">
+                    <c:forEach items="${wishlistItems}" var="item">
+                        <div class="card mb-3 course-card">
+                            <div class="row g-0">
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${item.title}</h5>
+                                        <p class="card-text text-success fw-bold">$${item.price}</p>
                                     </div>
                                 </div>
-                            </c:forEach>
+                                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                    <!-- N˙t XÛa kh?i Wishlist -->
+                                    <form action="CartServlet" method="post" class="me-2">
+                                        <input type="hidden" name="action" value="removeFromWishlist"/>
+                                        <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-trash"></i> XÛa
+                                        </button>
+                                    </form>
+
+                                    <!-- N˙t ThÍm v‡o Gi? h‡ng -->
+                                    <form action="CartServlet" method="post" class="me-2">
+                                        <input type="hidden" name="action" value="addFromWishlist"/>
+                                        <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-cart-plus"></i> ThÍm v‡o Gi? h‡ng
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="alert alert-info text-center">
-                        <i class="bi bi-heart-x empty-wishlist-icon"></i>
-                        <h4 class="mt-3">Danh s√°ch y√™u th√≠ch tr·ªëng</h4>
-                        <p>H√£y th√™m kh√≥a h·ªçc y√™u th√≠ch v√†o danh s√°ch!</p>
-                        <a href="CourseController" class="btn btn-primary mt-2">
-                            <i class="bi bi-book"></i> Xem kh√≥a h·ªçc
-                        </a>
-                    </div>
-                </c:otherwise>
-            </c:choose>
+                    </c:forEach>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="alert alert-info text-center">
+                <i class="bi bi-heart-x empty-wishlist-icon"></i>
+                <h4 class="mt-3">Danh s·ch yÍu thÌch tr?ng</h4>
+                <p>H„y thÍm khÛa h?c yÍu thÌch v‡o danh s·ch!</p>
+                <a href="CourseController" class="btn btn-primary mt-2">
+                    <i class="bi bi-book"></i> Xem khÛa h?c
+                </a>
+            </div>
+        </c:otherwise>
+    </c:choose>
 
-            <!-- N√∫t quay l·∫°i danh s√°ch kh√≥a h·ªçc -->
-            <a href="CourseController" class="btn btn-secondary mt-3">
-                <i class="bi bi-arrow-left"></i> Quay l·∫°i danh s√°ch kh√≥a h·ªçc
-            </a>
-        </div>
+    <!-- N˙t quay l?i danh s·ch khÛa h?c -->
+    <a href="CourseController" class="btn btn-secondary mt-3">
+        <i class="bi bi-arrow-left"></i> Quay l?i danh s·ch khÛa h?c
+    </a>
 
-        <%@ include file="/layout/footer.jsp" %>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-</html>
+    <!-- N˙t chuy?n ??n l?ch s? Wishlist -->
+    <a href="HistoryWishlistController" class="btn btn-info mt-3">
+        <i class="bi bi-clock-history"></i> L?ch s? Wishlist
+    </a>
+</div>
