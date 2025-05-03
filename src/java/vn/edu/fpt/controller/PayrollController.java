@@ -65,8 +65,31 @@ public class PayrollController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            List<Payroll> payrolls = payrollDAO.getAllPayrolls();
+            // Pagination parameters
+            int page = 1;
+            int pageSize = 10;
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                    if (page < 1) page = 1;
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+
+            // Fetch payroll data and count
+            List<Payroll> payrolls = payrollDAO.getAllPayrolls(page, pageSize);
+            int totalRecords = payrollDAO.getPayrollCount();
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+            // Set attributes
             request.setAttribute("payrolls", payrolls);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("pageSize", pageSize);
+
+            // Forward to JSP
             request.getRequestDispatcher("/payroll.jsp").forward(request, response);
         } catch (SQLException e) {
             request.setAttribute("error", "Error fetching payroll data: " + e.getMessage());
