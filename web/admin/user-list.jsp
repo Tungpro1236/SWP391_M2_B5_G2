@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -18,6 +18,8 @@
     </style>
 </head>
 <body class="bg-light">
+    <%@ include file="/layout/header.jsp" %>
+        <%@ include file="/layout/sidebar.jsp" %>
     <div class="container mt-4">
         <div class="card shadow-sm">
             <div class="card-body">
@@ -169,7 +171,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <%@ include file="/layout/footer.jsp" %>
     <script>
         document.querySelectorAll('.toggle-status').forEach(button => {
             button.addEventListener('click', function() {
@@ -201,6 +203,7 @@
                 });
             });
         });
+        
     </script>
 </body>
 </html>
