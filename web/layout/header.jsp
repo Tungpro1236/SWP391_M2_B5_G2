@@ -57,7 +57,7 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                
+                                 </c:when>
                                 <li class="nav-item">
                                     <a class="nav-link" href="${pageContext.request.contextPath}/login?action=logout">Logout</a>
 
