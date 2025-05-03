@@ -276,5 +276,11 @@ public class UserDAO extends DBContext {
     }
     return -1;  // Trả về -1 nếu không tìm thấy người dùng
 }
+
+    public List<UserModel> getAllUser() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+  
     
 }
