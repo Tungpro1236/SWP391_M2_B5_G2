@@ -26,6 +26,7 @@ import java.sql.SQLException;
 public class AdminRefundServlet extends HttpServlet {
 
     private RefundRequestDAO refundRequestDAO;
+    private static final int PAGE_SIZE = 5; // Number of records per page
 
     @Override
     public void init() throws ServletException {
@@ -78,8 +79,24 @@ public class AdminRefundServlet extends HttpServlet {
         }
 
         try {
-            List<RefundRequest> refundRequests = refundRequestDAO.getAllRefundRequests();
+            // Get parameters
+            String keyword = request.getParameter("keyword");
+            String pageParam = request.getParameter("page");
+            int currentPage = pageParam != null ? Integer.parseInt(pageParam) : 1;
+
+            // Fetch paginated and filtered refund requests
+            List<RefundRequest> refundRequests = refundRequestDAO.getRefundRequests(currentPage, PAGE_SIZE, keyword);
+
+            // Calculate total pages
+            int totalRecords = refundRequestDAO.getTotalRefundRequests(keyword);
+            int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+
+            // Set attributes
             request.setAttribute("refundRequests", refundRequests);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("activePage", "refund"); // For sidebar highlighting
+
             request.getRequestDispatcher("/admin/adminRefund.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,7 +115,7 @@ public class AdminRefundServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
     UserModel admin = (UserModel) session.getAttribute("user");
     if (admin == null || admin.getRoleId() != 1) {
         response.sendRedirect(request.getContextPath() + "/login");
@@ -108,10 +125,21 @@ public class AdminRefundServlet extends HttpServlet {
     try {
         int requestId = Integer.parseInt(request.getParameter("requestId"));
         String action = request.getParameter("action");
-        String status = "approve".equals(action) ? "approved" : "rejected"; // Sửa từ "approved" thành "approve"
+        String status = "approve".equals(action) ? "approved" : "rejected";
 
         refundRequestDAO.updateRefundRequestStatus(requestId, status, admin.getId());
-        response.sendRedirect(request.getContextPath() + "/admin/refund");
+
+        // Get the keyword parameter
+        String keyword = request.getParameter("keyword");
+        // Construct the redirect URL
+        String redirectUrl = request.getContextPath() + "/admin/refund?page=1";
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // Encode the keyword to handle special characters
+            String encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8");
+            redirectUrl += "&keyword=" + encodedKeyword;
+        }
+
+        response.sendRedirect(redirectUrl);
     } catch (SQLException e) {
         e.printStackTrace();
         throw new ServletException("Database error: " + e.getMessage(), e);

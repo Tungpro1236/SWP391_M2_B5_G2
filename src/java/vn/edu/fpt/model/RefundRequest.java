@@ -12,11 +12,18 @@ public class RefundRequest {
     private int enrollmentId;
     private int studentId;
     private int courseId;
-    private Timestamp requestDate; // Sửa thành Timestamp
+    private Timestamp requestDate;
     private String reason;
     private String status;
-    private Timestamp processedDate; // Sửa thành Timestamp
+    private Timestamp processedDate;
     private Integer processedBy;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+
+    // Constructors
+    public RefundRequest() {
+    }
 
     // Getters and Setters
     public int getId() {
@@ -89,5 +96,36 @@ public class RefundRequest {
 
     public void setProcessedBy(Integer processedBy) {
         this.processedBy = processedBy;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    // Method to get full name
+    public String getFullName() {
+        return (lastName != null ? lastName + " " : "")
+                + (middleName != null ? middleName + " " : "")
+                + (firstName != null ? firstName : "");
     }
 }
