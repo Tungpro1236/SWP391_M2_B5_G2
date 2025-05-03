@@ -48,14 +48,15 @@
                                             <img src="${sessionScope.user.avatarUrl}" alt="User Avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
                                         </c:when>
                                         <c:otherwise>
-                                            <img src="https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain" alt="Default Avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+                                            <a href="${pageContext.request.contextPath}/${sessionScope.user.roleId == 2 ? 'teacher/profile' : 'profile'}">
+                                    <img src="https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain" alt="Default Avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+
+                                </a>
+                                            
                                         </c:otherwise>
                                     </c:choose>
 
-                                <a href="${pageContext.request.contextPath}/${sessionScope.user.roleId == 2 ? 'teacher/profile' : 'profile'}">
-                                    <img src="https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain" alt="User Icon" style="width:44px; height:28px;">
-
-                                </a>
+                                
                                 <li class="nav-item">
                                     <a class="nav-link" href="${pageContext.request.contextPath}/login?action=logout">Logout</a>
                                 </li>
