@@ -261,4 +261,20 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
+    public int getUserIdByEmail(String email) {
+    String query = "SELECT id FROM users WHERE email = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("id");  // Trả về userId nếu tìm thấy người dùng
+        }
+    } catch (SQLException e) {
+        System.out.println("Error in getUserIdByEmail: " + e.getMessage());
+    }
+    return -1;  // Trả về -1 nếu không tìm thấy người dùng
+}
+    
 }

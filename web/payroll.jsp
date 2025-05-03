@@ -9,11 +9,10 @@
     Author     : regio
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-   <head>
+
+<head>
     <title>Teacher Payroll</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
     <style>
         body {
             background-color: #f8f9fa;
@@ -140,7 +139,7 @@
                                     <th>Month/Year</th>
                                     <th>Status</th>
                                     <th>Paid?</th>
-                                    <th>Transactions</th>                                   
+                                    <th>Transactions</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -150,19 +149,53 @@
                                         <td>${payroll.salaryId}</td>
                                         <td>${payroll.teacherName}</td>
                                         <td>$${payroll.grossAmount}</td>
-                                        <td>${payroll.commissionRate}% ($${payroll.commissionAmount})</td>
+                                        <td>
+                                            <fmt:formatNumber value="${payroll.commissionRate * 100}" minFractionDigits="2" maxFractionDigits="2"/>% ($${payroll.commissionAmount})
+                                        </td>
                                         <td>$${payroll.salaryAmount}</td>
                                         <td>${payroll.salaryMonth}/${payroll.salaryYear}</td>
                                         <td>${payroll.status}</td>
                                         <td>${payroll.paymentStatus}</td>
-                                        <td>${payroll.transactionCount}</td>                                        
+                                        <td>${payroll.transactionCount}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${payroll.paymentStatus == 'Unpaid'}">
-                                                    <form action="markPaid" method="post">
+                                                    <form action="markPaid" method="post" style="display:inline;">
                                                         <input type="hidden" name="salaryId" value="${payroll.salaryId}">
                                                         <button type="submit" class="btn btn-success btn-sm">Mark Paid</button>
                                                     </form>
+                                                    <button type="button" class="btn btn-warning btn-sm" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#editCommissionModal${payroll.salaryId}">
+                                                        Edit Commission
+                                                    </button>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="editCommissionModal${payroll.salaryId}" tabindex="-1">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Edit Commission Rate</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="editCommissionForm${payroll.salaryId}" action="editCommission" method="post">
+                                                                        <input type="hidden" name="salaryId" value="${payroll.salaryId}">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Commission Rate (decimal):</label>
+                                                                            <input type="number" step="0.01" min="0" 
+                                                                                   name="commissionRate" class="form-control" 
+                                                                                   value="${payroll.commissionRate}" required>
+                                                                            <small class="form-text text-muted">
+                                                                                Enter commission rate as a decimal (e.g., 0.24 for 24%). 
+                                                                                The table displays this as a percentage (24.00%).
+                                                                            </small>
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <i class="bi bi-check-circle-fill"></i>
@@ -180,5 +213,51 @@
     </div>
 
     <%@ include file="/layout/footer.jsp" %>
+    
+    <script>
+        // Handle form submission with AJAX
+        document.querySelectorAll('[id^="editCommissionForm"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const url = 'editCommission';
+                console.log('Sending request to: ' + url);
+                console.log('Form data:', Object.fromEntries(formData));
+
+                fetch(url, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers.get('content-type'));
+
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/plain')) {
+                        return response.text();
+                    } else {
+                        return response.text().then(text => {
+                            console.log('Unexpected response content:', text);
+                            throw new Error('Unexpected response format: Expected text/plain, got ' + contentType);
+                        });
+                    }
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data === 'success') {
+                        alert('Commission updated successfully');
+                        location.reload();
+                    } else {
+                        const errorMessage = data.startsWith('error:') ? data.substring(6) : data;
+                        alert('Error updating commission: ' + errorMessage);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating commission: ' + error.message);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

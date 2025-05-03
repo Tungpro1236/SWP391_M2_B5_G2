@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
+ <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Online Learning</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,6 +40,7 @@
                         </li>
 
                         <c:choose>
+
                             <c:when test="${not empty sessionScope.user}">
 
                                 <a href="profile">
@@ -59,8 +60,37 @@
                                 
                                 <li class="nav-item">
                                     <a class="nav-link" href="${pageContext.request.contextPath}/login?action=logout">Logout</a>
+
+                    <c:when test="${not empty sessionScope.user}">
+                        <!-- Avatar + Welcome + Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="<c:out value='${sessionScope.user.avatarUrl != null ? sessionScope.user.avatarUrl : "https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain"}'/>"
+                                     alt="Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:8px;">
+                                
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="${pageContext.request.contextPath}/${sessionScope.user.roleId == 2 ? 'teacher/profile' : 'profile'}">
+                                        My Profile
+                                    </a>
                                 </li>
-                            </c:when>
+                                <li>
+                                    <a class="dropdown-item" href="${pageContext.request.contextPath}/CourseController?action=myCourse">
+                                        My Course
+                                    </a>
+
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="${pageContext.request.contextPath}/login?action=logout">
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </c:when>
                             <c:otherwise>
                                 <li class="nav-item">
                                     <a class="nav-link" href="${pageContext.request.contextPath}/login.jsp">Login</a>

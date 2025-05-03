@@ -23,7 +23,7 @@ import vn.edu.fpt.model.UserModel;
  * @author regio
  */
 @WebFilter(filterName = "AdminFilter", urlPatterns = {"/dashBoard", "/viewTeacherSalary", "/revenue", 
-                         "/teacherSalaryDetail", "/payRoll", "/statistics", "/viewTeacherCourses"})
+                         "/teacherSalaryDetail", "/payRoll", "/statistics", "/viewTeacherCourses", "/admin/refund"})
 public class AdminFilter implements Filter {
    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
