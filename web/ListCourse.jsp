@@ -123,9 +123,15 @@
                             <div class="card-footer">
                                 <a href="LessonController?courseId=${course.id}" class="btn btn-primary w-100">Xem chi tiết</a>
                             </div>
+                            <div class="card-footer">
+                                <a href="feedback?courseId=${course.id}" class="btn btn-primary w-100">Xem đánh giá</a>
+                            </div>
                         </div>
-                    </div>
+                        </div>
                 </c:forEach>
+                
+                
+                
 
                 <!-- Hiển thị thông báo nếu không có khóa học nào -->
                 <c:if test="${empty courseList}">
