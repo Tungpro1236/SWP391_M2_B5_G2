@@ -113,7 +113,7 @@
                                     <small class="text-muted">Price: ${course.price}$</small>
                                 </div>
 
-                                <!-- Hiển thị trạng thái -->
+                               <!-- Hiển thị trạng thái -->
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <span class="badge bg-${course.status eq 'active' ? 'success' : 'danger'}">
                                         ${course.status eq 'active' ? 'Đang hoạt động' : 'Không hoạt động'}
@@ -123,6 +123,9 @@
                             </div>
                             <div class="card-footer">
                                 <a href="LessonController?courseId=${course.id}" class="btn btn-primary w-100">Xem chi tiết</a>
+                            </div>
+                            <div class="card-footer">
+                                <a href="feedback?courseId=${course.id}" class="btn btn-primary w-100">Xem đánh giá</a>
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Feedback</title>
         <title>Comment Section for Shoes ABC</title>
 
         <style>
@@ -478,8 +479,8 @@
             }
         </script>
     </body>
+    <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
     <!-- Nút quay lại -->
-        
             <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
     </body>
 </html>
