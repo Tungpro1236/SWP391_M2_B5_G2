@@ -5,6 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import vn.edu.fpt.model.UserModel;
+import java.util.ArrayList;
+import java.util.List;
 import vn.edu.fpt.model.UserModel;
 
 public class UserDAO extends DBContext {
@@ -277,9 +282,35 @@ public class UserDAO extends DBContext {
     return -1;  // Trả về -1 nếu không tìm thấy người dùng
 }
 
-    public List<UserModel> getAllUser() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   public List<UserModel> getAllUser() {
+        List<UserModel> list = new ArrayList<>();
+        String query = "SELECT * "
+                + "FROM [Onlinelearning].[dbo].[users]";
+        try (PreparedStatement ps = connection.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UserModel f = new UserModel(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("middle_name"),
+                        rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getInt("gender_id"),
+                        rs.getString("password"),
+                        rs.getInt("role_id"),
+                        rs.getString("avatar_url"),
+                        rs.getTimestamp("created_at"),
+                        rs.getBoolean("status")
+                );
+                list.add(f);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return list;
     }
 
+    
+ 
     
 }

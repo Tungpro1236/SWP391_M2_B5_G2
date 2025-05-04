@@ -1,63 +1,82 @@
-<div class="container py-5">
-    <h1 class="text-center mb-5">Danh s·ch yÍu thÌch</h1>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh s√°ch y√™u th√≠ch</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <%@ include file="/layout/header.jsp" %>
 
-    <c:choose>
-        <c:when test="${not empty wishlistItems}">
-            <div class="wishlist-items">
-                <div class="card p-4">
-                    <c:forEach items="${wishlistItems}" var="item">
-                        <div class="card mb-3 course-card">
-                            <div class="row g-0">
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${item.title}</h5>
-                                        <p class="card-text text-success fw-bold">$${item.price}</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                    <!-- N˙t XÛa kh?i Wishlist -->
-                                    <form action="CartServlet" method="post" class="me-2">
-                                        <input type="hidden" name="action" value="removeFromWishlist"/>
-                                        <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                        <button type="submit" class="btn btn-danger">
-                                            <i class="bi bi-trash"></i> XÛa
-                                        </button>
-                                    </form>
+    <div class="container py-5">
+        <h1 class="text-center mb-5">Danh s√°ch WishList</h1>
 
-                                    <!-- N˙t ThÍm v‡o Gi? h‡ng -->
-                                    <form action="CartServlet" method="post" class="me-2">
-                                        <input type="hidden" name="action" value="addFromWishlist"/>
-                                        <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                        <button type="submit" class="btn btn-success">
-                                            <i class="bi bi-cart-plus"></i> ThÍm v‡o Gi? h‡ng
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
+        <c:choose>
+            <c:when test="${not empty wishlistItems}">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-dark text-center">
+                            <tr>
+                                <th>STT</th>
+                                <th>T√™n kh√≥a h·ªçc</th>
+                                <th>Gi√°</th>
+                                <th>H√†nh ƒë·ªông</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${wishlistItems}" var="item" varStatus="status">
+                                <tr>
+                                    <td class="text-center">${status.index + 1}</td>
+                                    <td>${item.title}</td>
+                                    <td class="text-success fw-bold">$${item.price}</td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <!-- N√∫t X√≥a -->
+                                            <form action="CartServlet" method="post">
+                                                <input type="hidden" name="action" value="removeFromWishlist"/>
+                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i> X√≥a
+                                                </button>
+                                            </form>
+                                            <!-- N√∫t Th√™m v√†o gi·ªè -->
+                                            <form action="CartServlet" method="post">
+                                                <input type="hidden" name="action" value="addFromWishlist"/>
+                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-cart-plus"></i> Thanh to√°n
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="alert alert-info text-center">
-                <i class="bi bi-heart-x empty-wishlist-icon"></i>
-                <h4 class="mt-3">Danh s·ch yÍu thÌch tr?ng</h4>
-                <p>H„y thÍm khÛa h?c yÍu thÌch v‡o danh s·ch!</p>
-                <a href="CourseController" class="btn btn-primary mt-2">
-                    <i class="bi bi-book"></i> Xem khÛa h?c
-                </a>
-            </div>
-        </c:otherwise>
-    </c:choose>
+            </c:when>
+            <c:otherwise>
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-heart-x empty-wishlist-icon" style="font-size: 5rem; color: #6c757d;"></i>
+                    <h4 class="mt-3">Danh s√°ch y√™u th√≠ch tr·ªëng</h4>
+                    <p>H√£y th√™m kh√≥a h·ªçc y√™u th√≠ch v√†o danh s√°ch!</p>
+                    <a href="CourseController" class="btn btn-primary mt-2">
+                        <i class="bi bi-book"></i> Xem kh√≥a h·ªçc
+                    </a>
+                </div>
+            </c:otherwise>
+        </c:choose>
 
-    <!-- N˙t quay l?i danh s·ch khÛa h?c -->
-    <a href="CourseController" class="btn btn-secondary mt-3">
-        <i class="bi bi-arrow-left"></i> Quay l?i danh s·ch khÛa h?c
-    </a>
+        <a href="CourseController" class="btn btn-secondary mt-3">
+            <i class="bi bi-arrow-left"></i> Quay l·∫°i danh s√°ch kh√≥a h·ªçc
+        </a>
+    </div>
 
-    <!-- N˙t chuy?n ??n l?ch s? Wishlist -->
-    <a href="HistoryWishlistController" class="btn btn-info mt-3">
-        <i class="bi bi-clock-history"></i> L?ch s? Wishlist
-    </a>
-</div>
+    <%@ include file="/layout/footer.jsp" %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

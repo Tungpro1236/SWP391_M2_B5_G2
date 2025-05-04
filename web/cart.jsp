@@ -9,16 +9,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <style>
-            .course-card {
-                transition: transform 0.3s;
-                border: none;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                border-radius: 0.5rem;
-            }
-            .course-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            }
             .empty-cart-icon {
                 font-size: 5rem;
                 color: #6c757d;
@@ -30,63 +20,81 @@
         <%@ include file="/layout/header.jsp" %>
 
         <div class="container py-5">
-            <!-- Hiển thị thông báo nếu có thông báo trong session -->
+            <!-- Hiển thị thông báo nếu có -->
             <c:if test="${not empty message}">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </c:if>
-            
-            <h1 class="text-center mb-5">Giỏ hàng của tôi</h1>
+
+            <h1 class="text-center mb-4">Lựa chọn các khoản nộp</h1>
 
             <c:choose>
                 <c:when test="${not empty cartItems}">
-                    <div class="cart-items">
-                        <div class="card p-4">
-                            <c:forEach items="${cartItems}" var="item">
-                                <div class="card mb-3 course-card">
-                                    <div class="row g-0">
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title">${item.title}</h5>
-                                                <p class="card-text text-success fw-bold">$${item.price}</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-dark text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên khóa học</th>
+                                    <th>Giá</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${cartItems}" var="item" varStatus="status">
+                                    <tr>
+                                        <td class="text-center">${status.index + 1}</td>
+                                        <td>${item.title}</td>
+                                        <td class="text-success fw-bold">$${item.price}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <!-- Nút Xóa -->
+                                                <form action="CartServlet" method="post">
+                                                    <input type="hidden" name="action" value="remove"/>
+                                                    <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i> Xóa
+                                                    </button>
+                                                </form>
+                                                <!-- Nút chuyển sang Wishlist -->
+                                                <form action="CartServlet" method="post">
+                                                    <input type="hidden" name="action" value="moveToWishlist"/>
+                                                    <input type="hidden" name="courseId" value="${item.courseId}"/>
+                                                    <button type="submit" class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-heart"></i> Wishlist
+                                                    </button>
+                                                </form>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                            <!-- Nút Xóa -->
-                                            <form action="CartServlet" method="post" class="me-2">
-                                                <input type="hidden" name="action" value="remove"/>
-                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="bi bi-trash"></i> Xóa
-                                                </button>
-                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
 
-                                            <!-- Nút chuyển khóa học sang wish list -->
-                                            <form action="CartServlet" method="post" class="me-2">
-                                                <input type="hidden" name="action" value="moveToWishlist"/>
-                                                <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                <button type="submit" class="btn btn-warning">
-                                                    <i class="bi bi-heart"></i> Chuyển đến Wish List
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                            
-                            <!-- Tổng giá trị giỏ hàng -->
-                            <div class="d-flex justify-content-between align-items-center mt-4">
-                                <h5>Tổng cộng: $${sessionScope.totalPrice}</h5>  <!-- Hiển thị tổng số tiền -->
-                                <a href="CheckoutServlet" class="btn btn-success btn-lg">
-                                    <i class="bi bi-cart-check"></i> Thanh toán
-                                </a>
-                            </div>
-                        </div>
+                    <!-- Tổng tiền và nút Thanh toán -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <h5 class="fw-bold">
+                            Tổng cộng: 
+                            <c:choose>
+                                <c:when test="${not empty sessionScope.totalPrice}">
+                                    $${sessionScope.totalPrice}
+                                </c:when>
+                                <c:otherwise>
+                                    $0.00
+                                </c:otherwise>
+                            </c:choose>
+                        </h5>
+                        <a href="CheckoutServlet" class="btn btn-success btn-lg">
+                            <i class="bi bi-cart-check"></i> Thanh toán
+                        </a>
                     </div>
                 </c:when>
+
                 <c:otherwise>
+                    <!-- Hiển thị khi giỏ hàng trống -->
                     <div class="alert alert-info text-center">
                         <i class="bi bi-cart-x empty-cart-icon"></i>
                         <h4 class="mt-3">Giỏ hàng trống</h4>
