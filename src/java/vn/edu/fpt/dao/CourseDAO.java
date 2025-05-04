@@ -8,12 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vn.edu.fpt.model.Blog;
 import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
+import vn.edu.fpt.model.StudentEnrollment;
 
 public class CourseDAO extends DBContext {
 
@@ -345,6 +347,284 @@ public class CourseDAO extends DBContext {
             return false;
         }
     }
+    
+    /**
+      * Lấy danh sách các khóa học theo trang
+      *
+      * @param page Trang hiện tại
+      * @return Danh sách các khóa học
+      */
+     public List<Course> getAllCoursesActive(int page) {
+         List<Course> list = new ArrayList<>();
+         String query = "SELECT [id], [teacher_id], [title], [thumbnail_url], "
+                 + "[description], [category_id], [status], [created_at], [price] "
+                 + "FROM [Onlinelearning].[dbo].[courses] "
+                 + "WHERE [status] = 'active' "
+                 + "ORDER BY [id] "
+                 + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+ 
+         try (PreparedStatement ps = connection.prepareStatement(query)) {
+             ps.setInt(1, (page - 1) * PAGE_SIZE);
+             ps.setInt(2, PAGE_SIZE);
+ 
+             try (ResultSet rs = ps.executeQuery()) {
+                 while (rs.next()) {
+                     Course course = new Course(
+                             rs.getInt("id"),
+                             rs.getInt("teacher_id"),
+                             rs.getString("title"),
+                             rs.getString("thumbnail_url"),
+                             rs.getString("description"),
+                             rs.getInt("category_id"),
+                             rs.getString("status"),
+                             rs.getTimestamp("created_at"),
+                             rs.getInt("price")
+                     );
+                     list.add(course);
+                 }
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+         }
+ 
+         return list;
+     }
+     
+     public List<Course> getAllCourses() {
+         List<Course> list = new ArrayList<>();
+         String query = "SELECT [id]\n"
+                 + "      ,[teacher_id]\n"
+                 + "      ,[title]\n"
+                 + "      ,[thumbnail_url]\n"
+                 + "      ,[description]\n"
+                 + "      ,[category_id]\n"
+                 + "      ,[status]\n"
+                 + "      ,[created_at]\n"
+                 + "      ,[price]\n"
+                 + "  FROM [dbo].[courses]";
+ 
+         try (PreparedStatement ps = connection.prepareStatement(query)) {
+ 
+             try (ResultSet rs = ps.executeQuery()) {
+                 while (rs.next()) {
+                     Course course = new Course(
+                             rs.getInt("id"),
+                             rs.getInt("teacher_id"),
+                             rs.getString("title"),
+                             rs.getString("thumbnail_url"),
+                             rs.getString("description"),
+                             rs.getInt("category_id"),
+                             rs.getString("status"),
+                             rs.getTimestamp("created_at"),
+                             rs.getInt("price")
+                     );
+                     list.add(course);
+                 }
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+         }
+ 
+         return list;
+     }
+ 
+     public void updateEnrollmentStatusForStudent(int studentId) {
+         String sql
+                 = "UPDATE course_enrollments \n"
+                 + "SET status = 'completed'\n"
+                 + "WHERE course_enrollments.student_id = ?\n"
+                 + "  AND NOT EXISTS (\n"
+                 + "    SELECT 1\n"
+                 + "    FROM Lesson l\n"
+                 + "    LEFT JOIN Quiz q ON l.LessonID = q.LessonID\n"
+                 + "    LEFT JOIN (\n"
+                 + "        SELECT QuizID\n"
+                 + "        FROM Question\n"
+                 + "        GROUP BY QuizID\n"
+                 + "    ) qu ON q.QuizID = qu.QuizID\n"
+                 + "    WHERE l.CourseID = course_enrollments.course_id\n"
+                 + "      AND (\n"
+                 + "        -- Lesson chưa được hoàn thành\n"
+                 + "        NOT EXISTS (\n"
+                 + "            SELECT 1\n"
+                 + "            FROM Lesson_Completion lc\n"
+                 + "            WHERE lc.UserID = course_enrollments.student_id AND lc.LessonID = l.LessonID\n"
+                 + "        )\n"
+                 + "        -- AND nếu quiz có ít nhất 1 câu hỏi\n"
+                 + "        AND qu.QuizID IS NOT NULL\n"
+                 + "      )\n"
+                 + ");";
+ 
+         try (PreparedStatement ps = connection.prepareStatement(sql)) {
+             ps.setInt(1, studentId);
+             int updated = ps.executeUpdate();
+             System.out.println("Updated " + updated + " enrollment(s) to 'completed' for student ID: " + studentId);
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
+ 
+     //my course ( lấy course theo userID)
+     public List<Course> listCoursesByUserId(int userId) {
+         List<Course> listCourses = new ArrayList<>();
+         String sql = "SELECT c.*, ce.status AS enrollment_status FROM courses c "
+                 + "INNER JOIN course_enrollments ce ON c.id = ce.course_id "
+                 + "WHERE ce.student_id = ?";
+ 
+         try (PreparedStatement ps = connection.prepareStatement(sql)) {
+ 
+             ps.setInt(1, userId);
+             ResultSet rs = ps.executeQuery();
+ 
+             while (rs.next()) {
+                 Course course = new Course();
+                 course.setId(rs.getInt("id"));
+                 course.setTitle(rs.getString("title"));
+                 course.setDescription(rs.getString("description"));
+                 course.setStatus(rs.getString("enrollment_status")); // Get status from enrollment
+                 listCourses.add(course);
+             }
+ 
+         } catch (SQLException e) {
+             e.printStackTrace();
+             // Xử lý exception hoặc ghi log ở đây
+         }
+         return listCourses;
+     }
+ 
+     //lấy tổng số lượng course mà giáo viên đang quản lý
+     public int getTotalCoursesByTeacherId(int userId) {
+         String sql = "SELECT COUNT(c.id) AS total_courses "
+                 + "FROM users u "
+                 + "LEFT JOIN courses c ON u.id = c.teacher_id "
+                 + "WHERE u.id = ? "
+                 + "GROUP BY u.id, u.first_name, u.middle_name, u.last_name, u.email";
+ 
+         int totalCourses = 0;
+ 
+         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+             stmt.setInt(1, userId);
+ 
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     totalCourses = rs.getInt("total_courses");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+ 
+         return totalCourses;
+     }
+ 
+     //lấy ra tổng số lượng user theo role 
+     public int getTotalUsersByRole(int roleId) {
+         String sql = "SELECT COUNT(*) AS total_users FROM users WHERE role_id = ?";
+ 
+         int totalUsers = 0;
+ 
+         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+             stmt.setInt(1, roleId);
+ 
+             try (ResultSet rs = stmt.executeQuery()) {
+                 if (rs.next()) {
+                     totalUsers = rs.getInt("total_users");
+                 }
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return totalUsers;
+     }
+ 
+     //show ra list danh sách học sinh đã join các course học
+     public List<StudentEnrollment> getTodayEnrollments() throws SQLException {
+         List<StudentEnrollment> enrollments = new ArrayList<>();
+         String sql = "SELECT "
+                 + "u.first_name, u.middle_name, u.last_name, u.email, "
+                 + "g.name AS gender_name, "
+                 + "c.title AS course_title, "
+                 + "ce.status AS enrollment_status "
+                 + "FROM course_enrollments ce "
+                 + "INNER JOIN users u ON ce.student_id = u.id "
+                 + "INNER JOIN genders g ON u.gender_id = g.id "
+                 + "INNER JOIN courses c ON ce.course_id = c.id "
+                 + "WHERE CAST(ce.enrolled_at AS DATE) = CAST(GETDATE() AS DATE)";
+ 
+         try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+ 
+             while (rs.next()) {
+                 StudentEnrollment enrollment = new StudentEnrollment();
+                 enrollment.setFirstName(rs.getString("first_name"));
+                 enrollment.setMiddleName(rs.getString("middle_name"));
+                 enrollment.setLastName(rs.getString("last_name"));
+                 enrollment.setEmail(rs.getString("email"));
+                 enrollment.setGenderName(rs.getString("gender_name"));
+                 enrollment.setCourseTitle(rs.getString("course_title"));
+                 enrollment.setEnrollmentStatus(rs.getString("enrollment_status"));
+                 enrollments.add(enrollment);
+             }
+         }
+         return enrollments;
+     }
+ 
+     //add Course
+     public int addCourse(Course course, int teacherId) {
+         String sql = "INSERT INTO [dbo].[courses] "
+                 + "([teacher_id], [title], [thumbnail_url], [description], [category_id], [status], [created_at], [price]) "
+                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+             statement.setInt(1, teacherId);
+             statement.setString(2, course.getTitle());
+             statement.setString(3, course.getThumbnailUrl());
+             statement.setString(4, course.getDescription());
+             statement.setInt(5, course.getCategoryId());
+             statement.setString(6, course.getStatus());
+             statement.setDate(7, new java.sql.Date(new Date().getTime()));
+             statement.setDouble(8, course.getPrice());
+ 
+             statement.executeUpdate();
+ 
+             // Lấy ID vừa tạo
+             ResultSet generatedKeys = statement.getGeneratedKeys();
+             if (generatedKeys.next()) {
+                 return generatedKeys.getInt(1);
+             } else {
+                 throw new SQLException("Creating course failed, no ID obtained.");
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+             return -1; // Hoặc throw exception
+         }
+     }
+ 
+     //Lấy CourseID cuối để insert dl
+     public int getLastInsertedCourseId() throws SQLException {
+         String sql = "SELECT TOP 1 id FROM courses ORDER BY id DESC";
+         try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+             if (rs.next()) {
+                 return rs.getInt("id");
+             }
+         }
+         return -1;
+     }
+ 
+     public void updateCourse(int id, String title, String thumbnailUrl, String description,
+             int categoryId, String status, double price) {
+         String sql = "UPDATE courses SET title=?, thumbnail_url=?, description=?, category_id=?, status=?, price=? WHERE id=?";
+         try (PreparedStatement ps = connection.prepareStatement(sql)) {
+             ps.setString(1, title);
+             ps.setString(2, thumbnailUrl);
+             ps.setString(3, description);
+             ps.setInt(4, categoryId);
+             ps.setString(5, status);
+             ps.setDouble(6, price);
+             ps.setInt(7, id);
+             ps.executeUpdate();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+     }
 
 //    public static void main(String[] args) {
 //        CourseDAO dao = new CourseDAO();
@@ -359,7 +639,5 @@ public class CourseDAO extends DBContext {
 //        }
 //    }
 
-    public List<Course> getAllCourses() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 }

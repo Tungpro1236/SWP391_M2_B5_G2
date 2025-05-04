@@ -3,27 +3,35 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package vn.edu.fpt.dao;
+
 import vn.edu.fpt.model.Payroll;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author regio
  */
 public class PayrollDAO extends DBContext {
-    public List<Payroll> getAllPayrolls(int page, int pageSize) throws SQLException {
+
+    public List<Payroll> getAllPayrolls(int page, int pageSize, String paymentStatus) throws SQLException {
         List<Payroll> payrolls = new ArrayList<>();
-        String sql = "SELECT SalaryID, TeacherID, TeacherName, GrossAmount," +
-                     " CommissionRate, CommissionAmount, SalaryAmount, SalaryMonth, " +
-                     "SalaryYear, PaymentStatus, TransactionCount, TotalCourseRevenue, " +
-                     "Status FROM [dbo].[TeacherPayrollView] " +
-                     "ORDER BY SalaryID " +
-                     "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        String sql = "SELECT SalaryID, TeacherID, TeacherName, GrossAmount,"
+                + " CommissionRate, CommissionAmount, SalaryAmount, SalaryMonth, "
+                + "SalaryYear, PaymentStatus, TransactionCount, TotalCourseRevenue, "
+                + "Status FROM [dbo].[TeacherPayrollView] "
+                + (paymentStatus != null && !paymentStatus.isEmpty() ? "WHERE PaymentStatus = ? " : "")
+                + "ORDER BY SalaryID DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, (page - 1) * pageSize);
-            stmt.setInt(2, pageSize);
+            int paramIndex = 1;
+            if (paymentStatus != null && !paymentStatus.isEmpty()) {
+                stmt.setString(paramIndex++, paymentStatus);
+            }
+            stmt.setInt(paramIndex++, (page - 1) * pageSize);
+            stmt.setInt(paramIndex, pageSize);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Payroll payroll = new Payroll();
@@ -46,20 +54,26 @@ public class PayrollDAO extends DBContext {
         }
         return payrolls;
     }
-    
-    public int getPayrollCount() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM [dbo].[TeacherPayrollView]";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            if (rs.next()) {
-                return rs.getInt(1);
+
+    public int getPayrollCount(String paymentStatus) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM [dbo].[TeacherPayrollView]"
+                + (paymentStatus != null && !paymentStatus.isEmpty() ? " WHERE PaymentStatus = ?" : "");
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            if (paymentStatus != null && !paymentStatus.isEmpty()) {
+                stmt.setString(1, paymentStatus);
             }
-            return 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
         }
     }
-    
-    public void generatePayroll(int month, int year, Integer adminId) throws SQLException {
-        String sql = "{call [dbo].[GenerateTeacherPayroll](?, ?, ?)}";
+
+    public String[] generatePayroll(int month, int year, Integer adminId, String teacherName) throws SQLException {
+        String sql = "{call [dbo].[GenerateTeacherPayroll](?, ?, ?, ?)}";
+        String[] result = new String[2];
 
         try (CallableStatement stmt = connection.prepareCall(sql)) {
             stmt.setInt(1, month);
@@ -69,10 +83,21 @@ public class PayrollDAO extends DBContext {
             } else {
                 stmt.setNull(3, Types.INTEGER);
             }
-            stmt.execute();
+            stmt.setString(4, teacherName);
+
+            boolean hasResults = stmt.execute();
+            if (hasResults) {
+                try (ResultSet rs = stmt.getResultSet()) {
+                    if (rs.next()) {
+                        result[0] = rs.getString("Status");
+                        result[1] = rs.getString("Message");
+                    }
+                }
+            }
+            return result;
         }
     }
-    
+
     public boolean isSalaryPaid(int salaryId) throws SQLException {
         String sql = "SELECT paid FROM teacher_salary WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -84,7 +109,7 @@ public class PayrollDAO extends DBContext {
             return false;
         }
     }
-    
+
     public void markSalaryPaid(int salaryId, Integer adminId) throws SQLException {
         String sql = "{call [dbo].[MarkTeacherSalaryPaid](?, ?)}";
 
@@ -98,9 +123,8 @@ public class PayrollDAO extends DBContext {
             stmt.execute();
         }
     }
-    
+
     public boolean updateCommission(int salaryId, double commissionRate, int adminId) throws SQLException {
-        // Kiểm tra gross_amount không NULL và bản ghi tồn tại
         String checkSql = "SELECT gross_amount FROM [dbo].[teacher_salary] WHERE id = ? AND status = 'Pending'";
         try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
             checkStmt.setInt(1, salaryId);
@@ -111,13 +135,12 @@ public class PayrollDAO extends DBContext {
             }
         }
 
-        // Loại bỏ last_modified_date vì không tồn tại trong schema
-        String sql = "UPDATE [dbo].[teacher_salary] " +
-                     "SET commission_rate = ?, " +
-                     "    commission_amount = gross_amount * ?, " +
-                     "    total_amount = gross_amount - (gross_amount * ?), " +
-                     "    last_modified_by = ? " +
-                     "WHERE id = ? AND status = 'Pending'";
+        String sql = "UPDATE [dbo].[teacher_salary] "
+                + "SET commission_rate = ?, "
+                + "    commission_amount = gross_amount * ?, "
+                + "    total_amount = gross_amount - (gross_amount * ?), "
+                + "    last_modified_by = ? "
+                + "WHERE id = ? AND status = 'Pending'";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDouble(1, commissionRate);
             stmt.setDouble(2, commissionRate);
@@ -133,13 +156,13 @@ public class PayrollDAO extends DBContext {
             throw e;
         }
     }
-    
+
     public Payroll getPayrollById(int salaryId) throws SQLException {
-        String sql = "SELECT id, teacher_id, teacher_name, gross_amount, commission_rate, " +
-                     "commission_amount, total_amount, month, year, " +
-                     "paid, transaction_count, total_course_revenue, status " +
-                     "FROM teacher_salary WHERE id = ?";
-        
+        String sql = "SELECT id, teacher_id, teacher_name, gross_amount, commission_rate, "
+                + "commission_amount, total_amount, month, year, "
+                + "paid, transaction_count, total_course_revenue, status "
+                + "FROM teacher_salary WHERE id = ?";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, salaryId);
             ResultSet rs = stmt.executeQuery();
