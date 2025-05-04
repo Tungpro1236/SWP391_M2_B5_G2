@@ -57,7 +57,7 @@ public class CourseController extends HttpServlet {
                 request.getRequestDispatcher("MyCourses.jsp").forward(request, response);
             }
         } else {
-            // Lấy tất cả các danh mục
+            // Lấy tất cả các danh mục 
             List<Category> categoryList = courseDAO.getAllCategories();
             request.setAttribute("categoryList", categoryList);
             // Xử lý lọc theo danh mục và phân trang
@@ -123,84 +123,93 @@ public class CourseController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
 
         String action = request.getParameter("action");
+        if (user.isStatus() == true && user.getRoleId() == 2) {
+            if ("edit".equals(action)) {
+                // Xử lý cập nhật khóa học
+                try {
+                    int courseId = Integer.parseInt(request.getParameter("courseId"));
+                    String title = request.getParameter("title");
+                    String thumbnailUrl = request.getParameter("thumbnailUrl");
+                    String description = request.getParameter("description");
+                    int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+                    String status = request.getParameter("status");
+                    double price = Double.parseDouble(request.getParameter("price"));
 
-        if ("edit".equals(action)) {
-            // Xử lý cập nhật khóa học
-            try {
-                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                    CourseDAO dao = new CourseDAO();
+                    dao.updateCourse(courseId, title, thumbnailUrl, description, categoryId, status, price);
+                    session.setAttribute("message", "Cập nhật khóa học thành công!");
+                    response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
+                    return;
+
+                } catch (NumberFormatException e) {
+                    session.setAttribute("message", "Giá hoặc ID danh mục không hợp lệ.");
+                    response.sendRedirect("success.jsp");
+                    return;
+                } catch (Exception e) {
+                    session.setAttribute("message", "Cập nhật khóa học không thành công!");
+                    response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
+                    return;
+                }
+            } else { //add
+                // Xử lý thêm khóa học
+                // 1. Lấy thông tin cơ bản của course để add course
                 String title = request.getParameter("title");
                 String thumbnailUrl = request.getParameter("thumbnailUrl");
                 String description = request.getParameter("description");
-                int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+                String categoryIdStr = request.getParameter("categoryId");
                 String status = request.getParameter("status");
-                double price = Double.parseDouble(request.getParameter("price"));
+                String priceStr = request.getParameter("price");
 
-                CourseDAO dao = new CourseDAO();
-                dao.updateCourse(courseId, title, thumbnailUrl, description, categoryId, status, price);
-                session.setAttribute("message", "Cập nhật khóa học thành công!");
-                response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
-                return;
-
-            } catch (NumberFormatException e) {
-                session.setAttribute("message", "Giá hoặc ID danh mục không hợp lệ.");
-                response.sendRedirect("success.jsp");
-                return;
-            } catch (Exception e) {
-                session.setAttribute("message", "Cập nhật khóa học không thành công!");
-                response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
-                return;
-            }
-
-        } else {
-            // Xử lý thêm khóa học
-            // 1. Lấy thông tin cơ bản của course để add course
-            String title = request.getParameter("title");
-            String thumbnailUrl = request.getParameter("thumbnailUrl");
-            String description = request.getParameter("description");
-            String categoryIdStr = request.getParameter("categoryId");
-            String status = request.getParameter("status");
-            String priceStr = request.getParameter("price");
-
-            // Kiểm tra xem các tham số bắt buộc có bị thiếu không
-            if (title == null || thumbnailUrl == null || description == null || categoryIdStr == null || status == null || priceStr == null) {
-                session.setAttribute("message", "Vui lòng điền đầy đủ thông tin khóa học.");
-                response.sendRedirect("success.jsp");
-                return; // Dừng xử lý nếu có lỗi
-            }
-
-            try {
-                int categoryId = Integer.parseInt(categoryIdStr);
-                double price = Double.parseDouble(priceStr);
-
-                // 2. Tạo course mới
-                Course course = new Course();
-                course.setTitle(title);
-                course.setThumbnailUrl(thumbnailUrl);
-                course.setDescription(description);
-                course.setCategoryId(categoryId);
-                course.setStatus(status);
-                course.setPrice((int) price);
-                course.setTeacherId(1);
-
-                CourseDAO courseDAO = new CourseDAO(); // Tạo instance của CourseDAO
-                int courseId = courseDAO.addCourse(course, user.getId()); // Gọi phương thức addCourse thông qua instance
-
-                if (courseId > 0) {
-                    session.setAttribute("message", "Thêm thành công khóa học");
+                // Kiểm tra xem các tham số bắt buộc có bị thiếu không
+                if (title == null || thumbnailUrl == null || description == null || categoryIdStr == null || status == null || priceStr == null) {
+                    session.setAttribute("message", "Vui lòng điền đầy đủ thông tin khóa học.");
                     response.sendRedirect("success.jsp");
-                } else {
-                    session.setAttribute("message", "Không thể thêm khóa học vào cơ sở dữ liệu.");
-                    response.sendRedirect("success.jsp");
+                    return; // Dừng xử lý nếu có lỗi
                 }
 
-            } catch (NumberFormatException e) {
-                session.setAttribute("message", "Giá hoặc ID danh mục không hợp lệ.");
-                response.sendRedirect("success.jsp");
-            } catch (Exception e) {
-                session.setAttribute("message", "Đã xảy ra lỗi: " + e.getMessage());
-                response.sendRedirect("success.jsp");
+                try {
+                    int categoryId = Integer.parseInt(categoryIdStr);
+                    double price = Double.parseDouble(priceStr);
+
+                    // 2. Tạo course mới
+                    Course course = new Course();
+                    course.setTitle(title);
+                    course.setThumbnailUrl(thumbnailUrl);
+                    course.setDescription(description);
+                    course.setCategoryId(categoryId);
+                    course.setStatus(status);
+                    course.setPrice((int) price);
+                    course.setTeacherId(1);
+
+                    CourseDAO courseDAO = new CourseDAO(); // Tạo instance của CourseDAO
+                    int courseId = 0;
+                    if (courseDAO.isCourseTitleAvailable(title)) {
+                        courseId = courseDAO.addCourse(course, user.getId()); // Gọi phương thức addCourse thông qua instance
+                        if (courseId > 0) {
+                            session.setAttribute("message", "Thêm thành công khóa học");
+                            response.sendRedirect("success.jsp");
+                        } else {
+                            session.setAttribute("message", "Không thể thêm khóa học vào cơ sở dữ liệu.");
+                            response.sendRedirect("success.jsp");
+                        }
+                    } else {
+                        session.setAttribute("message", "Đã tồn tại title này.");
+                        response.sendRedirect("success.jsp");
+                    }
+
+                } catch (NumberFormatException e) {
+                    session.setAttribute("message", "Giá khóa học không hợp lệ.");
+                    response.sendRedirect("success.jsp");
+                } catch (Exception e) {
+                    session.setAttribute("message", "Đã xảy ra lỗi: " + e.getMessage());
+                    response.sendRedirect("success.jsp");
+                }
             }
+        } else {
+            session.setAttribute("message", "tài khoản chưa được kích hoạt");
+            response.sendRedirect("success.jsp");
         }
+
     }
 
     /**

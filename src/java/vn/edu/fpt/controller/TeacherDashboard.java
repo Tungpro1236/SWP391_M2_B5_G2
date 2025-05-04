@@ -70,12 +70,11 @@ public class TeacherDashboard extends HttpServlet {
         if (user == null) {
             response.sendRedirect("login.jsp");
             return;
-        } else {
-            int userId = user.getId();
+        } else if  (user.getRoleId() == 2) {
 
             // Gọi DAO để lấy tổng số khóa học
             CourseDAO courseDAO = new CourseDAO();
-            int totalCourses = courseDAO.getTotalCoursesByTeacherId(userId);
+            int totalCourses = courseDAO.getTotalCoursesByTeacherId(user.getId());
             int totalLearner = courseDAO.getTotalUsersByRole(1);   //role của learner=1
             List<StudentEnrollment> enrollments;
             try {
