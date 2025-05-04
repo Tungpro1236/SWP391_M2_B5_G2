@@ -1,12 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Teacher Verification Requests - Admin</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
         <style>
             .request-badge {
                 padding: 5px 10px;
@@ -30,7 +29,8 @@
     <body class="bg-light">
         <div class="container-fluid">
             <div class="row">
-                <jsp:include page="../layout/header.jsp" />
+                <%@ include file="/layout/header.jsp" %>
+                <%@ include file="/layout/sidebar.jsp" %>
 
                 <div class="col-md-12 p-4">
                     <div class="card shadow">
@@ -157,67 +157,67 @@
                 </div>
             </div>
         </div>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <%@ include file="/layout/footer.jsp" %>
+        
         <script>
-                        const rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
+                            const rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
 
-                        function showRejectModal(requestId) {
-                            document.getElementById('requestId').value = requestId;
-                            document.querySelector('#rejectModal textarea').value = ''; // Clear previous reason
-                            rejectModal.show();
-                        }
+                            function showRejectModal(requestId) {
+                                document.getElementById('requestId').value = requestId;
+                                document.querySelector('#rejectModal textarea').value = ''; // Clear previous reason
+                                rejectModal.show();
+                            }
 
-                        function approveRequest(requestId) {
-                            if (confirm('Are you sure you want to approve this request?')) {
+                            function approveRequest(requestId) {
+                                if (confirm('Are you sure you want to approve this request?')) {
+                                    const form = document.createElement('form');
+                                    form.method = 'POST';
+                                    form.action = '${pageContext.request.contextPath}/admin/teacher-requests/approve';
+
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = 'requestId';
+                                    input.value = requestId;
+
+                                    form.appendChild(input);
+                                    document.body.appendChild(form);
+                                    form.submit();
+                                }
+                            }
+
+                            function cancelReject() {
+                                document.querySelector('#rejectModal textarea').value = '';
+                                rejectModal.hide();
+                            }
+
+                            function submitReject() {
+                                const requestId = document.getElementById('requestId').value;
+                                const reason = document.querySelector('#rejectModal textarea').value.trim();
+
+                                if (!reason) {
+                                    alert('Please provide a reason for rejection');
+                                    return;
+                                }
+
                                 const form = document.createElement('form');
                                 form.method = 'POST';
-                                form.action = '${pageContext.request.contextPath}/admin/teacher-requests/approve';
+                                form.action = '${pageContext.request.contextPath}/admin/teacher-requests/reject';
 
-                                const input = document.createElement('input');
-                                input.type = 'hidden';
-                                input.name = 'requestId';
-                                input.value = requestId;
+                                const requestIdInput = document.createElement('input');
+                                requestIdInput.type = 'hidden';
+                                requestIdInput.name = 'requestId';
+                                requestIdInput.value = requestId;
 
-                                form.appendChild(input);
+                                const reasonInput = document.createElement('input');
+                                reasonInput.type = 'hidden';
+                                reasonInput.name = 'rejectReason';
+                                reasonInput.value = reason;
+
+                                form.appendChild(requestIdInput);
+                                form.appendChild(reasonInput);
                                 document.body.appendChild(form);
                                 form.submit();
                             }
-                        }
-
-                        function cancelReject() {
-                            document.querySelector('#rejectModal textarea').value = '';
-                            rejectModal.hide();
-                        }
-
-                        function submitReject() {
-                            const requestId = document.getElementById('requestId').value;
-                            const reason = document.querySelector('#rejectModal textarea').value.trim();
-
-                            if (!reason) {
-                                alert('Please provide a reason for rejection');
-                                return;
-                            }
-
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = '${pageContext.request.contextPath}/admin/teacher-requests/reject';
-
-                            const requestIdInput = document.createElement('input');
-                            requestIdInput.type = 'hidden';
-                            requestIdInput.name = 'requestId';
-                            requestIdInput.value = requestId;
-
-                            const reasonInput = document.createElement('input');
-                            reasonInput.type = 'hidden';
-                            reasonInput.name = 'rejectReason';
-                            reasonInput.value = reason;
-
-                            form.appendChild(requestIdInput);
-                            form.appendChild(reasonInput);
-                            document.body.appendChild(form);
-                            form.submit();
-                        }
         </script>
     </body>
 </html>

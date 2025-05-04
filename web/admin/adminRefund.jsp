@@ -5,14 +5,13 @@
 --%>
 
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
-   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-   <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
-     <head>
+    <head>
         <title>Admin Refund Management</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        
         <style>
             body {
                 background-color: #f8f9fa;
@@ -41,23 +40,37 @@
             .btn-action {
                 transition: transform 0.2s, background-color 0.3s;
                 margin: 0 5px;
+                padding: 5px 10px;
+                font-size: 0.875rem;
             }
             .btn-action:hover {
                 transform: scale(1.05);
             }
             .btn-approve {
-                background-color: #28a745;
-                border-color: #28a745;
+                background-color: #34c759;
+                border-color: #34c759;
+                color: #fff;
+                border-radius: 4px;
             }
             .btn-reject {
-                background-color: #dc3545;
-                border-color: #dc3545;
+                background-color: #ff3b30;
+                border-color: #ff3b30;
+                color: #fff;
+                border-radius: 4px;
             }
             .btn-approve:hover {
                 background-color: #218838;
+                border-color: #1e7e34;
+                color: #fff;
             }
             .btn-reject:hover {
                 background-color: #c82333;
+                border-color: #bd2130;
+                color: #fff;
+            }
+            .action-cell {
+                min-width: 150px;
+                text-align: center;
             }
         </style>
     </head>
@@ -65,7 +78,7 @@
         <%@ include file="/layout/header.jsp" %>
         <%@ include file="/layout/sidebar.jsp" %>
 
-        <!-- Main Content -->
+         <!-- Main Content -->
         <div class="content">
             <div class="container-fluid">
                 <h1 class="mb-4 text-primary fw-bold">Refund Requests Management</h1>
@@ -77,14 +90,14 @@
                             <div class="col-auto">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                    <input type="text" name="keyword" value="${param.keyword}" class="form-control" placeholder="Search by student ID or course ID">
+                                    <input type="text" name="keyword" value="${param.keyword}" class="form-control" placeholder="Search by student name, course title, or reason">
                                 </div>
                             </div>
                             <div class="col-auto">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                             <div class="col-auto">
-                                <button type="reset" class="btn btn-outline-secondary" onclick="window.location.href='${pageContext.request.contextPath}/admin/refund'">Reset</button>
+                                <button type="reset" class="btn btn-outline-secondary" onclick="window.location.href = '${pageContext.request.contextPath}/admin/refund'">Reset</button>
                             </div>
                         </form>
                     </div>
@@ -104,8 +117,8 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Student ID</th>
-                                    <th>Course ID</th>
+                                    <th>Student Name</th>
+                                    <th>Course Name</th>
                                     <th>Request Date</th>
                                     <th>Reason</th>
                                     <th>Status</th>
@@ -116,8 +129,8 @@
                                 <c:forEach var="request" items="${refundRequests}">
                                     <tr class="table-row">
                                         <td><span class="badge bg-info text-dark">${request.id}</span></td>
-                                        <td>${request.studentId}</td>
-                                        <td>${request.courseId}</td>
+                                        <td>${request.fullName}</td>
+                                        <td>${request.courseTitle}</td>
                                         <td><fmt:formatDate value="${request.requestDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                         <td>${request.reason}</td>
                                         <td>
@@ -136,21 +149,21 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
-                                        <td>
+                                        <td class="action-cell">
                                             <c:if test="${request.status == 'pending'}">
                                                 <form action="${pageContext.request.contextPath}/admin/refund" method="post" style="display:inline;">
                                                     <input type="hidden" name="requestId" value="${request.id}">
                                                     <input type="hidden" name="action" value="approve">
-                                                    <button type="submit" class="btn btn-sm btn-approve btn-action text-white">Approve</button>
+                                                    <button type="submit" class="btn btn-approve btn-action">Approve</button>
                                                 </form>
                                                 <form action="${pageContext.request.contextPath}/admin/refund" method="post" style="display:inline;">
                                                     <input type="hidden" name="requestId" value="${request.id}">
                                                     <input type="hidden" name="action" value="reject">
-                                                    <button type="submit" class="btn btn-sm btn-reject btn-action text-white">Reject</button>
+                                                    <button type="submit" class="btn btn-reject btn-action">Reject</button>
                                                 </form>
                                             </c:if>
                                             <c:if test="${request.status != 'pending'}">
-                                                <span class="text-muted"></span>
+                                                <span class="text-muted">No actions available</span>
                                             </c:if>
                                         </td>
                                     </tr>

@@ -7,68 +7,68 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!-- Sidebar -->
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
     <div class="text-center mb-4">
         <h4 class="text-white">Admin Dashboard</h4>
     </div>
-    <ul class="nav flex-column">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle ${pageContext.request.requestURI.contains('dashboard') || pageContext.request.requestURI.contains('revenue') || pageContext.request.requestURI.contains('statistics') ? 'active' : ''}" 
-               href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-house me-2"></i> Dashboard
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('dashboard') ? 'active' : ''}" href="dashBoard"><i class="bi bi-house me-2"></i> Overview</a></li>
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('revenue') ? 'active' : ''}" href="revenue"><i class="bi bi-receipt me- ++2"></i> Revenue</a></li>
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('statistics') ? 'active' : ''}" href="statistics"><i class="bi bi-graph-up me-2"></i> Statistics</a></li>
-            </ul>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle ${pageContext.request.requestURI.contains('payroll') || pageContext.request.requestURI.contains('viewTeacherSalary') || pageContext.request.requestURI.contains('courses') ? 'active' : ''}" 
-               href="#" id="teacherManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-workspace me-2"></i> Teacher Management
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="teacherManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('payroll') ? 'active' : ''}" href="payRoll"><i class="bi bi-wallet me-2"></i> Payroll</a></li>
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('viewTeacherSalary') ? 'active' : ''}" href="viewTeacherSalary"><i class="bi bi-bar-chart me-2"></i> Teacher's Salary</a></li>
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('courses') ? 'active' : ''}" href="viewTeacherCourses"><i class="bi bi-book me-2"></i> Teacher's Courses</a></li>
-            </ul>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" 
-               href="#" id="userManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-people me-2"></i> User Management
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="users"><i class="bi bi-people me-2"></i> Users list</a></li>
-            </ul>
-            <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="teacher-requests"><i class="bi bi-people me-2"></i> Request Teacher</a></li>
-            </ul>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" 
-               href="#" id="payManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-people me-2"></i> Payment Management
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="payManagementDropdown">
-                <li><a class="dropdown-item ${pageContext.request.requestURI.contains('users') ? 'active' : ''}" href="refund"><i class="bi bi-people me-2"></i> Refund Request</a></li>
-            </ul>
-            
-        </li>
-        <li class="nav-item">
-            <a href="reports" class="nav-link ${pageContext.request.requestURI.contains('reports') ? 'active' : ''}">
-                <i class="bi bi-bar-chart me-2"></i> Reports
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="user?action=logout" class="nav-link">
-                <i class="bi bi-box-arrow-left me-2"></i> Logout
-            </a>
-        </li>
-    </ul>
+    <button class="btn btn-toggle d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="bi bi-list text-white"></i>
+    </button>
+    <div class="collapse d-md-block" id="sidebarMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle ${activePage == 'dashboard' || activePage == 'revenue' || activePage == 'statistics' ? 'active' : ''}" 
+                   href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-house me-2"></i> Dashboard
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                    <li><a class="dropdown-item ${activePage == 'dashboard' ? 'active' : ''}" href="${pageContext.request.contextPath}/dashBoard"><i class="bi bi-house me-2"></i> Overview</a></li>
+                    <li><a class="dropdown-item ${activePage == 'revenue' ? 'active' : ''}" href="${pageContext.request.contextPath}/revenue"><i class="bi bi-receipt me-2"></i> Revenue</a></li>
+                    <li><a class="dropdown-item ${activePage == 'statistics' ? 'active' : ''}" href="${pageContext.request.contextPath}/statistics"><i class="bi bi-graph-up me-2"></i> Statistics</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle ${activePage == 'payroll' || activePage == 'viewTeacherSalary' || activePage == 'viewTeacherCourses' ? 'active' : ''}" 
+                   href="#" id="teacherManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-workspace me-2"></i> Teacher Management
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="teacherManagementDropdown">
+                    <li><a class="dropdown-item ${activePage == 'payroll' ? 'active' : ''}" href="${pageContext.request.contextPath}/payRoll"><i class="bi bi-wallet me-2"></i> Payroll</a></li>
+                    <li><a class="dropdown-item ${activePage == 'viewTeacherSalary' ? 'active' : ''}" href="${pageContext.request.contextPath}/viewTeacherSalary"><i class="bi bi-bar-chart me-2"></i> Teacher's Salary</a></li>
+                    <li><a class="dropdown-item ${activePage == 'viewTeacherCourses' ? 'active' : ''}" href="${pageContext.request.contextPath}/viewTeacherCourses"><i class="bi bi-book me-2"></i> Teacher's Courses</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle ${activePage == 'users' || activePage == 'teacher-requests' ? 'active' : ''}" 
+                   href="#" id="userManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-people me-2"></i> User Management
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
+                    <li><a class="dropdown-item ${activePage == 'users' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/users"><i class="bi bi-people me-2"></i> Users list</a></li>
+                    <li><a class="dropdown-item ${activePage == 'teacher-requests' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/teacher-requests"><i class="bi bi-person-plus me-2"></i> Request Teacher</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle ${activePage == 'refund' ? 'active' : ''}" 
+                   href="#" id="payManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-cash me-2"></i> Payment Management
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="payManagementDropdown">
+                    <li><a class="dropdown-item ${activePage == 'refund' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/refund"><i class="bi bi-arrow-repeat me-2"></i> Refund Request</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <form action="${pageContext.request.contextPath}/user" method="post" class="d-inline">
+                    <input type="hidden" name="action" value="logout">
+                    <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}">
+                    <button type="submit" class="nav-link btn btn-link text-white w-100 text-start">
+                        <i class="bi bi-box-arrow-left me-2"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
 </nav>
-
 <style>
     .sidebar {
         position: fixed;

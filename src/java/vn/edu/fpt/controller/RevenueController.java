@@ -63,9 +63,60 @@ public class RevenueController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        List<Revenue> revenues = revenueDAO.getAllRevenues();
-        request.setAttribute("revenues", revenues);
-        request.getRequestDispatcher("/revenue.jsp").forward(request, response);
+        try {
+            // Pagination parameters
+            int page = 1;
+            int pageSize = 5;
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                    if (page < 1) page = 1;
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+ // Filter parameters
+            Integer filterMonth = null;
+            Integer filterYear = null;
+            String filterMonthParam = request.getParameter("filterMonth");
+            String filterYearParam = request.getParameter("filterYear");
+            if (filterMonthParam != null && !filterMonthParam.isEmpty()) {
+                try {
+                    filterMonth = Integer.parseInt(filterMonthParam);
+                    if (filterMonth < 1 || filterMonth > 12) filterMonth = null;
+                } catch (NumberFormatException e) {
+                    filterMonth = null;
+                }
+            }
+            if (filterYearParam != null && !filterYearParam.isEmpty()) {
+                try {
+                    filterYear = Integer.parseInt(filterYearParam);
+                    if (filterYear < 2000 || filterYear > java.time.Year.now().getValue()) filterYear = null;
+                } catch (NumberFormatException e) {
+                    filterYear = null;
+                }
+            }
+
+            // Fetch revenue data and count
+            List<Revenue> revenues = revenueDAO.getAllRevenues(page, pageSize, filterMonth, filterYear);
+            int totalRecords = revenueDAO.getRevenueCount(filterMonth, filterYear);
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+            // Set attributes
+            request.setAttribute("revenues", revenues);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("filterMonth", filterMonth);
+            request.setAttribute("filterYear", filterYear);
+
+            // Forward to JSP
+            request.getRequestDispatcher("/revenue.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("error", "Error fetching revenue data: " + e.getMessage());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }
     } 
 
     /** 
