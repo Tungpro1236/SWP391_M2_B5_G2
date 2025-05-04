@@ -47,14 +47,16 @@
                 transform: scale(1.05);
             }
             .btn-approve {
-                background-color: #28a745;
-                border-color: #28a745;
+                background-color: #34c759;
+                border-color: #34c759;
                 color: #fff;
+                border-radius: 4px;
             }
             .btn-reject {
-                background-color: #dc3545;
-                border-color: #dc3545;
+                background-color: #ff3b30;
+                border-color: #ff3b30;
                 color: #fff;
+                border-radius: 4px;
             }
             .btn-approve:hover {
                 background-color: #218838;
@@ -76,7 +78,7 @@
         <%@ include file="/layout/header.jsp" %>
         <%@ include file="/layout/sidebar.jsp" %>
 
-        <!-- Main Content -->
+         <!-- Main Content -->
         <div class="content">
             <div class="container-fluid">
                 <h1 class="mb-4 text-primary fw-bold">Refund Requests Management</h1>
@@ -88,7 +90,7 @@
                             <div class="col-auto">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                    <input type="text" name="keyword" value="${param.keyword}" class="form-control" placeholder="Search by student name, course ID, or reason">
+                                    <input type="text" name="keyword" value="${param.keyword}" class="form-control" placeholder="Search by student name, course title, or reason">
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -116,7 +118,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Student Name</th>
-                                    <th>Course ID</th>
+                                    <th>Course Name</th>
                                     <th>Request Date</th>
                                     <th>Reason</th>
                                     <th>Status</th>
@@ -128,7 +130,7 @@
                                     <tr class="table-row">
                                         <td><span class="badge bg-info text-dark">${request.id}</span></td>
                                         <td>${request.fullName}</td>
-                                        <td>${request.courseId}</td>
+                                        <td>${request.courseTitle}</td>
                                         <td><fmt:formatDate value="${request.requestDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                         <td>${request.reason}</td>
                                         <td>

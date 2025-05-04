@@ -20,6 +20,7 @@ public class RefundRequest {
     private String firstName;
     private String middleName;
     private String lastName;
+    private String courseTitle;
 
     // Constructors
     public RefundRequest() {
@@ -120,6 +121,14 @@ public class RefundRequest {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
     }
 
     // Method to get full name

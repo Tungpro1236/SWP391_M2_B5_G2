@@ -17,19 +17,20 @@ import java.util.List;
  * @author regio
  */
 public class RefundRequestDAO extends DBContext {
-      // Get refund requests with pagination and search by full name (for admin)
+     // Get refund requests with pagination and search by full name (for admin)
     public List<RefundRequest> getRefundRequests(int page, int pageSize, String keyword) throws SQLException {
         List<RefundRequest> requests = new ArrayList<>();
-        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name " +
+        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name, c.title AS course_title " +
                      "FROM refund_requests r " +
                      "JOIN users u ON r.student_id = u.id " +
-                     "WHERE (u.last_name + ' ' + u.middle_name + ' ' + u.first_name LIKE ? OR r.course_id LIKE ? OR r.reason LIKE ?) " +
+                     "JOIN courses c ON r.course_id = c.id " +
+                     "WHERE (u.last_name + ' ' + u.middle_name + ' ' + u.first_name LIKE ? OR c.title LIKE ? OR r.reason LIKE ?) " +
                      "ORDER BY r.request_date DESC " +
                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             String searchTerm = "%" + (keyword != null ? keyword : "") + "%";
             stmt.setString(1, searchTerm); // Full name search
-            stmt.setString(2, searchTerm); // Course ID search
+            stmt.setString(2, searchTerm); // Course title search
             stmt.setString(3, searchTerm); // Reason search
             stmt.setInt(4, (page - 1) * pageSize); // OFFSET
             stmt.setInt(5, pageSize); // FETCH NEXT
@@ -48,6 +49,7 @@ public class RefundRequestDAO extends DBContext {
                     request.setFirstName(rs.getString("first_name"));
                     request.setMiddleName(rs.getString("middle_name"));
                     request.setLastName(rs.getString("last_name"));
+                    request.setCourseTitle(rs.getString("course_title"));
                     requests.add(request);
                 }
             }
@@ -59,7 +61,8 @@ public class RefundRequestDAO extends DBContext {
     public int getTotalRefundRequests(String keyword) throws SQLException {
         String sql = "SELECT COUNT(*) FROM refund_requests r " +
                      "JOIN users u ON r.student_id = u.id " +
-                     "WHERE (u.last_name + ' ' + u.middle_name + ' ' + u.first_name LIKE ? OR r.course_id LIKE ? OR r.reason LIKE ?)";
+                     "JOIN courses c ON r.course_id = c.id " +
+                     "WHERE (u.last_name + ' ' + u.middle_name + ' ' + u.first_name LIKE ? OR c.title LIKE ? OR r.reason LIKE ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             String searchTerm = "%" + (keyword != null ? keyword : "") + "%";
             stmt.setString(1, searchTerm);
@@ -77,16 +80,17 @@ public class RefundRequestDAO extends DBContext {
     // Get refund requests for a specific student with pagination and search
     public List<RefundRequest> getRefundRequestsByStudentWithPagination(int studentId, int page, int pageSize, String keyword) throws SQLException {
         List<RefundRequest> requests = new ArrayList<>();
-        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name " +
+        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name, c.title AS course_title " +
                      "FROM refund_requests r " +
                      "JOIN users u ON r.student_id = u.id " +
-                     "WHERE r.student_id = ? AND (r.course_id LIKE ? OR r.status LIKE ?) " +
+                     "JOIN courses c ON r.course_id = c.id " +
+                     "WHERE r.student_id = ? AND (c.title LIKE ? OR r.status LIKE ?) " +
                      "ORDER BY r.request_date DESC " +
                      "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             String searchTerm = "%" + (keyword != null ? keyword : "") + "%";
             stmt.setInt(1, studentId);
-            stmt.setString(2, searchTerm); // Course ID search
+            stmt.setString(2, searchTerm); // Course title search
             stmt.setString(3, searchTerm); // Status search
             stmt.setInt(4, (page - 1) * pageSize); // OFFSET
             stmt.setInt(5, pageSize); // FETCH NEXT
@@ -105,6 +109,7 @@ public class RefundRequestDAO extends DBContext {
                     request.setFirstName(rs.getString("first_name"));
                     request.setMiddleName(rs.getString("middle_name"));
                     request.setLastName(rs.getString("last_name"));
+                    request.setCourseTitle(rs.getString("course_title"));
                     requests.add(request);
                 }
             }
@@ -116,7 +121,8 @@ public class RefundRequestDAO extends DBContext {
     public int getTotalRefundRequestsByStudent(int studentId, String keyword) throws SQLException {
         String sql = "SELECT COUNT(*) FROM refund_requests r " +
                      "JOIN users u ON r.student_id = u.id " +
-                     "WHERE r.student_id = ? AND (r.course_id LIKE ? OR r.status LIKE ?)";
+                     "JOIN courses c ON r.course_id = c.id " +
+                     "WHERE r.student_id = ? AND (c.title LIKE ? OR r.status LIKE ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             String searchTerm = "%" + (keyword != null ? keyword : "") + "%";
             stmt.setInt(1, studentId);
@@ -150,9 +156,10 @@ public class RefundRequestDAO extends DBContext {
     // Existing methods remain unchanged
     public List<RefundRequest> getRefundRequestsByStudent(int studentId) throws SQLException {
         List<RefundRequest> requests = new ArrayList<>();
-        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name " +
+        String sql = "SELECT r.*, u.first_name, u.middle_name, u.last_name, c.title AS course_title " +
                      "FROM refund_requests r " +
                      "JOIN users u ON r.student_id = u.id " +
+                     "JOIN courses c ON r.course_id = c.id " +
                      "WHERE r.student_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, studentId);
@@ -171,6 +178,7 @@ public class RefundRequestDAO extends DBContext {
                     request.setFirstName(rs.getString("first_name"));
                     request.setMiddleName(rs.getString("middle_name"));
                     request.setLastName(rs.getString("last_name"));
+                    request.setCourseTitle(rs.getString("course_title"));
                     requests.add(request);
                 }
             }

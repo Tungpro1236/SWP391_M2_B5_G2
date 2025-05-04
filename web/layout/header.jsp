@@ -41,26 +41,7 @@
 
                         <c:choose>
 
-                            <c:when test="${not empty sessionScope.user}">
-
-                                <a href="profile">
-                                    <c:choose>
-                                        <c:when test="${not empty sessionScope.user.avatarUrl}">
-                                            <img src="${sessionScope.user.avatarUrl}" alt="User Avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a href="${pageContext.request.contextPath}/${sessionScope.user.roleId == 2 ? 'teacher/profile' : 'profile'}">
-                                    <img src="https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain" alt="Default Avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
-
-                                </a>
-                                            
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                 </c:when>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="${pageContext.request.contextPath}/login?action=logout">Logout</a>
-
+                           
                     <c:when test="${not empty sessionScope.user}">
                         <!-- Avatar + Welcome + Dropdown -->
                         <li class="nav-item dropdown">
