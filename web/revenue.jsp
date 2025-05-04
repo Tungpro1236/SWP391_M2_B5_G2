@@ -9,7 +9,6 @@
 <html>
     <head>
         <title>Revenue Management</title>
-        
         <style>
             body {
                 background-color: #f8f9fa;
@@ -50,16 +49,16 @@
             .table th {
                 background-color: #f1f3f5;
                 font-weight: 500;
-                text-align: left !important; /* Left-align headers like the course table */
-                padding: 8px 10px !important; /* Match padding to the course table */
+                text-align: left !important;
+                padding: 8px 10px !important;
             }
             .table-striped tbody td {
                 vertical-align: middle;
-                text-align: left !important; /* Keep data cells left-aligned */
-                padding: 8px 10px !important; /* Match padding to the course table */
-                min-width: 120px; /* Ensure consistent column width */
-                max-width: 200px; /* Prevent excessive stretching */
-                box-sizing: border-box; /* Include padding in width */
+                text-align: left !important;
+                padding: 8px 10px !important;
+                min-width: 120px;
+                max-width: 200px;
+                box-sizing: border-box;
             }
             .table tbody tr:hover {
                 background-color: #f8f9fa;
@@ -109,42 +108,20 @@
                     </div>
                 </c:if>
 
-                <!-- Form for Filtering and Generating Revenue -->
+                <!-- Generate Revenue Form -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        Filter and Generate Revenue
+                        Generate Revenue
                     </div>
                     <div class="card-body">
-                        <!-- Filter Form -->
-                        <form action="revenue" method="get" class="mb-4">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label for="filterMonth" class="form-label">Filter Month (1-12, optional)</label>
-                                    <input type="number" class="form-control" id="filterMonth" name="filterMonth" min="1" max="12" placeholder="e.g., 10" value="${filterMonth}">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="filterYear" class="form-label">Filter Year (optional)</label>
-                                    <input type="number" class="form-control" id="filterYear" name="filterYear" min="2000" max="2025" placeholder="e.g., 2024" value="${filterYear}">
-                                </div>
-                                <div class="col-md-4 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary w-100">Filter Records</button>
-                                </div>
-                            </div>
-                        </form>
-
-                        <!-- Generate Revenue Form -->
                         <form action="revenue" method="post">
                             <input type="hidden" name="action" value="generate">
-                            <div class="row g-3">
+                            <div class="row g-3 align-items-end">
                                 <div class="col-md-4">
-                                    <label for="month" class="form-label">Generate Month (1-12)</label>
-                                    <input type="number" class="form-control" id="month" name="month" min="1" max="12" placeholder="e.g., 10" required>
+                                    <label for="monthYear" class="form-label">Generate Month/Year</label>
+                                    <input type="month" class="form-control" id="monthYear" name="monthYear" required>
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="year" class="form-label">Generate Year</label>
-                                    <input type="number" class="form-control" id="year" name="year" min="2000" max="2025" placeholder="e.g., 2024" required>
-                                </div>
-                                <div class="col-md-4 d-flex align-items-end">
+                                <div class="col-md-2">
                                     <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Generate revenue for this month and year?')">Generate Revenue</button>
                                 </div>
                             </div>
@@ -158,6 +135,19 @@
                         Revenue Records
                     </div>
                     <div class="card-body">
+                        <!-- Filter Form -->
+                        <form action="revenue" method="get" class="mb-4">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label for="filterMonthYear" class="form-label">Filter Month/Year (optional)</label>
+                                    <input type="month" class="form-control" id="filterMonthYear" name="filterMonthYear" value="${filterYear}-${filterMonth}">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">Filter Records</button>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -178,7 +168,17 @@
                                             <td>${revenue.commissionRate}%</td>
                                             <td>$${revenue.commissionAmount}</td>
                                             <td>${revenue.month}/${revenue.year}</td>
-                                            <td>${revenue.generatedAt}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty revenue.generatedAt}">
+                                                        <fmt:parseDate value="${revenue.generatedAt}" pattern="yyyy-MM-dd HH:mm:ss" var="parsedDate" />
+                                                        <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        N/A
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     <c:if test="${empty revenues}">
@@ -194,17 +194,17 @@
                         <nav aria-label="Revenue pagination">
                             <ul class="pagination">
                                 <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="revenue?page=${currentPage - 1}&filterMonth=${filterMonth}&filterYear=${filterYear}" aria-label="Previous">
+                                    <a class="page-link" href="revenue?page=${currentPage - 1}&filterMonthYear=${filterYear}-${filterMonth}" aria-label="Previous">
                                         <span aria-hidden="true">« Previous</span>
                                     </a>
                                 </li>
                                 <c:forEach begin="1" end="${totalPages}" var="i">
                                     <li class="page-item ${currentPage == i ? 'active' : ''}">
-                                        <a class="page-link" href="revenue?page=${i}&filterMonth=${filterMonth}&filterYear=${filterYear}">${i}</a>
+                                        <a class="page-link" href="revenue?page=${i}&filterMonthYear=${filterYear}-${filterMonth}">${i}</a>
                                     </li>
                                 </c:forEach>
                                 <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                    <a class="page-link" href="revenue?page=${currentPage + 1}&filterMonth=${filterMonth}&filterYear=${filterYear}" aria-label="Next">
+                                    <a class="page-link" href="revenue?page=${currentPage + 1}&filterMonthYear=${filterYear}-${filterMonth}" aria-label="Next">
                                         <span aria-hidden="true">Next »</span>
                                     </a>
                                 </li>
