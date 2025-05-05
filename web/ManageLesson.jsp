@@ -79,7 +79,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>List Lessons</h2>
                     <c:if test="${sessionScope.user.roleId == 2}">
-                        <a href="AddLesson.jsp" class="btn btn-success">
+                        <a href="LessonController?action=addLesson" class="btn btn-success">
                             <i class="bi bi-plus-circle"></i> Add new lesson
                         </a>
                     </c:if>
@@ -110,7 +110,7 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">${lesson.title}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">Course ID: ${lesson.courseId}</h6>
+                                    <!--<h6 class="card-subtitle mb-2 text-muted">Course ID: ${lesson.courseId}</h6>-->
                                     <p class="card-text flex-grow-1">Content: ${lesson.content}</p>
                                     <p class="card-text"><small class="text-muted">Video URL: ${lesson.vidURL}</small></p>
                                     <p class="card-text"><small class="text-muted">Created on:

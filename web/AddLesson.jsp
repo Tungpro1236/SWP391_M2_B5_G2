@@ -1,12 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="vn.edu.fpt.model.Course" %>
-<%@ page import="vn.edu.fpt.dao.CourseDAO" %>
+<%@ page import="vn.edu.fpt.model.UserModel" %>
 
 <%
-    // Tạo đối tượng CourseDAO và lấy danh sách khóa học
-    CourseDAO courseDAO = new CourseDAO();
-    List<Course> courses = courseDAO.getAllCourses();
+    // Get user from request scope (must be set in servlet)
+    UserModel user = (UserModel) request.getAttribute("user");
+    List<Course> courses = (List<Course>) request.getAttribute("courses"); // get from servlet
 %>
 
 <!DOCTYPE html>
@@ -40,13 +40,13 @@
             <div class="alert alert-success">
                 Lesson added successfully!
             </div>
-            <% 
+            <%
                 } else if (error != null) {
             %>
             <div class="alert alert-danger">
                 Failed to add lesson!
             </div>
-            <% 
+            <%
                 }
             %>
 
@@ -61,13 +61,15 @@
                         <%
                             if (courses != null && !courses.isEmpty()) {
                                 for (Course course : courses) {
+                                    if (course.getTeacherId() == user.getId()) {
                         %>
                         <option value="<%= course.getId() %>"><%= course.getTitle() %></option>
                         <%
+                                    }
                                 }
                             } else {
                         %>
-                        <option>No courses available.</option>
+                        <option disabled>No courses available.</option>
                         <%
                             }
                         %>
@@ -101,5 +103,4 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
-
 </html>

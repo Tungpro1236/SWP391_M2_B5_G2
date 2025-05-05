@@ -513,4 +513,25 @@ public class QuizDAO extends DBContext {
             ps.executeUpdate();
         }
     }
+
+    public List<Answer_Option> getAnswersByQuestionId(int questionId) throws SQLException {
+        List<Answer_Option> answers = new ArrayList<>();
+        String query = "SELECT OptionID, QuestionID, Text, IsCorrect FROM dbo.Answer_Option WHERE QuestionID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, questionId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int optionId = rs.getInt("OptionID");
+                    String text = rs.getString("Text");
+                    boolean isCorrect = rs.getBoolean("IsCorrect");
+                    Answer_Option answer = new Answer_Option(optionId, questionId, text, isCorrect);
+                    answers.add(answer);
+                }
+            }
+        }
+        return answers;
+    }
+
 }

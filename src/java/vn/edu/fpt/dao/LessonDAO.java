@@ -14,6 +14,7 @@ import vn.edu.fpt.model.QuizHistory;
 
 public class LessonDAO extends DBContext {
 
+    //lay lesson detail theo lesson id
     public Lesson getLessonById(int lessonId) {
         Lesson lesson = null;
         String sql = "SELECT LessonID, CourseID, Title, Content, VideoURL, CreatedAt FROM Lesson WHERE LessonID = ?";
@@ -39,6 +40,7 @@ public class LessonDAO extends DBContext {
         return lesson;
     }
 
+    //lay lesson theo courseId
     public List<Lesson> getLessonsByCourseId(int courseId) {
         List<Lesson> lessons = new ArrayList<>();
         String sql = "SELECT LessonID, CourseID, Title, Content, VideoURL, CreatedAt FROM Lesson WHERE CourseID = ?";
@@ -60,6 +62,37 @@ public class LessonDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace(); // Xử lý ngoại lệ thích hợp, có thể ghi log
         }
+        return lessons;
+    }
+
+    //lay lesson theo teacherId de manageLesson
+    public List<Lesson> getLessonsByTeacherId(int teacherId) {
+        String query = "SELECT l.LessonID, l.CourseID, l.Title, l.Content, l.VideoURL, l.CreatedAt "
+                + "FROM Lesson l "
+                + "JOIN courses c ON l.CourseID = c.id "
+                + "WHERE c.teacher_id = ?";
+
+        List<Lesson> lessons = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, teacherId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Lesson lesson = new Lesson(
+                            rs.getInt("LessonID"),
+                            rs.getInt("CourseID"),
+                            rs.getString("Title"),
+                            rs.getString("Content"),
+                            rs.getString("VideoURL"),
+                            rs.getTimestamp("CreatedAt")
+                    );
+                    lessons.add(lesson);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return lessons;
     }
 

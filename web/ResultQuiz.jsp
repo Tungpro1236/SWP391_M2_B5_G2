@@ -23,11 +23,11 @@
                     <p><b>Correct answers:</b> ${attempt.score} / ${totalQuestion}</p>
 
                     <c:choose>
-                        <c:when test="${(attempt.score * 1.0) / totalQuestion >= 0.5}">
+                        <c:when test="${(attempt.score * 1.0) / totalQuestion >= 0.7}">
                             <p style="color: green;"><b>Passed</b></p>
                         </c:when>
                         <c:otherwise>
-                            <p style="color: red;"><b>Failed (you need to answer >= 50% of the questions correctly)</b></p>
+                            <p style="color: red;"><b>Failed (you need to answer >= 70% of the questions correctly)</b></p>
                         </c:otherwise>
                     </c:choose>
 
