@@ -71,7 +71,8 @@
                         <a class="nav-link" href="#">Course and Exercise</a>
                         <a class="nav-link" href="#">Wishlist</a>
                         <a class="nav-link" href="#">Order History</a>
-                        <c:if test="${user.role == 3}">
+                        <c:if test="${user.roleId == 3}">
+                     
                             <a class="nav-link" href="${pageContext.request.contextPath}/student/refund">Refund Request</a>
                         </c:if>
                     </nav>
