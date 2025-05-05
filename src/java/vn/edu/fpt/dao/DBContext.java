@@ -7,9 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBContext {
-    private static final String DB_URL = "jdbc:sqlserver://LAPTOP-LAU3GQ90\\MSSQLSERVER01:1433;databaseName=Onlinelearning";
+    private static final String DB_URL = "jdbc:sqlserver://LORDAINZ\\MSSQLSERVER01:1433;databaseName=Onlinelearning";
     private static final String USER = "sa";
-    private static final String PASS = "43413112221a";
+    private static final String PASS = "123";
     
     protected Connection connection;
 
