@@ -34,9 +34,9 @@ public class CartServlet extends HttpServlet {
                 boolean existsInWishlist = wishlistItems.stream().anyMatch(item -> item.getCourseId() == courseId);
 
                 if (existsInWishlist) {
-                    request.getSession().setAttribute("message", "Khóa học này đã có trong wishlist, không thể thêm vào giỏ hàng.");
+                    request.getSession().setAttribute("message", "This course was available in the Wishlist.");
                 } else if (existsInCart) {
-                    request.getSession().setAttribute("message", "Khóa học này đã có trong giỏ hàng.");
+                    request.getSession().setAttribute("message", "This course was available in the Cart.");
                 } else {
                     CartItem newItem = new CartItem(course.getId(), course.getTitle(), course.getPrice(), course.getThumbnailUrl());
                     cartItems.add(newItem);
@@ -79,7 +79,7 @@ public class CartServlet extends HttpServlet {
                         .anyMatch(item -> item.getCourseId() == courseId);
 
                 if (alreadyInWishlist) {
-                    request.getSession().setAttribute("wishlistMessage", "Khóa học đã có trong wishlist.");
+                    request.getSession().setAttribute("wishlistMessage", "This course was available in the Wishlist.");
                 } else {
                     CartItem wishlistItem = new CartItem(course.getId(), course.getTitle(), course.getPrice(), course.getThumbnailUrl());
                     wishlistItems.add(wishlistItem);
@@ -102,9 +102,9 @@ public class CartServlet extends HttpServlet {
                         .anyMatch(item -> item.getCourseId() == courseId);
 
                 if (alreadyInWishlistFromList) {
-                    request.getSession().setAttribute("wishlistMessage", "Khóa học đã có trong wishlist.");
+                    request.getSession().setAttribute("wishlistMessage", "This course was available in the Wishlist.");
                 } else if (existsInCartFromList) {
-                    request.getSession().setAttribute("wishlistMessage", "Khóa học đã có trong giỏ hàng, không thể thêm vào wishlist.");
+                    request.getSession().setAttribute("wishlistMessage", "This course was available in the Cart.");
                 } else {
                     CartItem wishlistItem = new CartItem(course.getId(), course.getTitle(), course.getPrice(), course.getThumbnailUrl());
                     wishlistItems.add(wishlistItem);
@@ -128,12 +128,12 @@ public class CartServlet extends HttpServlet {
                     if (!existsInCartFromWishlist) {
                         cartItems.add(itemFromWishlist);
                         wishlistItems.remove(itemFromWishlist);
-                        request.getSession().setAttribute("message", "✅ Đã chuyển khóa học vào giỏ hàng.");
+                        request.getSession().setAttribute("message", "✅ moved the course to the cart.");
                     } else {
-                        request.getSession().setAttribute("message", "⚠️ Khóa học đã có trong giỏ hàng.");
+                        request.getSession().setAttribute("message", "⚠️This course was available in the Cart.");
                     }
                 } else {
-                    request.getSession().setAttribute("message", "❌ Không tìm thấy khóa học trong wishlist.");
+                    request.getSession().setAttribute("message", "❌ Can not found in the course wishlist.");
                 }
 
                 request.getSession().setAttribute("cartItems", cartItems);
