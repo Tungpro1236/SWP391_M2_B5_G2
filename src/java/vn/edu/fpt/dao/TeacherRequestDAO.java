@@ -158,7 +158,7 @@ public class TeacherRequestDAO extends DBContext {
             }
         }
         public boolean isApprovedTeacher(int userId) {
-        String sql = "SELECT status FROM teacher_requests WHERE requester_id = ? AND status = 1 ORDER BY created_at DESC LIMIT 1";
+        String sql = "SELECT TOP 1 status FROM teacher_requests WHERE requester_id = ? AND status = 1";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, userId);
