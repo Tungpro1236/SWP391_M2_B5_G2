@@ -58,6 +58,7 @@
             <div class="form-group">
                 <label for="ratingSelect">Choose Rating (1 - 5 stars):</label>
 
+
                 <select class="form-control" id="ratingSelect" name="rating">
                     <option value="1">1 - ★☆☆☆☆</option>
                     <option value="2">2 - ★★☆☆☆</option>
