@@ -59,6 +59,12 @@
                 </ul>
             </li>
             <li class="nav-item">
+                <a class="nav-link ${activePage == 'change-password' ? 'active' : ''}" 
+                   href="${pageContext.request.contextPath}/reset-password">
+                    <i class="bi bi-lock me-2"></i> Change Password
+                </a>
+            </li>
+            <li class="nav-item">
                 <form action="${pageContext.request.contextPath}/user" method="post" class="d-inline">
                     <input type="hidden" name="action" value="logout">
                     <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}">
