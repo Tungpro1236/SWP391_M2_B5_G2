@@ -50,12 +50,12 @@
             <input type="hidden" name="courseid" value="${courseD.id}"> 
             <input type="hidden" value="${sessionScope.user.id}" name="studentid">
             <div class="form-group">
-                <label for="commentInput">Đánh giá của bạn:</label>
+                <label for="commentInput">Add Feedback:</label>
                 <textarea class="form-control" id="commentInput" rows="4" 
-                          name="textinput" placeholder="Nhập đánh giá của bạn..." required=""></textarea>
+                          name="textinput" placeholder="Enter your feedback..." required=""></textarea>
             </div>
             <div class="form-group">
-                <label for="ratingSelect">Chọn Rating (1 - 5 sao):</label>
+                <label for="ratingSelect">Choice Rating (1 - 5 sao):</label>
                 <select class="form-control" id="ratingSelect" name="rating">
                     <option value="1">1 - ★☆☆☆☆</option>
                     <option value="2">2 - ★★☆☆☆</option>
@@ -64,7 +64,7 @@
                     <option value="5">5 - ★★★★★</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Thêm đánh giá</button>
+            <button type="submit" class="btn btn-primary">Add</button>
         </form>
     </body>
     
