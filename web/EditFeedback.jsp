@@ -50,12 +50,12 @@
             <input type="hidden" name="courseid" value="${courseD.id}"> 
             <input type="hidden" value="${feedback.id}" name="commentId">
             <div class="form-group">
-                <label for="commentInput">Your Feedback:</label>
+                <label for="commentInput">Đánh giá của bạn:</label>
                 <textarea class="form-control" id="commentInput" rows="4" 
-                          name="textinput" placeholder="Enter Your Feedback..." required="">${feedback.content}</textarea>
+                          name="textinput" placeholder="Nhập đánh giá của bạn..." required="">${feedback.content}</textarea>
             </div>
             <div class="form-group">
-                <label for="ratingSelect">Choice Rating (1 - 5 ):</label>
+                <label for="ratingSelect">Chọn Rating (1 - 5 sao):</label>
                 <select class="form-control" id="ratingSelect" name="rating">
                     <option value="1" ${feedback.rating == 1 ? "selected" : ""}>1 - ★☆☆☆☆</option>
                     <option value="2" ${feedback.rating == 2 ? "selected" : ""}>2 - ★★☆☆☆</option>
@@ -64,7 +64,7 @@
                     <option value="5" ${feedback.rating == 5 ? "selected" : ""}>5 - ★★★★★</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Edit</button>
+            <button type="submit" class="btn btn-primary">Thêm đánh giá</button>
         </form>
     </body>
 </html>

@@ -186,7 +186,7 @@
                     <input type="hidden" value="${sessionScope.user.id}" name="studentid">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add Feedback</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Đánh giá</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -194,14 +194,14 @@
                         <div class="modal-body">
                             <!-- Textarea for comment -->
                             <div class="form-group">
-                                <label for="commentInput">Your Feedback:</label>
+                                <label for="commentInput">Đánh giá của bạn:</label>
                                 <textarea class="form-control" id="commentInput" rows="4" 
-                                          name="textinput" placeholder="Enter Your Feedback..." required=""></textarea>
+                                          name="textinput" placeholder="Nhập đánh giá của bạn..." required=""></textarea>
                             </div>
 
                             <!-- Dropdown for rating -->
                             <div class="form-group">
-                                <label for="ratingSelect">choice Rating (1 - 5 ):</label>
+                                <label for="ratingSelect">Chọn Rating (1 - 5 sao):</label>
                                 <select class="form-control" id="ratingSelect" name="rating">
                                     <option value="1">1 - ★☆☆☆☆</option>
                                     <option value="2">2 - ★★☆☆☆</option>
@@ -213,8 +213,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
-                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Đánh giá</button>
                         </div>
                     </div>
                 </form>
@@ -222,10 +222,10 @@
         </div>
         <div class="container">
             <div style="display: flex">
-                <h2>Feedback for the course ${courseD.title}</h2>
+                <h2>Đánh giá cho khóa học ${courseD.title}</h2>
                 <form action="addfeedback">
                     <input type="hidden" value="${courseD.id}" name="coID">
-                    <button type="submit" class="btn btn-primary" >Add</button>
+                    <button type="submit" class="btn btn-primary" >Đánh giá</button>
 
                     </button></form>
 
@@ -479,7 +479,8 @@
             }
         </script>
     </body>
-    <a href="CourseController" class="btn btn-link">Back to the course list</a>
- 
+    <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
+    <!-- Nút quay lại -->
+            <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
     </body>
 </html>

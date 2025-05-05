@@ -1,118 +1,103 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Shopping Cart</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <style>
-            .empty-cart-icon {
-                font-size: 5rem;
-                color: #6c757d;
-                margin-bottom: 1rem;
-            }
-        </style>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Online Learning</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <%@ include file="/layout/header.jsp" %>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/home">Online Learning</a>
 
-        <div class="container py-5">
-            <!-- Display message if available -->
-            <c:if test="${not empty message}">
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/CourseController">Courses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/blogs.jsp">Blogs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/introduce.jsp">Introduce</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/wishlist.jsp">
+                                <i class="bi bi-heart"></i> Wishlist
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/cart.jsp">
+                                <i class="bi bi-cart"></i> Cart
+                            </a>
+                        </li>
+
+                        <c:choose>
+
+
+                            <c:when test="${not empty sessionScope.user}">
+                                <!-- Avatar + Welcome + Dropdown -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="<c:out value='${sessionScope.user.avatarUrl != null ? sessionScope.user.avatarUrl : "https://th.bing.com/th/id/OIP.-Zanaodp4hv0ry2WpuuPfgHaEf?rs=1&pid=ImgDetMain"}'/>"
+                                             alt="Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:8px;">
+
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/${sessionScope.user.roleId == 2 ? 'teacher/profile' : 'profile'}">
+                                                My Profile
+                                            </a>
+                                        </li>
+                                        <c:if test="${sessionScope.user.roleId == 3}">
+                                            <li>
+                                                <a class="dropdown-item" href="${pageContext.request.contextPath}/student/refund">
+                                                    Refund Request
+                                                </a>
+                                            </li>
+                                        </c:if>
+                                        <c:if test="${sessionScope.user.roleId == 1}">
+                                            <li>
+                                                <a class="dropdown-item" href="${pageContext.request.contextPath}/dashBoard">
+                                                    Admin DashBoard
+                                                </a>
+                                            </li>
+                                        </c:if>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/login?action=logout">
+                                                Logout
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="${pageContext.request.contextPath}/login.jsp">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="${pageContext.request.contextPath}/register.jsp">Register</a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </ul>
                 </div>
-            </c:if>
+            </div>
+        </nav>
 
-            <h1 class="text-center mb-4">Select Items to Submit</h1>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-            <c:choose>
-                <c:when test="${not empty cartItems}">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead class="table-dark text-center">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Course Name</th>
-                                    <th>Price</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${cartItems}" var="item" varStatus="status">
-                                    <tr>
-                                        <td class="text-center">${status.index + 1}</td>
-                                        <td>${item.title}</td>
-                                        <td class="text-success fw-bold">$${item.price}</td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <!-- Remove button -->
-                                                <form action="CartServlet" method="post">
-                                                    <input type="hidden" name="action" value="remove"/>
-                                                    <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i> Remove
-                                                    </button>
-                                                </form>
-                                                <!-- Move to Wishlist button -->
-                                                <form action="CartServlet" method="post">
-                                                    <input type="hidden" name="action" value="moveToWishlist"/>
-                                                    <input type="hidden" name="courseId" value="${item.courseId}"/>
-                                                    <button type="submit" class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-heart"></i> Wishlist
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Total price and Checkout button -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <h5 class="fw-bold">
-                            Total: 
-                            <c:choose>
-                                <c:when test="${not empty sessionScope.totalPrice}">
-                                    $${sessionScope.totalPrice}
-                                </c:when>
-                                <c:otherwise>
-                                    $0.00
-                                </c:otherwise>
-                            </c:choose>
-                        </h5>
-                        <a href="CheckoutServlet" class="btn btn-success btn-lg">
-                            <i class="bi bi-cart-check"></i> Checkout
-                        </a>
-                    </div>
-                </c:when>
-
-                <c:otherwise>
-                    <!-- Display when cart is empty -->
-                    <div class="alert alert-info text-center">
-                        <i class="bi bi-cart-x empty-cart-icon"></i>
-                        <h4 class="mt-3">Your Cart is Empty</h4>
-                        <p>Please add some courses to your cart!</p>
-                        <a href="CourseController" class="btn btn-primary mt-2">
-                            <i class="bi bi-book"></i> Browse Courses
-                        </a>
-                    </div>
-                </c:otherwise>
-            </c:choose>
-
-            <!-- Button to go back to course list -->
-            <a href="CourseController" class="btn btn-secondary mt-3">
-                <i class="bi bi-arrow-left"></i> Back to Course List
-            </a>
-        </div>
-
-        <%@ include file="/layout/footer.jsp" %>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     </body>
 </html>
