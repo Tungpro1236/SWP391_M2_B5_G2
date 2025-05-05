@@ -397,22 +397,22 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-lg-6 text-white">
-                                    <h1 class="display-4 fw-bold mb-4">Học Mọi Lúc Mọi Nơi</h1>
+                                    <h1 class="display-4 fw-bold mb-4">Learn Anytime Anywhere</h1>
                                     <p class="lead mb-4">
-                                        Khám phá hàng trăm khoá học chất lượng cùng giảng viên giàu kinh nghiệm.
+                                        Explore hundreds of quality courses with experienced instructors.
                                     </p>
                                     <div class="banner-stats d-flex gap-4 mb-4">
                                         <div class="stat-item">
                                             <h3 class="fw-bold mb-0">2.000+</h3>
-                                            <p class="mb-0">Học viên</p>
+                                            <p class="mb-0">Student</p>
                                         </div>
                                         <div class="stat-item">
                                             <h3 class="fw-bold mb-0">1.900+</h3>
-                                            <p class="mb-0">Người có việc làm</p>
+                                            <p class="mb-0">Employed people</p>
                                         </div>
                                     </div>
                                     <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
-                                        Bắt đầu học ngay
+                                        Start learning now
                                     </a>
                                 </div>
                                 <div class="col-lg-6">
@@ -430,12 +430,12 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-lg-6 text-white">
-                                    <h1 class="display-4 fw-bold mb-4">Khám Phá Tri Thức , Trạm Tới Ước Mơ</h1>
+                                    <h1 class="display-4 fw-bold mb-4">Discover Knowledge, Station to Dreams</h1>
                                     <p class="lead mb-4">
-                                        Tham gia cộng đồng học tập trực tuyến và nâng cao kỹ năng của bạn ngay hôm nay.
+                                        Join the online learning community and improve your skills today.
                                     </p>
                                     <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
-                                        Khám phá ngay
+                                        Start learning now
                                     </a>
                                 </div>
                                 <div class="col-lg-6">
@@ -453,12 +453,12 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-lg-6 text-white">
-                                    <h1 class="display-4 fw-bold mb-4">Khóa Học Hot Đang Chờ Bạn!</h1>
+                                    <h1 class="display-4 fw-bold mb-4">Hot Courses Are Waiting For You!</h1>
                                     <p class="lead mb-4">
-                                        Top khóa học được đánh giá cao nhất từ những giảng viên hàng đầu.
+                                        Top rated courses from top instructors.
                                     </p>
                                     <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
-                                        Xem lộ trình
+                                        Start learning now
                                     </a>
                                 </div>
                                 <div class="col-lg-6">
