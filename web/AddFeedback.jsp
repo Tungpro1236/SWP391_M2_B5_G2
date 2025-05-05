@@ -50,12 +50,14 @@
             <input type="hidden" name="courseid" value="${courseD.id}"> 
             <input type="hidden" value="${sessionScope.user.id}" name="studentid">
             <div class="form-group">
+
                 <label for="commentInput">Your feedback:</label>
                 <textarea class="form-control" id="commentInput" rows="4" 
                           name="textinput" placeholder="Input your feadback..." required=""></textarea>
             </div>
             <div class="form-group">
                 <label for="ratingSelect">Choose Rating (1 - 5 stars):</label>
+
                 <select class="form-control" id="ratingSelect" name="rating">
                     <option value="1">1 - ★☆☆☆☆</option>
                     <option value="2">2 - ★★☆☆☆</option>
@@ -64,7 +66,9 @@
                     <option value="5">5 - ★★★★★</option>
                 </select>
             </div>
+
             <button type="submit" class="btn btn-primary">Add feedback</button>
+
         </form>
     </body>
     
