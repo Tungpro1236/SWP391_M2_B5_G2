@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import vn.edu.fpt.dao.CourseDAO;
+import vn.edu.fpt.dao.TeacherRequestDAO;
 import vn.edu.fpt.model.Category;
 import vn.edu.fpt.model.Course;
 import vn.edu.fpt.model.UserModel;
@@ -124,6 +125,12 @@ public class CourseController extends HttpServlet {
 
         String action = request.getParameter("action");
         if (user.isStatus() == true && user.getRoleId() == 2) {
+            TeacherRequestDAO teacherRequestDAO = new TeacherRequestDAO();
+            if (!teacherRequestDAO.isApprovedTeacher(user.getId())) {
+                session.setAttribute("message", "Teacher's request has not been accepted!");
+                response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
+                return;
+            }
             if ("edit".equals(action)) {
                 // Xử lý cập nhật khóa học
                 try {
