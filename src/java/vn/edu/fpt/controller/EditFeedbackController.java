@@ -87,7 +87,7 @@ public class EditFeedbackController extends HttpServlet {
         String newContent = request.getParameter("textinput");
         String rating = request.getParameter("rating");
         fdao.updateComment(commentIdInt, newContent, rating);
-        session.setAttribute("feedbackMessage", "Edit Succcesfully");
+        session.setAttribute("feedbackMessage", "Cập nhật đánh giá thành công");
         response.sendRedirect("feedback?courseId=" + courseid);
     }
 
