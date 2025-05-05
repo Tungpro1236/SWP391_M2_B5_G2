@@ -52,40 +52,30 @@
                 </nav>
 
                 <!-- Sidebar -->
-                <div class="col-md-3 sidebar p-4">
+                <div class="col-md-3 bg-light p-4 shadow-sm rounded-end">
                     <div class="text-center mb-4">
-                        <img src="admin/images/user.png" class="rounded-circle" width="80" alt="User Image">
-                        <h5 class="mt-3">${sessionScope.user.lastName}</h5>
-                        <p class="text-muted">Giáo viên</p>
+                        <img src="admin/images/user.png" class="rounded-circle mb-2 border border-2" width="100" alt="User Image">
+                        <h5 class="mb-0">${sessionScope.user.lastName}</h5>
+                        <small class="text-muted">Teacher</small>
                     </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="TeacherDashboard">
-                                <i class="bi bi-house-door"></i> Bảng điều khiển
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="CourseController?action=manageCourse">
-                                <i class="bi bi-journal-bookmark"></i> Quản lý khóa học
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="LessonController?action=manageLesson">
-                                <i class="bi bi-people"></i> Quản lý bài học
-                            </a>
-                        </li>
-<!--                        <li class="nav-item">
-                            <a class="nav-link" href="QuizController?action=manageQuiz">
-                                <i class="bi bi-clipboard-check"></i> Quản lý bài kiểm tra
-                            </a>
-                        </li>-->
-                        <li class="nav-item">
-                            <a class="nav-link" href="feedback">
-                                <i class="bi bi-chat-dots"></i> Phản hồi
-                            </a>
-                        </li>
-                    </ul>
+
+                    <div class="list-group">
+                        <a href="teacher/profile" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-person me-2"></i> Teacher Profile
+                        </a>
+                        <a href="TeacherDashboard" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                        <a href="CourseController?action=manageCourse" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-journal-bookmark me-2"></i> Manage Courses
+                        </a>
+                        <a href="LessonController?action=manageLesson" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-book me-2"></i> Manage Lessons
+                        </a>
+                    </div>
                 </div>
+
+
 
                 <!-- Main content -->
                 <div class="col-md-9 p-5">

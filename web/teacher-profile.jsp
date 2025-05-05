@@ -77,7 +77,7 @@
     <body class="bg-light">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3 sidebar">
+<!--                <div class="col-md-3 sidebar">
                     <img src="${user.avatarUrl != null ? user.avatarUrl : 'assets/images/default-avatar.png'}" 
                          alt="Profile" class="profile-pic">
                     <h5 class="user-name">${user.firstName} ${user.lastName}</h5>
@@ -89,9 +89,9 @@
                         <a class="nav-link" href="#">Wishlist</a>
                         <a class="nav-link" href="#">Order History</a>
                     </nav>
-                </div>
+                </div>-->
 
-                <div class="col-md-9 content">
+                <div class="">
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="text-center mb-4">
