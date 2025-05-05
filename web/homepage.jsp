@@ -223,6 +223,137 @@
             .swiper-pagination-bullet-active {
                 background: #0d6efd;
             }
+            .hero-banner {
+                background: linear-gradient(to right, #1a1a1a, #292929);
+                min-height: 580px;
+                display: flex;
+                align-items: center;
+            }
+
+            .hero-banner h1 {
+                font-size: 3.2rem;
+                line-height: 1.2;
+            }
+
+            .banner-stats {
+                color: #a1a1a1;
+            }
+
+            .banner-stats h3 {
+                color: #ffffff;
+                font-size: 2.4rem;
+            }
+
+            .btn-primary {
+                background-color: #2877FA;
+                border-color: #2877FA;
+                padding: 12px 24px;
+                font-weight: 600;
+            }
+
+            .btn-primary:hover {
+                background-color: #1c5fd4;
+                border-color: #1c5fd4;
+            }
+
+            @media (max-width: 768px) {
+                .hero-banner {
+                    min-height: auto;
+                    padding: 60px 0;
+                }
+
+                .hero-banner h1 {
+                    font-size: 2.4rem;
+                }
+
+                .banner-stats {
+                    flex-direction: column;
+                    gap: 20px;
+                }
+            }
+            .hero-banner {
+                background: linear-gradient(to right, #1d2b3a, #2d4b6e);
+                min-height: 580px;
+                display: flex;
+                align-items: center;
+            }
+
+            .card {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .card-img-top {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+            .card-body {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.75rem;
+                height: 2.4rem;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+
+            .card-text {
+                flex: 1;
+                margin-bottom: 1rem;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+            }
+
+            .swiper-slide {
+                height: auto;
+            }
+
+            /* Adjust card footer spacing */
+            .card-footer {
+                background: none;
+                border-top: none;
+                padding-top: 0.5rem;
+            }
+            .hero-banner {
+                background: linear-gradient(to right, #1d2b3a, #2d4b6e);
+                min-height: 400px; /* Reduced from 580px */
+                display: flex;
+                align-items: center;
+                padding: 40px 0; /* Added padding */
+            }
+
+            .hero-banner h1 {
+                font-size: 2.5rem; /* Reduced from 3.2rem */
+                line-height: 1.2;
+            }
+
+            .banner-stats h3 {
+                color: #ffffff;
+                font-size: 2rem; /* Reduced from 2.4rem */
+            }
+
+            @media (max-width: 768px) {
+                .hero-banner {
+                    min-height: 300px; /* Reduced for mobile */
+                    padding: 30px 0;
+                }
+
+                .hero-banner h1 {
+                    font-size: 2rem;
+                }
+            }
         </style>
         <!-- Add this right before the closing </body> tag -->
         <script>
@@ -258,19 +389,91 @@
         <jsp:include page="/layout/header.jsp" />
 
         <!-- Banner Section -->
-        <section class="home-banner-area py-5">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h1>Learn From The Best</h1>
-                        <p>Explore thousands of courses with the best instructors</p>
-                    </div>
-                    <div class="col-md-6">
-                        <img src="assets/banner-image.jpg" class="img-fluid" alt="Banner">
-                    </div>
+        <div class="swiper bannerSwiper">
+            <div class="swiper-wrapper">
+                <!-- Banner 1 -->
+                <div class="swiper-slide">
+                    <section class="hero-banner py-5" style="background-color: #1d2b3a;">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 text-white">
+                                    <h1 class="display-4 fw-bold mb-4">Học Mọi Lúc Mọi Nơi</h1>
+                                    <p class="lead mb-4">
+                                        Khám phá hàng trăm khoá học chất lượng cùng giảng viên giàu kinh nghiệm.
+                                    </p>
+                                    <div class="banner-stats d-flex gap-4 mb-4">
+                                        <div class="stat-item">
+                                            <h3 class="fw-bold mb-0">2.000+</h3>
+                                            <p class="mb-0">Học viên</p>
+                                        </div>
+                                        <div class="stat-item">
+                                            <h3 class="fw-bold mb-0">1.900+</h3>
+                                            <p class="mb-0">Người có việc làm</p>
+                                        </div>
+                                    </div>
+                                    <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
+                                        Bắt đầu học ngay
+                                    </a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="https://files.fullstack.edu.vn/f8-prod/banners/Banner_web_ReactJS.png" 
+                                         alt="Learning Programming" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Banner 2 -->
+                <div class="swiper-slide">
+                    <section class="hero-banner py-5" style="background: linear-gradient(to right, #2d1d3a, #4b2d6e);">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 text-white">
+                                    <h1 class="display-4 fw-bold mb-4">Khám Phá Tri Thức , Trạm Tới Ước Mơ</h1>
+                                    <p class="lead mb-4">
+                                        Tham gia cộng đồng học tập trực tuyến và nâng cao kỹ năng của bạn ngay hôm nay.
+                                    </p>
+                                    <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
+                                        Khám phá ngay
+                                    </a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="https://files.fullstack.edu.vn/f8-prod/banners/Banner_01_2.png" 
+                                         alt="New Technology" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Banner 3 -->
+                <div class="swiper-slide">
+                    <section class="hero-banner py-5" style="background: linear-gradient(to right, #1d3a2d, #2d6e4b);">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 text-white">
+                                    <h1 class="display-4 fw-bold mb-4">Khóa Học Hot Đang Chờ Bạn!</h1>
+                                    <p class="lead mb-4">
+                                        Top khóa học được đánh giá cao nhất từ những giảng viên hàng đầu.
+                                    </p>
+                                    <a href="${pageContext.request.contextPath}/CourseController" class="btn btn-primary btn-lg">
+                                        Xem lộ trình
+                                    </a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <img src="https://files.fullstack.edu.vn/f8-prod/banners/Banner_03_youtube.png" 
+                                         alt="Learning Path" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </section>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
 
         <!-- Latest Courses Section -->
         <section class="py-5">
@@ -413,6 +616,23 @@
             new Swiper('.latestCoursesSwiper', swiperConfig);
             new Swiper('.hotCoursesSwiper', swiperConfig);
             new Swiper('.blogsSwiper', swiperConfig);
+            new Swiper('.bannerSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                }
+            });
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
