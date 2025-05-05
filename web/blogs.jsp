@@ -59,7 +59,7 @@
     <div class="container py-5">
         <h1 class="text-center mb-5">List Blogs</h1>
 
-        <!-- Phần tìm kiếm -->
+        <!-- Search section -->
         <div class="search-section">
             <form action="blogs.jsp" method="GET" class="card p-4">
                 <h4 class="mb-3">Search</h4>
@@ -74,12 +74,12 @@
         </div>
                      <div class="text-end mb-4">
     <a href="add-Blogs.jsp" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Thêm Blog Mới
+        <i class="bi bi-plus-circle"></i> Add New Blog
     </a>
 </div>
 
         <%
-            // Thiết lập phân trang
+            // Pagination setup
             int currentPage = 1;
             int recordsPerPage = 6;
             
@@ -94,11 +94,11 @@
             int totalRecords;
             
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-                // Xử lý tìm kiếm (không phân trang cho tìm kiếm để đơn giản)
+                // Search handling (no pagination for search to keep it simple)
                 blogList = blogDAO.searchBlogs(searchQuery);
                 totalRecords = blogList.size();
             } else {
-                // Lấy dữ liệu phân trang
+                // Get paginated data
                 blogList = blogDAO.getBlogsByPage(currentPage, recordsPerPage);
                 totalRecords = blogDAO.getTotalPublishedBlogs();
             }
@@ -111,7 +111,7 @@
             request.setAttribute("totalRecords", totalRecords);
         %>
 
-        <!-- Tiêu đề kết quả -->
+        <!-- Title of results -->
         <c:if test="${not empty param.search}">
             <h2 class="mb-4">Search results for "${param.search}" (${totalRecords} results)</h2>
         </c:if>
@@ -119,7 +119,7 @@
             <h2 class="mb-4">Latest Articles</h2>
         </c:if>
 
-        <!-- Danh sách bài viết -->
+        <!-- Blog list -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <c:forEach items="${blogList}" var="blog">
                 <div class="col">
@@ -161,7 +161,7 @@
             </c:if>
         </div>
 
-        <!-- Phân trang - chỉ hiển thị khi không có tìm kiếm -->
+        <!-- Pagination - only shown when there is no search -->
         <c:if test="${empty param.search && totalPages > 1}">
             <nav aria-label="Page navigation" class="mt-4">
                 <ul class="pagination justify-content-center">
@@ -195,7 +195,6 @@
             </nav>
         </c:if>
     </div>
-       
 
     <%@ include file="/layout/footer.jsp" %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

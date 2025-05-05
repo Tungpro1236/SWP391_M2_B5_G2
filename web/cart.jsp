@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Giỏ hàng</title>
+        <title>Shopping Cart</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <style>
@@ -20,7 +20,7 @@
         <%@ include file="/layout/header.jsp" %>
 
         <div class="container py-5">
-            <!-- Hiển thị thông báo nếu có -->
+            <!-- Display message if available -->
             <c:if test="${not empty message}">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     ${message}
@@ -28,7 +28,7 @@
                 </div>
             </c:if>
 
-            <h1 class="text-center mb-4">Lựa chọn các khoản nộp</h1>
+            <h1 class="text-center mb-4">Select Items to Submit</h1>
 
             <c:choose>
                 <c:when test="${not empty cartItems}">
@@ -37,9 +37,9 @@
                             <thead class="table-dark text-center">
                                 <tr>
                                     <th>#</th>
-                                    <th>Tên khóa học</th>
-                                    <th>Giá</th>
-                                    <th>Hành động</th>
+                                    <th>Course Name</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,15 +50,15 @@
                                         <td class="text-success fw-bold">$${item.price}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <!-- Nút Xóa -->
+                                                <!-- Remove button -->
                                                 <form action="CartServlet" method="post">
                                                     <input type="hidden" name="action" value="remove"/>
                                                     <input type="hidden" name="courseId" value="${item.courseId}"/>
                                                     <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i> Xóa
+                                                        <i class="bi bi-trash"></i> Remove
                                                     </button>
                                                 </form>
-                                                <!-- Nút chuyển sang Wishlist -->
+                                                <!-- Move to Wishlist button -->
                                                 <form action="CartServlet" method="post">
                                                     <input type="hidden" name="action" value="moveToWishlist"/>
                                                     <input type="hidden" name="courseId" value="${item.courseId}"/>
@@ -74,10 +74,10 @@
                         </table>
                     </div>
 
-                    <!-- Tổng tiền và nút Thanh toán -->
+                    <!-- Total price and Checkout button -->
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <h5 class="fw-bold">
-                            Tổng cộng: 
+                            Total: 
                             <c:choose>
                                 <c:when test="${not empty sessionScope.totalPrice}">
                                     $${sessionScope.totalPrice}
@@ -88,27 +88,27 @@
                             </c:choose>
                         </h5>
                         <a href="CheckoutServlet" class="btn btn-success btn-lg">
-                            <i class="bi bi-cart-check"></i> Thanh toán
+                            <i class="bi bi-cart-check"></i> Checkout
                         </a>
                     </div>
                 </c:when>
 
                 <c:otherwise>
-                    <!-- Hiển thị khi giỏ hàng trống -->
+                    <!-- Display when cart is empty -->
                     <div class="alert alert-info text-center">
                         <i class="bi bi-cart-x empty-cart-icon"></i>
-                        <h4 class="mt-3">Giỏ hàng trống</h4>
-                        <p>Hãy thêm khóa học vào giỏ hàng!</p>
+                        <h4 class="mt-3">Your Cart is Empty</h4>
+                        <p>Please add some courses to your cart!</p>
                         <a href="CourseController" class="btn btn-primary mt-2">
-                            <i class="bi bi-book"></i> Xem khóa học
+                            <i class="bi bi-book"></i> Browse Courses
                         </a>
                     </div>
                 </c:otherwise>
             </c:choose>
 
-            <!-- Nút quay lại danh sách khóa học -->
+            <!-- Button to go back to course list -->
             <a href="CourseController" class="btn btn-secondary mt-3">
-                <i class="bi bi-arrow-left"></i> Quay lại danh sách khóa học
+                <i class="bi bi-arrow-left"></i> Back to Course List
             </a>
         </div>
 

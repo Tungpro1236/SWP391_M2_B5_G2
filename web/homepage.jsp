@@ -557,32 +557,51 @@
             </div>
         </section>
 
-        <!-- Latest Blogs Section -->
-        <section class="py-5">
-            <div class="container">
-                <h2 class="mb-4">Latest Blogs</h2>
-                <div class="swiper blogsSwiper">
-                    <div class="swiper-wrapper">
-                        <c:forEach items="${latestBlogs}" var="blog">
-                            <div class="swiper-slide">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${blog.title}</h5>
-                                        <p class="card-text">${blog.content}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">Posted on ${blog.createdAt}</small>
-                                        </div>
-                                    </div>
+       <section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Latest Blogs</h2>
+            <a href="blogs.jsp" class="btn btn-outline-primary">View All Blogs</a>
+        </div>
+        
+        <div class="swiper blogsSwiper">
+            <div class="swiper-wrapper">
+                <c:forEach items="${latestBlogs}" var="blog">
+                    <div class="swiper-slide">
+                        <div class="card h-100">
+                            <!-- Optional: Blog Thumbnail -->
+                            <c:if test="${not empty blog.thumbnailUrl}">
+                                <img src="${blog.thumbnailUrl}" class="card-img-top" 
+                                     alt="${blog.title}" style="height: 200px; object-fit: cover;">
+                            </c:if>
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">${blog.title}</h5>
+                                <p class="card-text text-truncate" style="max-height: 4.5em; overflow: hidden;">
+                                    ${blog.content}
+                                </p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        Posted on <fmt:formatDate value="${blog.createdAt}" pattern="dd/MM/yyyy"/>
+                                    </small>
+                                    <a href="blog-details.jsp?id=${blog.id}" class="btn btn-primary w-100">
+                                <i class="bi bi-book"></i> Read More
+                                    </a>
                                 </div>
                             </div>
-                        </c:forEach>
+                        </div>
                     </div>
-                    <div class="swiper-pagination"></div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
+                </c:forEach>
             </div>
-        </section>
+
+            <!-- Swiper Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination mt-3"></div>
+        </div>
+    </div>
+</section>
+
 
         <jsp:include page="layout/footer.jsp" />
 

@@ -92,7 +92,7 @@ public class AddFeedbackController extends HttpServlet {
         Feedback f = new Feedback(0, studentid, courseid, textinput,
                 rating, "Visible", formattedDate);
         fdao.addNewFeedback(f);
-        session.setAttribute("feedbackMessage", "Thêm đánh giá thành công");
+        session.setAttribute("feedbackMessage", "Add Feedback Succesfully");
         response.sendRedirect("feedback?courseId=" + courseid);
     }
 

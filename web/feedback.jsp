@@ -2,12 +2,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Feedback</title>
         <title>Comment Section for Shoes ABC</title>
-
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        
         <style>
             * {
                 box-sizing: border-box;
@@ -139,7 +143,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
-
+<%@ include file="/layout/header.jsp" %>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -186,7 +190,7 @@
                     <input type="hidden" value="${sessionScope.user.id}" name="studentid">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Đánh giá</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Add Feedback</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -194,14 +198,14 @@
                         <div class="modal-body">
                             <!-- Textarea for comment -->
                             <div class="form-group">
-                                <label for="commentInput">Đánh giá của bạn:</label>
+                                <label for="commentInput">Your Feedback:</label>
                                 <textarea class="form-control" id="commentInput" rows="4" 
-                                          name="textinput" placeholder="Nhập đánh giá của bạn..." required=""></textarea>
+                                          name="textinput" placeholder="Enter Your Feedback..." required=""></textarea>
                             </div>
 
                             <!-- Dropdown for rating -->
                             <div class="form-group">
-                                <label for="ratingSelect">Chọn Rating (1 - 5 sao):</label>
+                                <label for="ratingSelect">choice Rating (1 - 5 ):</label>
                                 <select class="form-control" id="ratingSelect" name="rating">
                                     <option value="1">1 - ★☆☆☆☆</option>
                                     <option value="2">2 - ★★☆☆☆</option>
@@ -213,8 +217,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-primary">Đánh giá</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
                         </div>
                     </div>
                 </form>
@@ -222,10 +226,10 @@
         </div>
         <div class="container">
             <div style="display: flex">
-                <h2>Đánh giá cho khóa học ${courseD.title}</h2>
+                <h2>Feedback for the course ${courseD.title}</h2>
                 <form action="addfeedback">
                     <input type="hidden" value="${courseD.id}" name="coID">
-                    <button type="submit" class="btn btn-primary" >Đánh giá</button>
+                    <button type="submit" class="btn btn-primary" >Add</button>
 
                     </button></form>
 
@@ -479,8 +483,7 @@
             }
         </script>
     </body>
-    <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
-    <!-- Nút quay lại -->
-            <a href="CourseController" class="btn btn-link">Quay lại danh sách khóa học</a>
+    <a href="CourseController" class="btn btn-link">Back to the course list</a>
+ 
     </body>
 </html>
