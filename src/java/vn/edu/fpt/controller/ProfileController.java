@@ -19,8 +19,9 @@ public class ProfileController extends HttpServlet {
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
         
-        if (user == null || user.getRoleId() != Role.LEARNER.getRoleId()) {
-            response.sendRedirect(request.getContextPath() + "/login");
+        if (user == null || user.getRoleId() != Role.LEARNER.getRoleId()&& user.getRoleId() != Role.ADMIN.getRoleId()) {
+            request.setAttribute("error", "You do not have permission to access this page.");
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
             return;
         }
         
