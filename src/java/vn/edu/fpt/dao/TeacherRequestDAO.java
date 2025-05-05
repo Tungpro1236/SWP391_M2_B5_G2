@@ -157,4 +157,16 @@ public class TeacherRequestDAO extends DBContext {
                 return false;
             }
         }
+        public boolean isApprovedTeacher(int userId) {
+        String sql = "SELECT status FROM teacher_requests WHERE requester_id = ? AND status = 1 ORDER BY created_at DESC LIMIT 1";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            return rs.next(); // Returns true if there's an approved request
+        } catch (SQLException e) {
+            System.out.println("Error checking teacher status: " + e.getMessage());
+            return false;
+        }
+    }
 }
