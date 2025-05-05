@@ -5,9 +5,17 @@
 <head>
     <meta charset="UTF-8">
     <title>User Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
         .status-badge {
             width: 85px;
             text-align: center;
@@ -18,14 +26,14 @@
     </style>
 </head>
 <body class="bg-light">
-    <%@ include file="/layout/header.jsp" %>
-        <%@ include file="/layout/sidebar.jsp" %>
+    <%@ include file="/layout/sidebar.jsp" %>
+
     <div class="container mt-4">
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="card-title mb-4">User Management</h2>
                 
-                <!-- Update the Search and Filter section -->
+                <!-- Search and Filter section -->
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="input-group">
@@ -51,55 +59,6 @@
                         </select>
                     </div>
                 </div>
-
-                <!-- Add this script before the closing body tag -->
-                <script>
-                    function performSearch() {
-                        const searchText = document.getElementById('searchInput').value;
-                        const roleValue = document.getElementById('roleFilter').value;
-                        const statusValue = document.getElementById('statusFilter').value;
-                        
-                        let url = '${pageContext.request.contextPath}/admin/users?page=1';
-                        
-                        if (searchText) {
-                            url += '&search=' + encodeURIComponent(searchText);
-                        }
-                        if (roleValue) {
-                            url += '&role=' + roleValue;
-                        }
-                        if (statusValue) {
-                            url += '&status=' + statusValue;
-                        }
-                        
-                        window.location.href = url;
-                    }
-
-                    // Search button click
-                    document.getElementById('searchBtn').addEventListener('click', performSearch);
-
-                    // Enter key in search input
-                    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter') {
-                            performSearch();
-                        }
-                    });
-
-                    // Role and Status filter change
-                    document.getElementById('roleFilter').addEventListener('change', performSearch);
-                    document.getElementById('statusFilter').addEventListener('change', performSearch);
-
-                    // Set initial values from URL params
-                    window.addEventListener('load', function() {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const search = urlParams.get('search');
-                        const role = urlParams.get('role');
-                        const status = urlParams.get('status');
-
-                        if (search) document.getElementById('searchInput').value = search;
-                        if (role) document.getElementById('roleFilter').value = role;
-                        if (status) document.getElementById('statusFilter').value = status;
-                    });
-                </script>
 
                 <!-- User Table -->
                 <div class="table-responsive">
@@ -149,7 +108,6 @@
                 <!-- Pagination -->
                 <nav class="mt-4">
                     <ul class="pagination justify-content-center">
-                        <!-- Update pagination links -->
                         <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
                             <a class="page-link" href="?page=${currentPage - 1}${not empty param.search ? '&search='.concat(param.search) : ''}${not empty param.role ? '&role='.concat(param.role) : ''}${not empty param.status ? '&status='.concat(param.status) : ''}">
                                 <i class="fas fa-chevron-left"></i>
@@ -172,7 +130,54 @@
     </div>
 
     <%@ include file="/layout/footer.jsp" %>
+
     <script>
+        function performSearch() {
+            const searchText = document.getElementById('searchInput').value;
+            const roleValue = document.getElementById('roleFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            
+            let url = '${pageContext.request.contextPath}/admin/users?page=1';
+            
+            if (searchText) {
+                url += '&search=' + encodeURIComponent(searchText);
+            }
+            if (roleValue) {
+                url += '&role=' + roleValue;
+            }
+            if (statusValue) {
+                url += '&status=' + statusValue;
+            }
+            
+            window.location.href = url;
+        }
+
+        // Search button click
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+
+        // Enter key in search input
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Role and Status filter change
+        document.getElementById('roleFilter').addEventListener('change', performSearch);
+        document.getElementById('statusFilter').addEventListener('change', performSearch);
+
+        // Set initial values from URL params
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const search = urlParams.get('search');
+            const role = urlParams.get('role');
+            const status = urlParams.get('status');
+
+            if (search) document.getElementById('searchInput').value = search;
+            if (role) document.getElementById('roleFilter').value = role;
+            if (status) document.getElementById('statusFilter').value = status;
+        });
+
         document.querySelectorAll('.toggle-status').forEach(button => {
             button.addEventListener('click', function() {
                 if (!confirm('Are you sure you want to change this user\'s status?')) {
@@ -203,7 +208,6 @@
                 });
             });
         });
-        
     </script>
 </body>
 </html>

@@ -5,8 +5,17 @@
     <head>
         <meta charset="UTF-8">
         <title>Teacher Verification Requests - Admin</title>
-        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                overflow-x: hidden;
+            }
             .request-badge {
                 padding: 5px 10px;
                 border-radius: 15px;
@@ -27,18 +36,14 @@
         </style>
     </head>
     <body class="bg-light">
+        <%@ include file="/layout/sidebar.jsp" %>
+
         <div class="container-fluid">
             <div class="row">
-                <%@ include file="/layout/header.jsp" %>
-                <%@ include file="/layout/sidebar.jsp" %>
-
                 <div class="col-md-12 p-4">
                     <div class="card shadow">
                         <div class="card-body">
-
                             <h3 class="card-title mb-4">Teacher Requests</h3>
-                      
-
 
                             <!-- Status Filter -->
                             <div class="row mb-4">
@@ -157,67 +162,68 @@
                 </div>
             </div>
         </div>
+
         <%@ include file="/layout/footer.jsp" %>
         
         <script>
-                            const rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
+            const rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
 
-                            function showRejectModal(requestId) {
-                                document.getElementById('requestId').value = requestId;
-                                document.querySelector('#rejectModal textarea').value = ''; // Clear previous reason
-                                rejectModal.show();
-                            }
+            function showRejectModal(requestId) {
+                document.getElementById('requestId').value = requestId;
+                document.querySelector('#rejectModal textarea').value = ''; // Clear previous reason
+                rejectModal.show();
+            }
 
-                            function approveRequest(requestId) {
-                                if (confirm('Are you sure you want to approve this request?')) {
-                                    const form = document.createElement('form');
-                                    form.method = 'POST';
-                                    form.action = '${pageContext.request.contextPath}/admin/teacher-requests/approve';
+            function approveRequest(requestId) {
+                if (confirm('Are you sure you want to approve this request?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '${pageContext.request.contextPath}/admin/teacher-requests/approve';
 
-                                    const input = document.createElement('input');
-                                    input.type = 'hidden';
-                                    input.name = 'requestId';
-                                    input.value = requestId;
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'requestId';
+                    input.value = requestId;
 
-                                    form.appendChild(input);
-                                    document.body.appendChild(form);
-                                    form.submit();
-                                }
-                            }
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
 
-                            function cancelReject() {
-                                document.querySelector('#rejectModal textarea').value = '';
-                                rejectModal.hide();
-                            }
+            function cancelReject() {
+                document.querySelector('#rejectModal textarea').value = '';
+                rejectModal.hide();
+            }
 
-                            function submitReject() {
-                                const requestId = document.getElementById('requestId').value;
-                                const reason = document.querySelector('#rejectModal textarea').value.trim();
+            function submitReject() {
+                const requestId = document.getElementById('requestId').value;
+                const reason = document.querySelector('#rejectModal textarea').value.trim();
 
-                                if (!reason) {
-                                    alert('Please provide a reason for rejection');
-                                    return;
-                                }
+                if (!reason) {
+                    alert('Please provide a reason for rejection');
+                    return;
+                }
 
-                                const form = document.createElement('form');
-                                form.method = 'POST';
-                                form.action = '${pageContext.request.contextPath}/admin/teacher-requests/reject';
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '${pageContext.request.contextPath}/admin/teacher-requests/reject';
 
-                                const requestIdInput = document.createElement('input');
-                                requestIdInput.type = 'hidden';
-                                requestIdInput.name = 'requestId';
-                                requestIdInput.value = requestId;
+                const requestIdInput = document.createElement('input');
+                requestIdInput.type = 'hidden';
+                requestIdInput.name = 'requestId';
+                requestIdInput.value = requestId;
 
-                                const reasonInput = document.createElement('input');
-                                reasonInput.type = 'hidden';
-                                reasonInput.name = 'rejectReason';
-                                reasonInput.value = reason;
+                const reasonInput = document.createElement('input');
+                reasonInput.type = 'hidden';
+                reasonInput.name = 'rejectReason';
+                reasonInput.value = reason;
 
-                                form.appendChild(requestIdInput);
-                                form.appendChild(reasonInput);
-                                document.body.appendChild(form);
-                                form.submit();
-                            }
+                form.appendChild(requestIdInput);
+                form.appendChild(reasonInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
         </script>
     </body>
 </html>

@@ -5,14 +5,17 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Admin - View Teacher Courses</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <style>
             body {
                 background-color: #f8f9fa;
@@ -52,7 +55,6 @@
         </style>
     </head>
     <body>
-        <%@ include file="/layout/header.jsp" %>
         <%@ include file="/layout/sidebar.jsp" %>
 
         <!-- Main Content -->
@@ -132,32 +134,32 @@
                                     <td>${course.title}</td>
                                     <td>${course.description}</td>
                                     <td>
-                            <fmt:formatDate value="${course.createdAt}" pattern="yyyy-MM-dd"/>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${course.status == 'active'}">
-                                        <span class="badge bg-success">Active</span>
-                                    </c:when>
-                                    <c:when test="${course.status == 'inactive'}">
-                                        <span class="badge bg-danger">Inactive</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="badge bg-secondary">Unknown</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" 
-                                           id="statusSwitch_${course.id}" 
-                                           ${course.status == 'active' ? 'checked' : ''} 
-                                           onchange="changeCourseStatus(${course.id}, this.checked ? 'active' : 'inactive', this)">
-                                    <label class="form-check-label" for="statusSwitch_${course.id}"></label>
-                                </div>
-                            </td>
-                            </tr>
-                        </c:forEach>
+                                        <fmt:formatDate value="${course.createdAt}" pattern="yyyy-MM-dd"/>
+                                    </td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${course.status == 'active'}">
+                                                <span class="badge bg-success">Active</span>
+                                            </c:when>
+                                            <c:when test="${course.status == 'inactive'}">
+                                                <span class="badge bg-danger">Inactive</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="badge bg-secondary">Unknown</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" 
+                                                   id="statusSwitch_${course.id}" 
+                                                   ${course.status == 'active' ? 'checked' : ''} 
+                                                   onchange="changeCourseStatus(${course.id}, this.checked ? 'active' : 'inactive', this)">
+                                            <label class="form-check-label" for="statusSwitch_${course.id}"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -207,66 +209,64 @@
 
         <%@ include file="/layout/footer.jsp" %>
 
-        <!-- jQuery và JavaScript cho AJAX -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- JavaScript cho AJAX -->
         <script>
-                                               function changeCourseStatus(courseId, status, toggle) {
-                                                   $.ajax({
-                                                       url: 'changeCourseStatus',
-                                                       type: 'POST',
-                                                       data: {
-                                                           courseId: courseId,
-                                                           status: status
-                                                       },
-                                                       success: function (response) {
-                                                           if (response === 'success') {
-                                                               // Cập nhật badge trạng thái
-                                                               var badge = $(toggle).closest('tr').find('.badge');
-                                                               if (status === 'active') {
-                                                                   badge.removeClass('bg-danger bg-secondary').addClass('bg-success').text('Active');
-                                                               } else {
-                                                                   badge.removeClass('bg-success bg-secondary').addClass('bg-danger').text('Inactive');
-                                                               }
-                                                               // Hiển thị thông báo thành công
-                                                               var alert = $('<div class="alert alert-success shadow-sm rounded-3" role="alert">' +
-                                                                       'Status updated successfully</div>');
-                                                               $('.container-fluid').prepend(alert);
-                                                               setTimeout(function () {
-                                                                   alert.fadeOut('slow', function () {
-                                                                       $(this).remove();
-                                                                   });
-                                                               }, 3000);
-                                                           } else {
-                                                               // Hiển thị thông báo lỗi
-                                                               var message = response.startsWith('error:') ? response.substring(6) : 'Failed to update status';
-                                                               var alert = $('<div class="alert alert-danger shadow-sm rounded-3" role="alert">' +
-                                                                       message + '</div>');
-                                                               $('.container-fluid').prepend(alert);
-                                                               setTimeout(function () {
-                                                                   alert.fadeOut('slow', function () {
-                                                                       $(this).remove();
-                                                                   });
-                                                               }, 3000);
-                                                               // Hoàn tác trạng thái công tắc
-                                                               toggle.checked = !toggle.checked;
-                                                           }
-                                                       },
-                                                       error: function () {
-                                                           // Hiển thị lỗi chung
-                                                           var alert = $('<div class="alert alert-danger shadow-sm rounded-3" role="alert">' +
-                                                                   'Failed to update status. Please try again.</div>');
-                                                           $('.container-fluid').prepend(alert);
-                                                           setTimeout(function () {
-                                                               alert.fadeOut('slow', function () {
-                                                                   $(this).remove();
-                                                               });
-                                                           }, 3000);
-                                                           // Hoàn tác trạng thái công tắc
-                                                           toggle.checked = !toggle.checked;
-                                                       }
-                                                   });
-                                               }
+            function changeCourseStatus(courseId, status, toggle) {
+                $.ajax({
+                    url: 'changeCourseStatus',
+                    type: 'POST',
+                    data: {
+                        courseId: courseId,
+                        status: status
+                    },
+                    success: function (response) {
+                        if (response === 'success') {
+                            // Cập nhật badge trạng thái
+                            var badge = $(toggle).closest('tr').find('.badge');
+                            if (status === 'active') {
+                                badge.removeClass('bg-danger bg-secondary').addClass('bg-success').text('Active');
+                            } else {
+                                badge.removeClass('bg-success bg-secondary').addClass('bg-danger').text('Inactive');
+                            }
+                            // Hiển thị thông báo thành công
+                            var alert = $('<div class="alert alert-success shadow-sm rounded-3" role="alert">' +
+                                    'Status updated successfully</div>');
+                            $('.container-fluid').prepend(alert);
+                            setTimeout(function () {
+                                alert.fadeOut('slow', function () {
+                                    $(this).remove();
+                                });
+                            }, 3000);
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            var message = response.startsWith('error:') ? response.substring(6) : 'Failed to update status';
+                            var alert = $('<div class="alert alert-danger shadow-sm rounded-3" role="alert">' +
+                                    message + '</div>');
+                            $('.container-fluid').prepend(alert);
+                            setTimeout(function () {
+                                alert.fadeOut('slow', function () {
+                                    $(this).remove();
+                                });
+                            }, 3000);
+                            // Hoàn tác trạng thái công tắc
+                            toggle.checked = !toggle.checked;
+                        }
+                    },
+                    error: function () {
+                        // Hiển thị lỗi chung
+                        var alert = $('<div class="alert alert-danger shadow-sm rounded-3" role="alert">' +
+                                'Failed to update status. Please try again.</div>');
+                        $('.container-fluid').prepend(alert);
+                        setTimeout(function () {
+                            alert.fadeOut('slow', function () {
+                                $(this).remove();
+                            });
+                        }, 3000);
+                        // Hoàn tác trạng thái công tắc
+                        toggle.checked = !toggle.checked;
+                    }
+                });
+            }
         </script>
     </body>
-
 </html>
