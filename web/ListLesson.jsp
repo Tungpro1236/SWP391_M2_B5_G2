@@ -51,18 +51,6 @@
                                             </c:if>
                                         </c:forEach>
 
-                                        <!-- Hiển thị các nút nếu chưa đăng ký -->
-                                        <c:if test="${!enrolled}">
-                                            <!-- Nút đăng ký ngay -->
-                                            <form action="CartServlet" method="post" class="d-inline ml-2">
-                                                <input type="hidden" name="action" value="register" />
-                                                <input type="hidden" name="courseId" value="${lesson.courseId}" />
-                                                <button type="submit" class="btn btn-outline-success">
-                                                    Đăng ký ngay
-                                                </button>
-                                            </form>
-                                        </c:if>
-
                                         <!-- Nếu khóa học chưa có trong giỏ hàng và wishlist -->
                                         <c:if test="${!alreadyInCart && !alreadyInWishlist}">
                                             <form action="CartServlet" method="post" class="d-inline ml-2">

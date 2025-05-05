@@ -77,7 +77,6 @@
     <body class="bg-light">
         <div class="container-fluid">
             <div class="row">
-                <jsp:include page="layout/header.jsp" />
                 <div class="col-md-3 sidebar">
                     <img src="${user.avatarUrl != null ? user.avatarUrl : 'assets/images/default-avatar.png'}" 
                          alt="Profile" class="profile-pic">
@@ -91,7 +90,7 @@
                         <a class="nav-link" href="#">Order History</a>
                     </nav>
                 </div>
-                
+
                 <div class="col-md-9 content">
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -166,7 +165,7 @@
                     <div class="card shadow">
                         <div class="card-body">
                             <h4 class="mb-4">Teacher Verification Requests</h4>
-                            
+
                             <!-- Request Button -->
                             <c:if test="${!hasActiveRequest}">
                                 <form action="${pageContext.request.contextPath}/teacher/request" method="POST" class="mb-4">
@@ -217,16 +216,18 @@
                                             </tr>
                                         </c:forEach>
                                     </tbody>
-                                </table>
+                                </table>                                
                             </div>
                         </div>
                     </div>
+                    <a href="${pageContext.request.contextPath}/TeacherDashboard" class="btn btn-secondary mt-3">Back</a>
+
                 </div>
             </div>
         </div>
         <jsp:include page="layout/footer.jsp" />
 
-        
+
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const form = document.getElementById('profileForm');
