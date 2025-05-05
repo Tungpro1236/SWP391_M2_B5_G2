@@ -65,7 +65,7 @@
         <div class="container py-5">
             <h1 class="text-center mb-5">List of Courses</h1>
 
-            <!-- Phần lọc theo danh mục -->
+            <!-- Category Filter Section -->
             <div class="category-section">
                 <h4 class="mb-3">Filter by Semester:</h4>
                 <form action="CourseController" method="get">
@@ -83,15 +83,15 @@
                 </form>
             </div>
 
-            <!-- Tiêu đề danh mục đã chọn -->
+            <!-- Selected Category Title -->
             <c:if test="${not empty selectedCategory}">
-                <h2 class="mb-4">Khóa học ${selectedCategory.semester}</h2>
+                <h2 class="mb-4">${selectedCategory.semester}</h2>
             </c:if>
             <c:if test="${empty selectedCategory and empty param.categoryId}">
                 <h2 class="mb-4">All Courses</h2>
             </c:if>
 
-            <!-- Danh sách khóa học -->
+            <!-- Course List -->
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <c:forEach items="${courseList}" var="course">
                     <div class="col">
@@ -101,47 +101,47 @@
                                 <h5 class="card-title">${course.title}</h5>
                                 <p class="card-text">${course.description}</p>
 
-                                <!-- Hiển thị thông tin học kỳ -->
+                                <!-- Display Semester Information -->
                                 <c:forEach items="${categoryList}" var="category">
                                     <c:if test="${category.id eq course.categoryId}">
-                                        <span class="badge bg-info mb-2">Học kỳ: ${category.semester}</span>
+                                        <span class="badge bg-info mb-2">Semester: ${category.semester}</span>
                                     </c:if>
                                 </c:forEach>
 
-                                <!-- Hiển thị price -->
+                                <!-- Display Price -->
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <small class="text-muted">Price: ${course.price}$</small>
                                 </div>
 
-                               <!-- Hiển thị trạng thái -->
+                                <!-- Display Status -->
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <span class="badge bg-${course.status eq 'active' ? 'success' : 'danger'}">
-                                        ${course.status eq 'active' ? 'Đang hoạt động' : 'Không hoạt động'}
+                                        ${course.status eq 'active' ? 'Active' : 'Inactive'}
                                     </span>
-                                    <small class="text-muted">Ngày tạo: <fmt:formatDate value="${course.createdAt}" pattern="dd/MM/yyyy" /> </small>
+                                    <small class="text-muted">Created on: <fmt:formatDate value="${course.createdAt}" pattern="dd/MM/yyyy" /> </small>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <a href="LessonController?courseId=${course.id}" class="btn btn-primary w-100">Xem chi tiết</a>
+                                <a href="LessonController?courseId=${course.id}" class="btn btn-primary w-100">View Details</a>
                             </div>
                             <div class="card-footer">
-                                <a href="feedback?courseId=${course.id}" class="btn btn-primary w-100">Xem đánh giá</a>
+                                <a href="feedback?courseId=${course.id}" class="btn btn-primary w-100">View Feedback</a>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
 
-                <!-- Hiển thị thông báo nếu không có khóa học nào -->
+                <!-- Display message if no courses available -->
                 <c:if test="${empty courseList}">
                     <div class="col-12 text-center">
                         <div class="alert alert-info">
-                            Không có khóa học nào trong danh mục này.
+                            No courses available in this category.
                         </div>
                     </div>
                 </c:if>
             </div>
 
-            <!-- Phân trang -->
+            <!-- Pagination -->
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <c:if test="${currentPage > 1}">
@@ -172,9 +172,10 @@
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Bootstrap JS Bundle (đặt ở cuối body) -->
+        <!-- Bootstrap JS Bundle (placed at the end of body) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
+
 </html>
 

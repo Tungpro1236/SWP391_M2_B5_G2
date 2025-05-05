@@ -57,11 +57,6 @@
                                                 My Profile
                                             </a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/CourseController?action=myCourse">
-                                                My Course
-                                            </a>
-                                        </li>
                                         <c:if test="${sessionScope.user.roleId == 3}">
                                             <li>
                                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/student/refund">
