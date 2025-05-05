@@ -68,11 +68,10 @@
                     <nav class="nav flex-column">
                         <a class="nav-link active" href="profile">Profile</a>
                         <a class="nav-link" href="password">Change Password</a>
-                        <a class="nav-link" href="#">Course and Exercise</a>
+                        <a class="nav-link" href="CourseController?action=myCourse">Course and Exercise</a>
                         <a class="nav-link" href="#">Wishlist</a>
                         <a class="nav-link" href="#">Order History</a>
                         <c:if test="${user.roleId == 3}">
-                     
                             <a class="nav-link" href="${pageContext.request.contextPath}/student/refund">Refund Request</a>
                         </c:if>
                     </nav>
@@ -141,8 +140,20 @@
                                     </button>
                                     <button type="button" id="cancelButton" class="btn btn-secondary" style="display: none;">
                                         <i class="fas fa-times"></i> Cancel
-                                    </button>
+                                    </button>                                    
                                 </div>
+                                <c:choose>
+                                    <c:when test="${sessionScope.user.roleId == 2}">
+                                        <c:set var="backUrl" value="teacher-dashboard"/>
+                                    </c:when>
+                                    <c:when test="${sessionScope.user.roleId == 3}">
+                                        <c:set var="backUrl" value="home"/>
+                                    </c:when>
+                                </c:choose>
+                                <a href="${backUrl}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back
+                                </a>
+
                             </form>
                         </div>
                     </div>
@@ -151,7 +162,7 @@
         </div>
         <jsp:include page="layout/footer.jsp" />
 
-        
+
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const form = document.getElementById('profileForm');

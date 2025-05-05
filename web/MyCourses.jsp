@@ -7,8 +7,11 @@
         <title>My Courses</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     </head>
     <body class="bg-light">
+        <!-- Header -->
+        <%@ include file="/layout/header.jsp" %>
         <div class="container mt-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-primary">My Courses</h1>
@@ -64,7 +67,8 @@
                 </c:otherwise>
             </c:choose>
         </div>
-
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Bootstrap JS (Optional) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
