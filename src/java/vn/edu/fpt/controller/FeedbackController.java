@@ -118,7 +118,7 @@ public class FeedbackController extends HttpServlet {
                     commentId = commentId.substring(7);  
                 }
                 fdao.deleteComment(Integer.parseInt(commentId));
-                session.setAttribute("feedbackMessage", "Xóa đánh giá thành công");
+                session.setAttribute("feedbackMessage", "Delete Succesfully");
                 response.sendRedirect("feedback?courseId=" + courseid);
                 break;
             default:
