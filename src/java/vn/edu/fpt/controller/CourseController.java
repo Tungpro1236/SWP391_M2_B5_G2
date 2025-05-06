@@ -35,7 +35,7 @@ public class CourseController extends HttpServlet {
 
             if (user.getRoleId() == 2) {
                 if ("manageCourse".equals(action)) {
-                    List<Course> courseList = courseDAO.getAllCourses();
+                    List<Course> courseList = courseDAO.getCourseByTeacherId(user.getId());
                     request.setAttribute("courseList", courseList);
                     request.getRequestDispatcher("ManageCourse.jsp").forward(request, response);
                 } else if ("editCourse".equals(action)) {

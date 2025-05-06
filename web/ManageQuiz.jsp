@@ -28,6 +28,7 @@
             }
         </script>
         <% } %>
+
         <% if (quizzes == null || quizzes.isEmpty()) { %>
         <!-- Create New Quiz Form -->
         <div class="card mb-4">
@@ -54,7 +55,7 @@
             </div>
         </div>
 
-        <% } else { 
+        <% } else {
             Quiz quizToEdit = quizzes.get(0);
         %>
         <!-- Edit Quiz Form -->
@@ -78,19 +79,20 @@
 
                     <div class="col-12 d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <form method="post" action="QuizController" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
-                            <input type="hidden" name="action" value="deleteQuiz"/>
-                            <input type="hidden" name="quizId" value="<%= quizToEdit.getQuizId() %>"/>
-                            <input type="hidden" name="lessonId" value="<%= lessonIdStr != null ? lessonIdStr : "" %>"/>
-                        </form>
-                    </div>
+                </form>
+                <form method="post" action="QuizController" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
+                    <input type="hidden" name="action" value="deleteQuiz"/>
+                    <input type="hidden" name="quizId" value="<%= quizToEdit.getQuizId() %>"/>
+                    <input type="hidden" name="lessonId" value="<%= lessonIdStr != null ? lessonIdStr : "" %>"/>
+                    <button type="submit" class="btn btn-danger">Delete Quiz</button>
                 </form>
             </div>
         </div>
         <% } %>
 
         <% if (quizzes != null && !quizzes.isEmpty()) {
-    for (Quiz q : quizzes) { %>
+            for (Quiz q : quizzes) {
+        %>
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
                 <strong><%= q.getTitle() %></strong> (Duration: <%= q.getDurationMinutes() %> minutes)
@@ -100,13 +102,22 @@
                 <% 
                 List<Question> questions = (questionsMap != null) ? questionsMap.get(q.getQuizId()) : null;
                 if (questions != null) {
-                    for (Question ques : questions) { %>
+                    for (Question ques : questions) {
+                %>
                 <div class="mb-4 p-3 border rounded">
-                    <h6><strong>Question:</strong> <%= ques.getText() %></h6>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6><strong>Question:</strong> <%= ques.getText() %></h6>
+                        <form method="post" action="QuizController" onsubmit="return confirm('Are you sure you want to delete this question?');">
+                            <input type="hidden" name="action" value="deleteQuestion"/>
+                            <input type="hidden" name="questionId" value="<%= ques.getQuestionId() %>"/>
+                            <input type="hidden" name="lessonId" value="<%= lessonIdStr != null ? lessonIdStr : "" %>"/>
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Question</button>
+                        </form>
+                    </div>
 
                     <% 
-                    List<Answer_Option> answerOptions = (answersMap != null) ? answersMap.get(ques.getQuestionId()) : null;
-                    if (answerOptions != null) { 
+    List<Answer_Option> answerOptions = (answersMap != null) ? answersMap.get(ques.getQuestionId()) : null;
+    if (answerOptions != null) {
                     %>
                     <!-- Edit Answer Options Form -->
                     <form method="post" action="QuizController" class="mt-3">
@@ -122,15 +133,53 @@
 
                             <div class="form-check form-check-inline mb-0">
                                 <input class="form-check-input" type="checkbox" name="correctAnswers" value="<%= ao.getOptionId() %>"
-                                       id="correct_<%= ao.getOptionId() %>" <%= ao.isIsCorrect() ? "checked" : "" %>>
+                                       id="correct_<%= ao.getOptionId() %>" <%= ao.isIsCorrect() ? "checked" : "" %> 
+                                       <% if (answerOptions.stream().filter(a -> a.isIsCorrect()).count() > 0 && !ao.isIsCorrect()) { %> disabled <% } %> />
                                 <label class="form-check-label" for="correct_<%= ao.getOptionId() %>">Correct</label>
                             </div>
+
+                            <!-- Button for Deleting Answer -->
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('<%= ao.getOptionId() %>')">Delete</button>
                         </div>
                         <% } %>
 
                         <button type="submit" class="btn btn-primary btn-sm mt-2">Save Answer Changes</button>
                     </form>
+
+                    <!-- Delete Answer Confirmation Modal (if needed) -->
+                    <script>
+                        function confirmDelete(optionId) {
+                            if (confirm('Are you sure you want to delete this answer?')) {
+                                var form = document.createElement('form');
+                                form.method = 'post';
+                                form.action = 'QuizController';
+
+                                var actionInput = document.createElement('input');
+                                actionInput.type = 'hidden';
+                                actionInput.name = 'action';
+                                actionInput.value = 'deleteAnswer';
+                                form.appendChild(actionInput);
+
+                                var answerIdInput = document.createElement('input');
+                                answerIdInput.type = 'hidden';
+                                answerIdInput.name = 'answerId';
+                                answerIdInput.value = optionId;
+                                form.appendChild(answerIdInput);
+
+                                var lessonIdInput = document.createElement('input');
+                                lessonIdInput.type = 'hidden';
+                                lessonIdInput.name = 'lessonId';
+                                lessonIdInput.value = '<%= lessonIdStr != null ? lessonIdStr : "" %>';
+                                form.appendChild(lessonIdInput);
+
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+                        }
+                    </script>
+
                     <% } %>
+
 
                     <!-- Add New Answer Form -->
                     <form method="post" action="QuizController" class="row g-2 align-items-center mt-3">
@@ -154,8 +203,7 @@
                         </div>
                     </form>
                 </div>
-                <% } 
-        } %>
+                <% } } %>
 
                 <!-- Add New Question Form -->
                 <form method="post" action="QuizController" class="row g-2 mt-4">
@@ -173,15 +221,12 @@
                 </form>
             </div>
         </div>
-        <% } 
-} else { %>
+        <% } } else { %>
         <div class="alert alert-warning">No quizzes have been created for this lesson yet.</div>
         <% } %>
 
         <a href="LessonController?action=manageLesson" class="btn btn-secondary mt-4">Back to Lesson List</a>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     </body>
-
 </html>

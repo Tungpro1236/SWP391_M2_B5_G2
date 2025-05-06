@@ -24,7 +24,7 @@
                             <th>Lesson Title</th>
                             <th>Attempt Date</th>
                             <th>Score</th>
-                            <th>Detail</th>
+                            <!--<th>Detail</th>-->
                         </tr>
                     </thead>
                     <tbody>
@@ -37,7 +37,7 @@
                                 <td>${quiz.lessonTitle}</td>
                                 <td>${quiz.attemptDate}</td>
                                 <td>${quiz.score}</td>
-                                <td><a href="LessonController?action=quizDetail&attemptId=${quiz.attemptId}">Quiz Detail</a></td> <!-- Ensure quiz.attemptId -->
+                                <!--<td><a href="LessonController?action=quizDetail&attemptId=${quiz.attemptId}">Quiz Detail</a></td>  Ensure quiz.attemptId -->
                             </tr>
                         </c:forEach>
                         <c:if test="${empty listQuiz}">
@@ -49,6 +49,10 @@
 
                 </table>
             </div>
+            <a href="CourseController?action=myCourse" class="btn btn-outline-secondary">
+                    ⬅ Back to My Course
+                </a>
+            
         </div>
 
         <!-- Bootstrap JS -->

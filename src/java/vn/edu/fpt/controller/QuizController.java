@@ -143,21 +143,78 @@ public class QuizController extends HttpServlet {
                 int quizId = Integer.parseInt(request.getParameter("quizId"));
                 String questionText = request.getParameter("questionText");
                 quizDAO.createQuestion(new Question(0, quizId, questionText));
+            } else if ("deleteQuestion".equals(action)) {
+                try {
+                    int questionId = Integer.parseInt(request.getParameter("questionId"));
+
+                    // Gọi DAO để xóa câu hỏi và các đáp án liên quan
+                    quizDAO.deleteQuestion(questionId);
+
+                    // Lấy lại lessonId để redirect đúng trang
+                    String lessonId = request.getParameter("lessonId");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else if ("addAnswer".equals(action)) {
                 int questionId = Integer.parseInt(request.getParameter("questionId"));
                 String answerText = request.getParameter("answerText");
                 boolean isCorrect = "1".equals(request.getParameter("isCorrect"));
+
+                // Kiểm tra xem câu hỏi đã có đáp án đúng chưa
+                List<Answer_Option> existingAnswers = quizDAO.getAnswersByQuestionId(questionId);
+
+                // Nếu đã có đáp án đúng, set isCorrect=false cho đáp án mới
+                if (existingAnswers != null && existingAnswers.stream().anyMatch(Answer_Option::isIsCorrect)) {
+                    isCorrect = false;  // Đặt là false nếu đã có đáp án đúng
+                }
+
+                // Tạo và lưu câu trả lời mới
                 quizDAO.createAnswerOption(new Answer_Option(0, questionId, answerText, isCorrect));
             } else if ("editAnswer".equals(action)) {
                 int answerId = Integer.parseInt(request.getParameter("answerId"));
                 int questionId = Integer.parseInt(request.getParameter("questionId"));
                 String answerText = request.getParameter("answerText");
                 boolean isCorrect = "1".equals(request.getParameter("isCorrect"));
-                Answer_Option ao = new Answer_Option(answerId, questionId, answerText, isCorrect);
-                quizDAO.updateAnswerOption(ao);
+
+                // Kiểm tra nếu câu trả lời này được đánh dấu là đúng
+                if (isCorrect) {
+                    // Lấy danh sách các đáp án của câu hỏi
+                    List<Answer_Option> existingAnswers = quizDAO.getAnswersByQuestionId(questionId);
+
+                    // Kiểm tra xem có đáp án đúng khác chưa
+                    boolean hasCorrectAnswer = false;
+                    for (Answer_Option ao : existingAnswers) {
+                        if (ao.isIsCorrect()) {
+                            hasCorrectAnswer = true;
+                            // Nếu câu trả lời đang được chỉnh sửa là đúng, thì chúng ta sẽ đặt lại đáp án cũ thành sai
+                            if (ao.getOptionId() != answerId) {
+                                ao.setIsCorrect(false);
+                                quizDAO.updateAnswerOption(ao); // Cập nhật lại đáp án này thành sai
+                            }
+                        }
+                    }
+
+                    // Nếu chưa có đáp án đúng, bạn có thể chỉnh sửa đáp án mới thành đúng
+                    if (!hasCorrectAnswer || (hasCorrectAnswer && existingAnswers.size() == 1)) {
+                        // Đặt isCorrect cho đáp án hiện tại thành true
+                        Answer_Option ao = new Answer_Option(answerId, questionId, answerText, isCorrect);
+                        quizDAO.updateAnswerOption(ao);
+                    } else {
+                        // Nếu đã có đáp án đúng, ngừng việc cập nhật và thông báo lỗi
+                        request.setAttribute("error", "Một câu hỏi chỉ có thể có một đáp án đúng.");
+                        // Trả về giao diện với thông báo lỗi
+                    }
+                } else {
+                    // Nếu câu trả lời không phải là đúng, chỉ cần cập nhật bình thường
+                    Answer_Option ao = new Answer_Option(answerId, questionId, answerText, isCorrect);
+                    quizDAO.updateAnswerOption(ao);
+                }
             } else if ("deleteAnswer".equals(action)) {
                 int answerId = Integer.parseInt(request.getParameter("answerId"));
                 quizDAO.deleteAnswerOption(answerId);
+                // Redirect back to quiz page
+                String lessonId = request.getParameter("lessonId");
             } else if (action.equals("editAnswersBulk")) {
                 int questionId = Integer.parseInt(request.getParameter("questionId"));
                 int lessonId = Integer.parseInt(request.getParameter("lessonId"));
@@ -173,6 +230,15 @@ public class QuizController extends HttpServlet {
                     }
                 }
 
+                // Lấy danh sách các đáp án hiện tại của câu hỏi
+                List<Answer_Option> existingAnswers = quizDAO.getAnswersByQuestionId(questionId);
+
+                // Kiểm tra số lượng đáp án đúng, nếu có hơn một đáp án đúng, ngừng thực hiện
+                if (correctSet.size() > 1) {
+                    request.setAttribute("error", "Một câu hỏi chỉ có thể có một đáp án đúng.");
+                    return; // Dừng lại và trả về thông báo lỗi
+                }
+
                 for (int i = 0; i < answerIds.length; i++) {
                     int answerId = Integer.parseInt(answerIds[i]);
                     String newText = answerTexts[i];
@@ -183,9 +249,22 @@ public class QuizController extends HttpServlet {
                     ao.setText(newText);          // Nội dung đáp án
                     ao.setIsCorrect(isCorrect);   // Có đúng không
 
+                    // Cập nhật đáp án
                     quizDAO.updateAnswerOption(ao);
+
+                    // Nếu đáp án mới là đúng, kiểm tra và hủy đánh dấu các đáp án cũ là đúng
+                    if (isCorrect) {
+                        for (Answer_Option existingAnswer : existingAnswers) {
+                            if (existingAnswer.getOptionId() != answerId && existingAnswer.isIsCorrect()) {
+                                // Nếu đáp án hiện tại đang là đúng và không phải đáp án đang được cập nhật, thì đánh dấu là sai
+                                existingAnswer.setIsCorrect(false);
+                                quizDAO.updateAnswerOption(existingAnswer);
+                            }
+                        }
+                    }
                 }
             }
+
             String lessonId = request.getParameter("lessonId");
             // Sau khi xử lý thành công (ví dụ thêm, sửa hoặc xóa quiz)
             response.sendRedirect("QuizController?action=manageQuiz&lessonId=" + (lessonId != null ? lessonId : "") + "&message=success");

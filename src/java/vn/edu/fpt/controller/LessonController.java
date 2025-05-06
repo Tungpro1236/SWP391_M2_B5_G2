@@ -55,8 +55,10 @@ public class LessonController extends HttpServlet {
                 request.getRequestDispatcher("ViewQuizDetail.jsp").forward(request, response);
             }
         } else if ("manageLesson".equals(action)) {         //danh cho teacher
+            HttpSession session = request.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
             String courseIdStr = request.getParameter("courseId");
-            List<Course> courses = CourseDAO.getAllCourses();
+            List<Course> courses = CourseDAO.getCourseByTeacherId(user.getId());
             List<Lesson> lessons;
 
             if (courseIdStr != null && !courseIdStr.isEmpty()) {
@@ -64,12 +66,24 @@ public class LessonController extends HttpServlet {
                 lessons = lessonDAO.getLessonsByCourseId(courseId);
                 request.setAttribute("selectedCourseId", courseId);
             } else {
-                lessons = lessonDAO.getAllLessons();
+                lessons = lessonDAO.getLessonsByTeacherId(user.getId());
             }
 
             request.setAttribute("courses", courses);
             request.setAttribute("lessons", lessons);
             request.getRequestDispatcher("ManageLesson.jsp").forward(request, response);
+        } else if ("addLesson".equals(action)) {
+            HttpSession session = request.getSession();
+            UserModel user = (UserModel) session.getAttribute("user");
+            if (user != null) {
+                CourseDAO courseDAO = new CourseDAO();
+                List<Course> courses = courseDAO.getCourseByTeacherId(user.getId());
+                request.setAttribute("user", user);
+                request.setAttribute("courses", courses);
+                request.getRequestDispatcher("AddLesson.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("login.jsp"); // hoặc xử lý khác nếu chưa đăng nhập
+            }
         } else if ("editLesson".equals(action)) { //  ADD THIS BLOCK
             int lessonId = Integer.parseInt(request.getParameter("lessonId"));
             Lesson lesson = lessonDAO.getLessonById(lessonId);
@@ -241,7 +255,7 @@ public class LessonController extends HttpServlet {
 
         int totalQuestion = quizDAO.getTotalQuestionsByQuizId(quizId);
 
-        if ((double) score / totalQuestion >= 0.5) {
+        if ((double) score / totalQuestion >= 0.7) {
             lessonDAO.saveLessonCompletion(userId, lessonId);
             CourseDAO.updateEnrollmentStatusForStudent(user.getId());
         }

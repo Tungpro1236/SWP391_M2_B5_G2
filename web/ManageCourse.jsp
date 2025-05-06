@@ -6,7 +6,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>List of Courses</title>
+        <title>List of My Courses</title>
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
@@ -79,7 +79,7 @@
 
                 <!-- Main content -->
                 <div class="col-md-9 p-5">
-                    <h1 class="text-center mb-5">List of Courses</h1>
+                    <h1 class="text-center mb-5">List of My Courses</h1>
 
                     <!-- Nếu role là Teacher thì hiện nút Add Course -->
                     <c:if test="${sessionScope.user.roleId == 2}">

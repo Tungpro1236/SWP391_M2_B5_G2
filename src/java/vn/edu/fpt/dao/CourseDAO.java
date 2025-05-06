@@ -81,6 +81,37 @@ public class CourseDAO extends DBContext {
         return list;
     }
 
+    public List<Course> getCourseByTeacherId(int id) {
+        String query = "SELECT [id], [teacher_id], [title], [thumbnail_url], [description], "
+                + "[category_id], [status], [created_at], [price] "
+                + "FROM [Onlinelearning].[dbo].[courses] "
+                + "WHERE [teacher_id] = ?";
+        List<Course> list = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course(
+                            rs.getInt("id"),
+                            rs.getInt("teacher_id"),
+                            rs.getString("title"),
+                            rs.getString("thumbnail_url"),
+                            rs.getString("description"),
+                            rs.getInt("category_id"),
+                            rs.getString("status"),
+                            rs.getTimestamp("created_at"),
+                            rs.getInt("price")
+                    );
+                    list.add(course);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     /**
      * Lấy tổng số lượng khóa học theo danh mục
      *
@@ -642,34 +673,34 @@ public class CourseDAO extends DBContext {
     }
 
     public static void main(String[] args) {
-//        CourseDAO dao = new CourseDAO();
-//        List<Course> courses= dao.getAllCourses();
-//
-//        if (courses.isEmpty()) {
-//            System.out.println("Không có dữ liệu trong bảng courses.");
-//        } else {
-//            for (Course c : courses) {
-//                System.out.println("ID: " + c.getId() + " | Title: " + c.getTitle() + " | Created at: " + c.getCreatedAt());
-//            }
-//        }
+        CourseDAO dao = new CourseDAO();
+        List<Course> courses= dao.getCourseByTeacherId(30);
+
+        if (courses.isEmpty()) {
+            System.out.println("Không có dữ liệu trong bảng courses.");
+        } else {
+            for (Course c : courses) {
+                System.out.println("ID: " + c.getId() + " | Title: " + c.getTitle() + " | Created at: " + c.getCreatedAt());
+            }
+        }
 
         // Tạo đối tượng Course mẫu
-        CourseDAO courseDAO = new CourseDAO();
-        Course course = new Course();
-        course.setTitle("Java Programming");
-        course.setThumbnailUrl("https://example.com/thumb.jpg");
-        course.setDescription("Learn Java from scratch.");
-        course.setCategoryId(1);  // ID danh mục hợp lệ
-        course.setStatus("active");
-        course.setPrice(99);
-
-        int teacherId = 1; // ID giáo viên hợp lệ
-        int courseId = courseDAO.addCourse(course, teacherId);
-
-        if (courseId != -1) {
-            System.out.println("Course created successfully with ID: " + courseId);
-        } else {
-            System.out.println("Failed to create course.");
-        }
+//        CourseDAO courseDAO = new CourseDAO();
+//        Course course = new Course();
+//        course.setTitle("Java Programming");
+//        course.setThumbnailUrl("https://example.com/thumb.jpg");
+//        course.setDescription("Learn Java from scratch.");
+//        course.setCategoryId(1);  // ID danh mục hợp lệ
+//        course.setStatus("active");
+//        course.setPrice(99);
+//
+//        int teacherId = 1; // ID giáo viên hợp lệ
+//        int courseId = courseDAO.addCourse(course, teacherId);
+//
+//        if (courseId != -1) {
+//            System.out.println("Course created successfully with ID: " + courseId);
+//        } else {
+//            System.out.println("Failed to create course.");
+//        }
     }
 }

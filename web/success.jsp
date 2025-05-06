@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Thông báo</title>
+        <title>Notification</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
@@ -12,7 +12,7 @@
                 ${sessionScope.message}
                 <c:remove var="message" scope="session" />
             </div>
-            <a href="CourseController?action=manageCourse" class="btn btn-primary">Quay lại danh sách khóa học</a>
+            <a href="CourseController?action=manageCourse" class="btn btn-primary">Back to Course List</a>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
