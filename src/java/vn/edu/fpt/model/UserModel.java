@@ -22,7 +22,18 @@ public class UserModel {
     private String avatarUrl;
     private Timestamp createdAt;
     private boolean status;
-    
+    private String educationLevel;
+    private String graduatedSchool;
+    private Integer graduatedYear;
+    private String major;
+    private String certifications;
+    private Integer teachingExperienceYears;
+    private String subjects;
+    private String teachingLevels;
+    private String skills;
+    private String teachingPhilosophy;
+    private String careerGoals;
+
     // Default constructor
     public UserModel() {
     }
@@ -43,6 +54,33 @@ public class UserModel {
         this.createdAt = createdAt;
         this.status = status;
     }
+
+    public UserModel(int id, String firstName, String middleName, String lastName, String email, int genderId, String password, int roleId, String avatarUrl, Timestamp createdAt, boolean status, String educationLevel, String graduatedSchool, Integer graduatedYear, String major, String certifications, Integer teachingExperienceYears, String subjects, String teachingLevels, String skills, String teachingPhilosophy, String careerGoals) {
+        this.id = id;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.email = email;
+        this.genderId = genderId;
+        this.password = password;
+        this.roleId = roleId;
+        this.avatarUrl = avatarUrl;
+        this.createdAt = createdAt;
+        this.status = status;
+        this.educationLevel = educationLevel;
+        this.graduatedSchool = graduatedSchool;
+        this.graduatedYear = graduatedYear;
+        this.major = major;
+        this.certifications = certifications;
+        this.teachingExperienceYears = teachingExperienceYears;
+        this.subjects = subjects;
+        this.teachingLevels = teachingLevels;
+        this.skills = skills;
+        this.teachingPhilosophy = teachingPhilosophy;
+        this.careerGoals = careerGoals;
+    }
+    
+    
     
     // Getters and Setters
     public int getId() {
@@ -132,5 +170,95 @@ public class UserModel {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    public String getEducationLevel() {
+        return educationLevel;
+    }
+
+    public void setEducationLevel(String educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public String getGraduatedSchool() {
+        return graduatedSchool;
+    }
+
+    public void setGraduatedSchool(String graduatedSchool) {
+        this.graduatedSchool = graduatedSchool;
+    }
+
+    public Integer getGraduatedYear() {
+        return graduatedYear;
+    }
+
+    public void setGraduatedYear(Integer graduatedYear) {
+        this.graduatedYear = graduatedYear;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getCertifications() {
+        return certifications;
+    }
+
+    public void setCertifications(String certifications) {
+        this.certifications = certifications;
+    }
+
+    public Integer getTeachingExperienceYears() {
+        return teachingExperienceYears;
+    }
+
+    public void setTeachingExperienceYears(Integer teachingExperienceYears) {
+        this.teachingExperienceYears = teachingExperienceYears;
+    }
+
+    public String getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(String subjects) {
+        this.subjects = subjects;
+    }
+
+    public String getTeachingLevels() {
+        return teachingLevels;
+    }
+
+    public void setTeachingLevels(String teachingLevels) {
+        this.teachingLevels = teachingLevels;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    public String getTeachingPhilosophy() {
+        return teachingPhilosophy;
+    }
+
+    public void setTeachingPhilosophy(String teachingPhilosophy) {
+        this.teachingPhilosophy = teachingPhilosophy;
+    }
+
+    public String getCareerGoals() {
+        return careerGoals;
+    }
+
+    public void setCareerGoals(String careerGoals) {
+        this.careerGoals = careerGoals;
+    }
+    
+    
     
 }
