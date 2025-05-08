@@ -106,6 +106,25 @@
         const form = document.getElementById('registerForm');
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+        const firstName = form.firstName.value.trim();
+        const lastName = form.lastName.value.trim();
+        
+        // First Name and Last Name validation
+        if (!firstName || !lastName) {
+            alert('First name and last name cannot be empty or contain only spaces');
+            return false;
+        }
+
+        const specialCharsRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/;
+        if (specialCharsRegex.test(firstName) || specialCharsRegex.test(lastName)) {
+            alert('First name and last name cannot contain special characters');
+            return false;
+        }
+
+        if (firstName.length < 2 || lastName.length < 2) {
+            alert('First name and last name must be at least 2 characters long');
+            return false;
+        }
         
         // Password validation
         if (password.length < 8) {
@@ -136,15 +155,6 @@
         // Confirm password validation
         if (password !== confirmPassword) {
             alert('Passwords do not match');
-            return false;
-        }
-        
-        // Name validation
-        const firstName = form.firstName.value.trim();
-        const lastName = form.lastName.value.trim();
-        
-        if (firstName.length < 2 || lastName.length < 2) {
-            alert('First name and last name must be at least 2 characters long');
             return false;
         }
         

@@ -98,7 +98,12 @@
                                                 </td>
                                                 <td>${request.approveDate}</td>
                                                 <td>${request.rejectReason}</td>
+                                                <!-- Trong phần td của Actions -->
                                                 <td>
+                                                    <button class="btn btn-info btn-sm" 
+                                                            onclick="viewTeacherDetail(${request.requesterId})">
+                                                        <i class="fas fa-eye"></i> View Detail
+                                                    </button>
                                                     <c:if test="${request.status == 0}">
                                                         <button class="btn btn-success btn-sm" 
                                                                 onclick="approveRequest(${request.id})">
@@ -110,6 +115,89 @@
                                                         </button>
                                                     </c:if>
                                                 </td>
+                                                
+                                                <!-- Thêm Teacher Detail Modal vào cuối file trước </body> -->
+                                                <div class="modal fade" id="teacherDetailModal" tabindex="-1">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Teacher Details</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="teacherDetailContent">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <p><strong>Name:</strong> <span id="teacherName"></span></p>
+                                                                            <p><strong>Email:</strong> <span id="teacherEmail"></span></p>
+                                                                            <p><strong>Education Level:</strong> <span id="educationLevel"></span></p>
+                                                                            <p><strong>Graduated School:</strong> <span id="graduatedSchool"></span></p>
+                                                                            <p><strong>Graduated Year:</strong> <span id="graduatedYear"></span></p>
+                                                                            <p><strong>Major:</strong> <span id="major"></span></p>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <p><strong>Teaching Experience:</strong> <span id="teachingExperience"></span> years</p>
+                                                                            <p><strong>Teaching Levels:</strong> <span id="teachingLevels"></span></p>
+                                                                            <p><strong>Subjects:</strong> <span id="subjects"></span></p>
+                                                                            <p><strong>Skills:</strong> <span id="skills"></span></p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-12">
+                                                                            <h6>Certifications</h6>
+                                                                            <p id="certifications"></p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-12">
+                                                                            <h6>Teaching Philosophy</h6>
+                                                                            <p id="teachingPhilosophy"></p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-12">
+                                                                            <h6>Career Goals</h6>
+                                                                            <p id="careerGoals"></p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Thêm script để xử lý view detail -->
+                                                <script>
+                                                const teacherDetailModal = new bootstrap.Modal(document.getElementById('teacherDetailModal'));
+                                                
+                                                function viewTeacherDetail(teacherId) {
+                                                    fetch("../admin/teacher-detail?id="+teacherId)
+                                                        .then(response => response.json())
+                                                        .then(teacher => {
+                                                            document.getElementById('teacherName').textContent = teacher.firstName + ' ' + teacher.lastName;
+                                                            document.getElementById('teacherEmail').textContent = teacher.email;
+                                                            document.getElementById('educationLevel').textContent = teacher.educationLevel || 'N/A';
+                                                            document.getElementById('graduatedSchool').textContent = teacher.graduatedSchool || 'N/A';
+                                                            document.getElementById('graduatedYear').textContent = teacher.graduatedYear || 'N/A';
+                                                            document.getElementById('major').textContent = teacher.major || 'N/A';
+                                                            document.getElementById('teachingExperience').textContent = 
+                                                                teacher.teachingExperienceYears || 'N/A';
+                                                            document.getElementById('teachingLevels').textContent = teacher.teachingLevels || 'N/A';
+                                                            document.getElementById('subjects').textContent = teacher.subjects || 'N/A';
+                                                            document.getElementById('skills').textContent = teacher.skills || 'N/A';
+                                                            document.getElementById('certifications').textContent = teacher.certifications || 'N/A';
+                                                            document.getElementById('teachingPhilosophy').textContent = 
+                                                                teacher.teachingPhilosophy || 'N/A';
+                                                            document.getElementById('careerGoals').textContent = teacher.careerGoals || 'N/A';
+                                                            
+                                                            teacherDetailModal.show();
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Error fetching teacher details:', error);
+                                                            alert('Error loading teacher details');
+                                                        });
+                                                }
+                                                </script>
                                             </tr>
                                         </c:forEach>
                                     </tbody>

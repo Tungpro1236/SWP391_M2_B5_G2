@@ -34,7 +34,18 @@ public class UserDAO extends DBContext {
                         rs.getInt("role_id"),
                         rs.getString("avatar_url"),
                         rs.getTimestamp("created_at"),
-                        rs.getBoolean("status")
+                        rs.getBoolean("status"),
+                        rs.getString("education_level"),
+                        rs.getString("graduated_school"),
+                        rs.getInt("graduated_year"),
+                        rs.getString("major"),
+                        rs.getString("certifications"),
+                        rs.getInt("teaching_experience_years"),
+                        rs.getString("subjects"),
+                        rs.getString("teaching_levels"),
+                        rs.getString("skills"),
+                        rs.getString("teaching_philosophy"),
+                        rs.getString("career_goals")
                 );
             }
         } catch (SQLException e) {
@@ -135,13 +146,42 @@ public class UserDAO extends DBContext {
 
     public boolean updateProfile(UserModel user) {
         try {
-            String query = "UPDATE users SET first_name=?, last_name=?, gender_id=?, avatar_url=? WHERE id=?";
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setInt(3, user.getGenderId());
-            ps.setString(4, user.getAvatarUrl());
-            ps.setInt(5, user.getId());
+            String baseQuery = "UPDATE users SET first_name=?, last_name=?, gender_id=?, avatar_url=?";
+
+            // Add teacher-specific fields if user is a teacher (roleId = 2)
+            if (user.getRoleId() == 2) {
+                baseQuery += ", education_level=?, graduated_school=?, graduated_year=?, major=?, "
+                        + "certifications=?, teaching_experience_years=?, subjects=?, "
+                        + "teaching_levels=?, skills=?, teaching_philosophy=?, career_goals=?";
+            }
+            baseQuery += " WHERE id=?";
+
+            PreparedStatement ps = connection.prepareStatement(baseQuery);
+
+            // Set basic user information
+            int paramIndex = 1;
+            ps.setString(paramIndex++, user.getFirstName());
+            ps.setString(paramIndex++, user.getLastName());
+            ps.setInt(paramIndex++, user.getGenderId());
+            ps.setString(paramIndex++, user.getAvatarUrl());
+
+            // Set teacher-specific information if user is a teacher
+            if (user.getRoleId() == 2) {
+                ps.setString(paramIndex++, user.getEducationLevel());
+                ps.setString(paramIndex++, user.getGraduatedSchool());
+                ps.setObject(paramIndex++, user.getGraduatedYear());
+                ps.setString(paramIndex++, user.getMajor());
+                ps.setString(paramIndex++, user.getCertifications());
+                ps.setObject(paramIndex++, user.getTeachingExperienceYears());
+                ps.setString(paramIndex++, user.getSubjects());
+                ps.setString(paramIndex++, user.getTeachingLevels());
+                ps.setString(paramIndex++, user.getSkills());
+                ps.setString(paramIndex++, user.getTeachingPhilosophy());
+                ps.setString(paramIndex++, user.getCareerGoals());
+            }
+
+            // Set the user ID as the last parameter
+            ps.setInt(paramIndex, user.getId());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -201,7 +241,18 @@ public class UserDAO extends DBContext {
                         rs.getInt("role_id"),
                         rs.getString("avatar_url"),
                         rs.getTimestamp("created_at"),
-                        rs.getBoolean("status")
+                        rs.getBoolean("status"),
+                        rs.getString("education_level"),
+                        rs.getString("graduated_school"),
+                        rs.getInt("graduated_year"),
+                        rs.getString("major"),
+                        rs.getString("certifications"),
+                        rs.getInt("teaching_experience_years"),
+                        rs.getString("subjects"),
+                        rs.getString("teaching_levels"),
+                        rs.getString("skills"),
+                        rs.getString("teaching_philosophy"),
+                        rs.getString("career_goals")
                 );
                 user.setStatus(rs.getBoolean("status"));
                 users.add(user);
@@ -266,23 +317,24 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
+
     public int getUserIdByEmail(String email) {
-    String query = "SELECT id FROM users WHERE email = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-        ps.setString(1, email);
-        ResultSet rs = ps.executeQuery();
+        String query = "SELECT id FROM users WHERE email = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
-            return rs.getInt("id");  // Trả về userId nếu tìm thấy người dùng
+            if (rs.next()) {
+                return rs.getInt("id");  // Trả về userId nếu tìm thấy người dùng
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getUserIdByEmail: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Error in getUserIdByEmail: " + e.getMessage());
+        return -1;  // Trả về -1 nếu không tìm thấy người dùng
     }
-    return -1;  // Trả về -1 nếu không tìm thấy người dùng
-}
 
-   public List<UserModel> getAllUser() {
+    public List<UserModel> getAllUser() {
         List<UserModel> list = new ArrayList<>();
         String query = "SELECT * "
                 + "FROM [Onlinelearning].[dbo].[users]";
@@ -310,7 +362,43 @@ public class UserDAO extends DBContext {
         return list;
     }
 
-    
- 
-    
+    public UserModel getTeacherById(int teacherId) {
+        String query = "SELECT * FROM users WHERE id = ? AND role_id = 2";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, teacherId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new UserModel(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("middle_name"),
+                        rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getInt("gender_id"),
+                        rs.getString("password"),
+                        rs.getInt("role_id"),
+                        rs.getString("avatar_url"),
+                        rs.getTimestamp("created_at"),
+                        rs.getBoolean("status"),
+                        rs.getString("education_level"),
+                        rs.getString("graduated_school"),
+                        rs.getInt("graduated_year"),
+                        rs.getString("major"),
+                        rs.getString("certifications"),
+                        rs.getInt("teaching_experience_years"),
+                        rs.getString("subjects"),
+                        rs.getString("teaching_levels"),
+                        rs.getString("skills"),
+                        rs.getString("teaching_philosophy"),
+                        rs.getString("career_goals")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getTeacherById: " + e.getMessage());
+        }
+        return null;
+    }
+
 }
