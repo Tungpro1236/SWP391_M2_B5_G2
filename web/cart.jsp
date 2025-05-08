@@ -87,7 +87,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </h5>
-                        <a href="CheckoutServlet" class="btn btn-success btn-lg">
+                        <a href="checkout" class="btn btn-success btn-lg">
                             <i class="bi bi-cart-check"></i> Thanh toán
                         </a>
                     </div>

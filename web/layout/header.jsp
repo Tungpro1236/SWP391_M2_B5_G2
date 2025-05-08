@@ -64,6 +64,13 @@
                                                 </a>
                                             </li>
                                         </c:if>
+                                        <c:if test="${sessionScope.user.roleId == 3}">
+                                            <li>
+                                                <a class="dropdown-item" href="myorder">
+                                                    My Order
+                                                </a>
+                                            </li>
+                                        </c:if>
                                         <c:if test="${sessionScope.user.roleId == 1}">
                                             <li>
                                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/dashBoard">
