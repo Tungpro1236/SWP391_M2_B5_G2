@@ -112,7 +112,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Teacher Profile</a>
                 <div class="d-flex">
-                    <a class="btn btn-outline-light" href="login?action=logout"><i class='bx bx-log-out bx-rotate-180'></i> Logout</a>
+                    <a class="btn btn-outline-light" href="../login?action=logout"><i class='bx bx-log-out bx-rotate-180'></i> Logout</a>
                 </div>
             </div>
         </nav>
