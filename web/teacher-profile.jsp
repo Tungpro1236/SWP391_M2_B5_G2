@@ -432,22 +432,22 @@
                     // Name validation
                     const nameRegex = /^[a-zA-Z\s]{2,50}$/;
                     if (!nameRegex.test(firstName)) {
-                        showToast('First name must be 2-50 characters long and contain only letters');
-                        form.firstName.focus();
+                        alert('First name must be 2-50 characters long and contain only letters');
+                        //form.firstName.focus();
                         return;
                     }
 
                     if (!nameRegex.test(lastName)) {
-                        showToast('Last name must be 2-50 characters long and contain only letters');
-                        form.lastName.focus();
+                        alert('Last name must be 2-50 characters long and contain only letters');
+                        //form.lastName.focus();
                         return;
                     }
 
                     // Email validation
                     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
                     if (!emailRegex.test(email)) {
-                        showToast('Please enter a valid email address');
-                        form.email.focus();
+                        alert('Please enter a valid email address');
+                        //form.email.focus();
                         return;
                     }
                     // Validate text fields
@@ -464,14 +464,14 @@
                         const value = field.value.trim();
 
                         if (!value) {
-                            showToast(displayName + ' cannot be empty or contain only spaces');
-                            field.focus();
+                            alert(displayName + ' cannot be empty or contain only spaces');
+                            //field.focus();
                             return;
                         }
 
                         if (specialCharsRegex.test(value)) {
-                            showToast(displayName + ' cannot contain special characters');
-                            field.focus();
+                            alert(displayName + ' cannot contain special characters');
+                            //field.focus();
                             return;
                         }
                     }
@@ -480,7 +480,7 @@
                     const graduatedYear = parseInt(form.graduatedYear.value);
                     const currentYear = new Date().getFullYear();
                     if (isNaN(graduatedYear) || graduatedYear < 2000) {
-                        showToast('Graduated year must be larger than 2000 ');
+                        alert('Graduated year must be larger than 2000 ');
                         console.log('Graduated year must be larger than 2000 ');
                         form.graduatedYear.focus();
                         return;
@@ -489,8 +489,8 @@
                     // Validate teaching experience
                     const experience = parseInt(form.teachingExperienceYears.value);
                     if (isNaN(experience) || experience < 0) {
-                        showToast('Teaching experience years cannot be negative');
-                        form.teachingExperienceYears.focus();
+                        alert('Teaching experience years cannot be negative');
+                        //form.teachingExperienceYears.focus();
                         return;
                     }
 
@@ -506,10 +506,27 @@
                     for (let [fieldName, displayName] of Object.entries(textareaFields)) {
                         const field = form[fieldName];
                         const value = field.value.trim();
+                        console.log(fieldName + '  ' + value);
+                        
+                        if(value && (fieldName === 'skills' || fieldName === 'subjects') ){
+                            const regexNumber = /^[^0-9]*$/;
+                            console.log(  value +' '+ (!regexNumber.test(value)));
+                            if(!regexNumber.test(value)){
+                                alert(displayName + ' cannot contain number');
+                                //field.focus();
+                                return;
+                            }
+                        }
+                        
+                        if(value === null || value.length === 0){
+                             alert(displayName + ' cannot be empty');
+                            //field.focus();
+                            return;
+                        }
 
                         if (value && specialCharsRegex.test(value)) {
-                            showToast(displayName + ' cannot contain special characters');
-                            field.focus();
+                            alert(displayName + ' cannot contain special characters');
+                            //field.focus();
                             return;
                         }
                     }

@@ -39,11 +39,6 @@ public class TeacherController extends HttpServlet {
             case "/profile":
                 // Get teacher's requests
                 TeacherRequestDAO teacherRequestDAO = new TeacherRequestDAO();
-                if (!teacherRequestDAO.isApprovedTeacher(user.getId())) {
-                    session.setAttribute("message", "Teacher's request has not been accepted!");
-                    response.sendRedirect("success.jsp"); // Chuyển hướng đến trang success.jsp
-                    return;
-                }
                 List<TeacherRequest> requests = requestDAO.getRequestsByTeacher(user.getId());
                 boolean hasActiveRequest = requestDAO.hasActiveRequest(user.getId());
 
