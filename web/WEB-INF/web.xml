@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-   
+    <servlet>
+        <servlet-name>CheckoutController</servlet-name>
+        <servlet-class>vn.edu.fpt.controller.CheckoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MyOrderController</servlet-name>
+        <servlet-class>vn.edu.fpt.controller.MyOrderController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OrderDetailController</servlet-name>
+        <servlet-class>vn.edu.fpt.controller.OrderDetailController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckoutController</servlet-name>
+        <url-pattern>/checkout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MyOrderController</servlet-name>
+        <url-pattern>/myorder</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderDetailController</servlet-name>
+        <url-pattern>/orderdetail</url-pattern>
+    </servlet-mapping>
+ 
 </web-app>

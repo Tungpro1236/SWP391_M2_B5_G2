@@ -33,7 +33,7 @@
                     <i class="bi bi-person-workspace me-2"></i> Teacher Management
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="teacherManagementDropdown">
-                    
+
                     <li><a class="dropdown-item ${activePage == 'viewTeacherSalary' ? 'active' : ''}" href="${pageContext.request.contextPath}/viewTeacherSalary"><i class="bi bi-bar-chart me-2"></i> Teacher's Salary</a></li>
                     <li><a class="dropdown-item ${activePage == 'viewTeacherCourses' ? 'active' : ''}" href="${pageContext.request.contextPath}/viewTeacherCourses"><i class="bi bi-book me-2"></i> Teacher's Courses</a></li>
                 </ul>
@@ -56,6 +56,8 @@
                 <ul class="dropdown-menu" aria-labelledby="payManagementDropdown">
                     <li><a class="dropdown-item ${activePage == 'payroll' ? 'active' : ''}" href="${pageContext.request.contextPath}/payRoll"><i class="bi bi-wallet me-2"></i> Payroll of Teacher</a></li>
                     <li><a class="dropdown-item ${activePage == 'refund' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/refund"><i class="bi bi-arrow-repeat me-2"></i> Refund Request</a></li>
+                    <li><a class="dropdown-item ${activePage == 'order' ? 'active' : ''}" href="${pageContext.request.contextPath}/manageOrder"><i class="bi bi-wallet me-2"></i> Manage Order</a></li>
+
                 </ul>
             </li>
             <li class="nav-item">

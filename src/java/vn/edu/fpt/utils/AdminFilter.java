@@ -22,7 +22,7 @@ import vn.edu.fpt.model.UserModel;
  *
  * @author regio
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/dashBoard", "/viewTeacherSalary", "/revenue", 
+@WebFilter(filterName = "AdminFilter", urlPatterns = {"/dashBoard", "/viewTeacherSalary", "/revenue", "/manageOrder",
                          "/teacherSalaryDetail", "/payRoll", "/statistics", "/viewTeacherCourses"})
 public class AdminFilter implements Filter {
    @Override
